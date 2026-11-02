@@ -1,0 +1,31 @@
+[package]
+name = "replaycourt"
+description = "ReplayCourt: escrowed bug-bounty programs with sealed reports and verifier verdicts on NEAR"
+version = "2.0.0"
+edition = "2024"
+rust-version = "1.95"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk = "5.30"
+
+[dev-dependencies]
+near-sdk = { version = "5.30", features = ["unit-testing"] }
+near-workspaces = { version = "0.24", default-features = false, features = ["rustls"] }
+tokio = { version = "1", features = ["full"] }
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true
+
+[lints.rust.unexpected_cfgs]
+level = "warn"
+check-cfg = ['cfg(near)']

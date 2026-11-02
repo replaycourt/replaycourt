@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ReplayCourt demo video - player</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--
+  Frame player for the demo video. render.mjs loads this page in headless Chrome, calls
+  setup(storyboard, timeline, root) once and then seek(t) for every frame before taking a
+  screenshot. Everything on screen is a pure function of t (no CSS transitions or timers).
+  Preview in a browser: open with ?preview and use the slider (needs the timeline: run build.sh once).
+-->
+<div id="stage">
+  <div id="bg"></div>
+  <header id="top">
+    <div class="brand"><span class="logo" id="logo"></span><span class="name">ReplayCourt</span><span class="chip">NEAR testnet</span></div>
+    <div class="chapter"><span id="chapter-num"></span><span id="chapter-name"></span></div>
+  </header>
+  <main id="scenes"></main>
+  <div id="datanote"></div>
+  <div id="caption"><span id="caption-text"></span></div>
+</div>
+<script src="player.js"></script>
+</body>
+</html>

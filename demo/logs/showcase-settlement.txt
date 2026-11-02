@@ -1,0 +1,84 @@
+=== resolve #5 valid/high
+resolve #5 as valid (high): tx 56yekiAwAX55NyVNPKfvudg7NA46ZHmhSqX1pK4BbbRS
+  https://testnet.nearblocks.io/txns/56yekiAwAX55NyVNPKfvudg7NA46ZHmhSqX1pK4BbbRS
+
+=== finalize #1 (signed by hunter3)
+finalize #1 (by hunter3.replaycourt.testnet): tx HkGucff6D3Ms134KsHCrfXd3HBUaKZQyN9obvNkLBBWR
+  https://testnet.nearblocks.io/txns/HkGucff6D3Ms134KsHCrfXd3HBUaKZQyN9obvNkLBBWR
+
+=== vault-deposit
+vault_deposit 0.5 NEAR (by agent.replaycourt.testnet): tx 8XjFmKbaszoXdDMExdRYy5NaTCazc7Xzr9iagqtEagTs
+  https://testnet.nearblocks.io/txns/8XjFmKbaszoXdDMExdRYy5NaTCazc7Xzr9iagqtEagTs
+vault of agent.replaycourt.testnet: balance 0.4959 NEAR
+  policy: not set (submit_report_from_vault refuses until vault-set-policy)
+  spent in the current window: 0 NEAR (window started 1970-01-01T00:00:00.000Z)
+
+=== vault-set-policy
+vault_set_policy (by agent.replaycourt.testnet): tx FRwKEG1EyPFX97xrAw8WUT24kGfeXvjn3MNsgFTYeocw
+  https://testnet.nearblocks.io/txns/FRwKEG1EyPFX97xrAw8WUT24kGfeXvjn3MNsgFTYeocw
+vault of agent.replaycourt.testnet: balance 0.4959 NEAR
+  policy: max bond per report 0.1 NEAR, max spend per 24 h 0.3 NEAR, programs [0]
+  spent in the current window: 0 NEAR (window started 1970-01-01T00:00:00.000Z)
+
+=== setup-hunter-key
+function-call key ed25519:37ugn3ZBbkH7oU6wp1JKYDi6Y7dS9fBjGWDvZNsnAmPD added to agent.replaycourt.testnet: receiver contract.replaycourt.testnet, methods [submit_report_from_vault, finalize, withdraw_pending], allowance 0.5 NEAR
+it cannot attach deposits, so it can neither change the vault policy nor withdraw from the vault
+private key stored in <repo>/.secrets/showcase-v2/hunter-fc-key.agent.replaycourt.testnet.json (mode 600)
+add_key: tx 6eyXmmy3ho7nJiQFaBv3YnJME4Fjz7uP4uvMPNaA3E5W
+  https://testnet.nearblocks.io/txns/6eyXmmy3ho7nJiQFaBv3YnJME4Fjz7uP4uvMPNaA3E5W
+
+=== balances before the agent's submission
+agent.replaycourt.testnet 499509023801429699999999
+owner.replaycourt.testnet 999511167282561700000000
+hunter1.replaycourt.testnet 725370406218256800000000
+hunter2.replaycourt.testnet 738345185238891600000000
+hunter3.replaycourt.testnet 803611945414336800000000
+thief.replaycourt.testnet 500000000000000000000000
+verifier.replaycourt.testnet 318616675059874200000000
+contract.replaycourt.testnet 8707581847069052200000001
+vault {"account_id": "agent.replaycourt.testnet", "balance": "495960000000000000000001", "max_bond_per_report": "100000000000000000000000", "max_spend_per_day": "300000000000000000000000", "allowed_programs": [0], "spent_in_window": "0", "window_start": "0", "policy_set": true}
+program0 pool 3037590000000000000000000 reserved 1640000000000000000000000 stats {"submissions": 6, "paid": 0, "invalid": 1, "duplicate": 1, "needs_human": 0, "disputes": 0, "overruled": 0, "total_paid": "0"}
+
+=== balances after the agent's submission
+agent.replaycourt.testnet 499017037084301899999999
+owner.replaycourt.testnet 998883538781373200000000
+vault {"account_id": "agent.replaycourt.testnet", "balance": "361350000000000000000001", "max_bond_per_report": "100000000000000000000000", "max_spend_per_day": "300000000000000000000000", "allowed_programs": [0], "spent_in_window": "134610000000000000000000", "window_start": "1793652646662916760", "policy_set": true}
+program0 pool 2459290000000000000000000 reserved 410000000000000000000000 stats {"submissions": 7, "paid": 2, "invalid": 3, "duplicate": 1, "needs_human": 1, "disputes": 0, "overruled": 0, "total_paid": "650000000000000000000000"}
+
+=== dispute #6
+dispute bond 0.1 NEAR, attached 0.1 NEAR; resolve before resolve_until, or the hunter is paid and gets the dispute bond
+dispute #6: tx H8x5uNL1wKdLKCS3ScfPZXMr9VUL2SLb5JfEEv4dYmVx
+  https://testnet.nearblocks.io/txns/H8x5uNL1wKdLKCS3ScfPZXMr9VUL2SLb5JfEEv4dYmVx
+dispute exit 0
+
+=== balances after the dispute
+agent.replaycourt.testnet 499017037084301899999999
+owner.replaycourt.testnet 898616878436612700000000
+vault {"account_id": "agent.replaycourt.testnet", "balance": "361350000000000000000001", "max_bond_per_report": "100000000000000000000000", "max_spend_per_day": "300000000000000000000000", "allowed_programs": [0], "spent_in_window": "134610000000000000000000", "window_start": "1793652646662916760", "policy_set": true}
+program0 pool 2459290000000000000000000 reserved 410000000000000000000000 stats {"submissions": 7, "paid": 2, "invalid": 3, "duplicate": 1, "needs_human": 1, "disputes": 1, "overruled": 0, "total_paid": "650000000000000000000000"}
+
+=== finalize #6 before resolve_until
+error: Smart contract panicked: resolve deadline has not passed yet
+early finalize exit 1
+
+=== resolve_until of #6
+resolve_until 1793652851 now 1793652680
+
+=== finalize #6 after resolve_until (signed by hunter3)
+finalize #6 (by hunter3.replaycourt.testnet): tx 6d82aM5XoVGh5gnNkiVxEKcHNTDTYTUBcDNzW5pC8uzA
+  https://testnet.nearblocks.io/txns/6d82aM5XoVGh5gnNkiVxEKcHNTDTYTUBcDNzW5pC8uzA
+finalize exit 0
+
+=== balances after the auto-payout
+agent.replaycourt.testnet 998324850600221399999999
+owner.replaycourt.testnet 898616878436612700000000
+vault {"account_id": "agent.replaycourt.testnet", "balance": "411350000000000000000001", "max_bond_per_report": "100000000000000000000000", "max_spend_per_day": "300000000000000000000000", "allowed_programs": [0], "spent_in_window": "134610000000000000000000", "window_start": "1793652646662916760", "policy_set": true}
+program0 pool 2380070000000000000000000 reserved 0 stats {"submissions": 11, "paid": 3, "invalid": 7, "duplicate": 1, "needs_human": 1, "disputes": 1, "overruled": 0, "total_paid": "1050000000000000000000000"}
+
+=== withdraw-pending #11
+withdraw_pending #11 (by hunter1.replaycourt.testnet): tx 8DJu4uBE8mZ8UdhQE9wcgX3mNRDS3Jq7UkpYBNVQsTBr
+  https://testnet.nearblocks.io/txns/8DJu4uBE8mZ8UdhQE9wcgX3mNRDS3Jq7UkpYBNVQsTBr
+
+=== withdraw-pool program 1
+withdraw_pool program 1: 0.9952 NEAR (by owner.replaycourt.testnet): tx DFqmHmcazgSXrJuD37HZb9kTkvaygQhn8xfVgbZzNRbN
+  https://testnet.nearblocks.io/txns/DFqmHmcazgSXrJuD37HZb9kTkvaygQhn8xfVgbZzNRbN

@@ -1,0 +1,28 @@
+=== attack a: submit --as hunter2
+program 0 "Ethereum DeFi replay bounty": required bond 0.1 NEAR, attaching 0.1676 NEAR (bond 0.1 + storage estimate 0.0676); sealed 4112 bytes; commitment 199e71e66fe10d8679246ddd28e74cc4821960819cc2f55377b708e253185925
+submission id: 7
+hunter: hunter2.replaycourt.testnet
+commitment: 199e71e66fe10d8679246ddd28e74cc4821960819cc2f55377b708e253185925
+submit_report: tx 523vugAVB6FYFD1p6kSp9AeNSwzNTvNY7YJExTmGNuPg
+  https://testnet.nearblocks.io/txns/523vugAVB6FYFD1p6kSp9AeNSwzNTvNY7YJExTmGNuPg
+
+=== attack b: submit --as hunter3
+program 0 "Ethereum DeFi replay bounty": required bond 0.1 NEAR, attaching 0.1946 NEAR (bond 0.1 + storage estimate 0.0946); sealed 6820 bytes; commitment e217032bb93f9e293c722efb9f907e03870e90ab31b1b97cfa24c1b7b22c22e8
+submission id: 8
+hunter: hunter3.replaycourt.testnet
+commitment: e217032bb93f9e293c722efb9f907e03870e90ab31b1b97cfa24c1b7b22c22e8
+submit_report: tx CWWY8XTMa2DHVFKdWKtSZskjD8yKxzP6d2Q5qDJmyi2i
+  https://testnet.nearblocks.io/txns/CWWY8XTMa2DHVFKdWKtSZskjD8yKxzP6d2Q5qDJmyi2i
+
+=== attack c: c-tampered-seal.ts --as hunter2
+attack c: tampered sealed report on contract.replaycourt.testnet, program 0 "Ethereum DeFi replay bounty", hunter hunter2.replaycourt.testnet
+  commitment       = commitment v2 of (hunter2.replaycourt.testnet, demo/attacks/c-committed.md) = d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e
+  sealed blob      = seal(engine/reports/01_templedao_stax.md) to the verifier key, 7144 bytes
+  commitment of the sealed plaintext = f4e9a2e3734c58efc36d7fdf00f7894882b6be1a7e12cd4de01fdcafd881df08 (differs from the committed one)
+  deposit 0.1977 NEAR (required bond 0.1 + storage estimate)
+submission id: 9
+submit_report: tx 22T8dYzewhG2k7mCduswq1d5LteMDELy6SRYFtMG4A6L
+  https://testnet.nearblocks.io/txns/22T8dYzewhG2k7mCduswq1d5LteMDELy6SRYFtMG4A6L
+local check with the verifier key: commitment mismatch: commitment v2 for hunter2.replaycourt.testnet=f4e9a2e3734c58efc36d7fdf00f7894882b6be1a7e12cd4de01fdcafd881df08, on-chain=d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e
+next: run the worker (node src/cli.ts worker --once in agent/); it must post `invalid` with the reason
+      "sealed report does not match commitment" and the contract slashes the bond.

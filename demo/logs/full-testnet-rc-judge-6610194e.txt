@@ -1,0 +1,234 @@
+
+== 1. accounts and contract for rc-judge-6610194e.testnet
+creating rc-judge-6610194e.testnet through the testnet faucet …
+master rc-judge-6610194e.testnet created
+  balance 10 NEAR
+created contract.rc-judge-6610194e.testnet (3.2 NEAR): tx AVZAEmU5xmS6nb2weFkrCSYFzSPXSLLFNHw3nvwPyS7e  https://testnet.nearblocks.io/txns/AVZAEmU5xmS6nb2weFkrCSYFzSPXSLLFNHw3nvwPyS7e
+created owner.rc-judge-6610194e.testnet (2.8 NEAR): tx BeaULSvU36SwoiLmxVjgfCf9xW9YbM3eqVU45dVnZFUM  https://testnet.nearblocks.io/txns/BeaULSvU36SwoiLmxVjgfCf9xW9YbM3eqVU45dVnZFUM
+created verifier.rc-judge-6610194e.testnet (0.3 NEAR): tx 4oviVJKn4smPAqhmW5NFn3MxFusMp1QPkx5tTiUXr48d  https://testnet.nearblocks.io/txns/4oviVJKn4smPAqhmW5NFn3MxFusMp1QPkx5tTiUXr48d
+created verifier2.rc-judge-6610194e.testnet (0.15 NEAR): tx 5zBog1HTbP8thiJvM5Diq1HRriBe55rypcsJiAo43JtQ  https://testnet.nearblocks.io/txns/5zBog1HTbP8thiJvM5Diq1HRriBe55rypcsJiAo43JtQ
+created hunter1.rc-judge-6610194e.testnet (1 NEAR): tx 6G4KgvffiXjdFA9ag9797AcfYahcpFNx8xaZX7oot7T  https://testnet.nearblocks.io/txns/6G4KgvffiXjdFA9ag9797AcfYahcpFNx8xaZX7oot7T
+created hunter2.rc-judge-6610194e.testnet (1 NEAR): tx JBfBQutQojFNuaUTwu86t3mVCSmjLhc8tZ1yPa5wzAXa  https://testnet.nearblocks.io/txns/JBfBQutQojFNuaUTwu86t3mVCSmjLhc8tZ1yPa5wzAXa
+wasm: code of contract.replaycourt.testnet (read over RPC; no local build found), 295116 bytes, sha256 456631c55d04492c6f4143a19f82ebd66942af4333d05997db910d7a1608bd32
+deployed and initialized contract.rc-judge-6610194e.testnet: tx 7AewAanEVoDqMMwW9dWQVZCbcuy3UK8DCDamkJYVpPBo  https://testnet.nearblocks.io/txns/7AewAanEVoDqMMwW9dWQVZCbcuy3UK8DCDamkJYVpPBo
+contract version 2.0.0
+wrote .secrets/rc-judge-6610194e.json (account ids only; keys in .secrets/rc-judge-6610194e/credentials/)
+contract: contract.rc-judge-6610194e.testnet  https://testnet.nearblocks.io/address/contract.rc-judge-6610194e.testnet
+
+== 2. verifier keys and bounty program
+wrote <repo>/.secrets/rc-judge-6610194e/verifier-x25519.json (mode 600). Public key (use as verifier_pubkey):
+nQstv6NE0DZ3KxMzqLmFJSU+pmdzccWY2qmyjjBn5zk=
+program id: 0
+owner: owner.rc-judge-6610194e.testnet, verifier: verifier.rc-judge-6610194e.testnet, verifier_pubkey: nQstv6NE0DZ3KxMzqLmFJSU+pmdzccWY2qmyjjBn5zk=
+bond 0.05 NEAR, dispute bond 0.05 NEAR, challenge 60 s, pending timeout 86400 s, resolve timeout 86400 s
+create_program: tx A3dNLNimrSAdyBdmwyAfJygo5k7XRK8jpQ5eo5wafEWV
+  https://testnet.nearblocks.io/txns/A3dNLNimrSAdyBdmwyAfJygo5k7XRK8jpQ5eo5wafEWV
+program 0
+function-call key ed25519:3YqYxpWL8cLN9Z3rtoBsRq6EVVjoPceFPQvcxgrWkFKF added to verifier.rc-judge-6610194e.testnet: receiver contract.rc-judge-6610194e.testnet, methods [post_verdict], allowance 0.5 NEAR
+private key stored in <repo>/.secrets/rc-judge-6610194e/verifier-fc-key.json (mode 600)
+add_key: tx GMjBaKqs1iohZY4BkdU9HJs5yRgxmiUasQjoY2eT7P58
+  https://testnet.nearblocks.io/txns/GMjBaKqs1iohZY4BkdU9HJs5yRgxmiUasQjoY2eT7P58
+
+== 3. sealed submissions (two hunters) and attack c (tampered seal)
+program 0 "Judge run: Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1482 NEAR (bond 0.05 + storage estimate 0.0982); sealed 7144 bytes; commitment 4dd81fabaecd33b6c742dd46fef0cacbf03e9c983981726db41cc55128e54bf5
+submission id: 0
+hunter: hunter1.rc-judge-6610194e.testnet
+commitment: 4dd81fabaecd33b6c742dd46fef0cacbf03e9c983981726db41cc55128e54bf5
+submit_report: tx CVQcPTQkVpjRNEkRFbVUTL2zG7Xd8MU1ji4NVBCtxKtJ
+  https://testnet.nearblocks.io/txns/CVQcPTQkVpjRNEkRFbVUTL2zG7Xd8MU1ji4NVBCtxKtJ
+engine/reports/01_templedao_stax.md -> submission #0
+program 0 "Judge run: Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1271 NEAR (bond 0.05 + storage estimate 0.0771); sealed 5040 bytes; commitment 9e8952b426bf6cd338529714626ee08a7b19b1dbb7c191aeb4cd2d78c58a3802
+submission id: 1
+hunter: hunter2.rc-judge-6610194e.testnet
+commitment: 9e8952b426bf6cd338529714626ee08a7b19b1dbb7c191aeb4cd2d78c58a3802
+submit_report: tx 4CQzYWFfqUkELa1E7WGoGa7tnnKo3X6dx1GakNWSNCV8
+  https://testnet.nearblocks.io/txns/4CQzYWFfqUkELa1E7WGoGa7tnnKo3X6dx1GakNWSNCV8
+engine/reports/03_stax_duplicate.md -> submission #1
+program 0 "Judge run: Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1121 NEAR (bond 0.05 + storage estimate 0.0621); sealed 3536 bytes; commitment 4b0b571198bf065cf34694082b0feefc6f6e9f3ae425eba500a89067cc921a04
+submission id: 2
+hunter: hunter2.rc-judge-6610194e.testnet
+commitment: 4b0b571198bf065cf34694082b0feefc6f6e9f3ae425eba500a89067cc921a04
+submit_report: tx 4UxF4wVJspEVGq8n7CwS9NKPTe3po4Un7eYyRJFzkU4L
+  https://testnet.nearblocks.io/txns/4UxF4wVJspEVGq8n7CwS9NKPTe3po4Un7eYyRJFzkU4L
+engine/reports/04_seneca_bogus.md -> submission #2
+program 0 "Judge run: Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1257 NEAR (bond 0.05 + storage estimate 0.0757); sealed 4916 bytes; commitment e387e26b1af5a5ea0c2befba27b78f07bf4556db2807c15f14dc897c257b1427
+submission id: 3
+hunter: hunter1.rc-judge-6610194e.testnet
+commitment: e387e26b1af5a5ea0c2befba27b78f07bf4556db2807c15f14dc897c257b1427
+submit_report: tx Ca9yi3rkdFSfKcACadbvdM5zu3vRjNk5KFpXTfcNKtUo
+  https://testnet.nearblocks.io/txns/Ca9yi3rkdFSfKcACadbvdM5zu3vRjNk5KFpXTfcNKtUo
+engine/reports/06_local_reentrancy.md -> submission #3
+attack c: tampered sealed report on contract.rc-judge-6610194e.testnet, program 0 "Judge run: Ethereum DeFi replay bounty", hunter hunter2.rc-judge-6610194e.testnet
+  commitment       = commitment v2 of (hunter2.rc-judge-6610194e.testnet, demo/attacks/c-committed.md) = c622b9135fb25e6b0c59ecccda68f14164ea409b6cc7d99f5d191c11afc3edfb
+  sealed blob      = seal(engine/reports/01_templedao_stax.md) to the verifier key, 7144 bytes
+  commitment of the sealed plaintext = 6bdcbc5159a7b67b75e334d3618667f6ac736265c84fb9d682344321ca367d02 (differs from the committed one)
+  deposit 0.1478 NEAR (required bond 0.05 + storage estimate)
+submission id: 4
+submit_report: tx DH5hGyTDchhGvDPon2PU7WdN86HefCfLjDbVzvB8o4rH
+  https://testnet.nearblocks.io/txns/DH5hGyTDchhGvDPon2PU7WdN86HefCfLjDbVzvB8o4rH
+local check with the verifier key: commitment mismatch: commitment v2 for hunter2.rc-judge-6610194e.testnet=6bdcbc5159a7b67b75e334d3618667f6ac736265c84fb9d682344321ca367d02, on-chain=c622b9135fb25e6b0c59ecccda68f14164ea409b6cc7d99f5d191c11afc3edfb
+next: run the worker (node src/cli.ts worker --once in agent/); it must post `invalid` with the reason
+      "sealed report does not match commitment" and the contract slashes the bond.
+attack c -> submission #4
+
+== 4. verifier worker (engine replay; post_verdict signed with the function-call key)
+worker: verifier verifier.rc-judge-6610194e.testnet, contract contract.rc-judge-6610194e.testnet (testnet), signing with function-call key ed25519:3YqYxpWL8cLN9Z3rtoBsRq6EVVjoPceFPQvcxgrWkFKF (post_verdict only)
+worker: disclosure immediately (evidence goes straight to runs/); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:58:26Z] #0: commitment ok, running the engine (program 0) …
+posted #0 valid: tx 5P6HRE33uHz2JZkgxYhJBgze5iBuyeYAheh3Yobg58w2  https://testnet.nearblocks.io/txns/5P6HRE33uHz2JZkgxYhJBgze5iBuyeYAheh3Yobg58w2
+[worker 20:58:49Z] #0: posted valid (critical) - tx 5P6HRE33uHz2JZkgxYhJBgze5iBuyeYAheh3Yobg58w2
+[worker 20:58:49Z] #1: commitment ok, running the engine (program 0) …
+posted #1 duplicate: tx D5nVZnsXuuPUyfzzATpUdyDDHL2Me91SgKh6ogdM8Phf  https://testnet.nearblocks.io/txns/D5nVZnsXuuPUyfzzATpUdyDDHL2Me91SgKh6ogdM8Phf
+[worker 20:59:03Z] #1: posted duplicate of #0 - tx D5nVZnsXuuPUyfzzATpUdyDDHL2Me91SgKh6ogdM8Phf
+[worker 20:59:03Z] #2: commitment ok, running the engine (program 0) …
+posted #2 invalid: tx BVSM2B9EBBXLqd76z5jqVaCK53aigJSdBp9tUU2RBXZd  https://testnet.nearblocks.io/txns/BVSM2B9EBBXLqd76z5jqVaCK53aigJSdBp9tUU2RBXZd
+[worker 20:59:17Z] #2: posted invalid - tx BVSM2B9EBBXLqd76z5jqVaCK53aigJSdBp9tUU2RBXZd
+[worker 20:59:17Z] #3: commitment ok, running the engine (program 0) …
+posted #3 needs_human: tx 6mjy3N8bz5q44e3dF1xV1jpVtjTm1Ghj6wtjgge2YHBY  https://testnet.nearblocks.io/txns/6mjy3N8bz5q44e3dF1xV1jpVtjTm1Ghj6wtjgge2YHBY
+[worker 20:59:25Z] #3: posted needs_human - tx 6mjy3N8bz5q44e3dF1xV1jpVtjTm1Ghj6wtjgge2YHBY
+[worker 20:59:26Z] #4: sealed report does not match commitment (commitment mismatch: commitment v2 for hunter2.rc-judge-6610194e.testnet=6bdcbc5159a7b67b75e334d3618667f6ac736265c84fb9d682344321ca367d02, on-chain=c622b9135fb25e6b0c59ecccda68f14164ea409b6cc7d99f5d191c11afc3edfb)
+posted #4 invalid: tx 8MbATvz1AtboeKVWcqdPuiB7uSBGsAFg9iGFuViAVXdn  https://testnet.nearblocks.io/txns/8MbATvz1AtboeKVWcqdPuiB7uSBGsAFg9iGFuViAVXdn
+[worker 20:59:30Z] #4: posted invalid - tx 8MbATvz1AtboeKVWcqdPuiB7uSBGsAFg9iGFuViAVXdn
+worker: round done - 5 pending, 5 posted, 0 waiting for retry
+
+== 5. settlement: finalize after the challenge window, owner resolves 06
+challenge window still open (1/24), next try in 10 s
+finalized #0
+resolve #3 as valid (high): tx Hkm4o1SAmzopycrLHwXHjTvBotuYjwWw4RLr4wrQLEZp
+  https://testnet.nearblocks.io/txns/Hkm4o1SAmzopycrLHwXHjTvBotuYjwWw4RLr4wrQLEZp
+
+== 6. attack d: stolen function-call key
+program id: 1
+owner: owner.rc-judge-6610194e.testnet, verifier: verifier2.rc-judge-6610194e.testnet, verifier_pubkey: VyQSFBp++B+grfFwGuvkf3ZvyljxRDB2vWIVQCNU63M=
+bond 0.05 NEAR, dispute bond 0.05 NEAR, challenge 60 s, pending timeout 60 s, resolve timeout 86400 s
+create_program: tx 4T8UKt4bEV37WvxLgwQZ3b9XDRGDmnZXGocZTSktCzBt
+  https://testnet.nearblocks.io/txns/4T8UKt4bEV37WvxLgwQZ3b9XDRGDmnZXGocZTSktCzBt
+program 1 "Second program, judged by verifier2": required bond 0.05 NEAR, attaching 0.0858 NEAR (bond 0.05 + storage estimate 0.0358); sealed 928 bytes; commitment 5cdc97fb2b4e8b00c54ce5f66c41096007c013d0a512ad9ded2d8a97d700bea6
+submission id: 5
+hunter: hunter1.rc-judge-6610194e.testnet
+commitment: 5cdc97fb2b4e8b00c54ce5f66c41096007c013d0a512ad9ded2d8a97d700bea6
+submit_report: tx H39VQFA3mpci5Teu7sdqsUTc5PkEkaW1zk42kWvFtW9c
+  https://testnet.nearblocks.io/txns/H39VQFA3mpci5Teu7sdqsUTc5PkEkaW1zk42kWvFtW9c
+demo/attacks/d-target.md -> submission #5
+attack d: stolen verifier key on contract.rc-judge-6610194e.testnet
+  signer verifier.rc-judge-6610194e.testnet, key ed25519:3YqYxpWL8cLN9Z3rtoBsRq6EVVjoPceFPQvcxgrWkFKF
+  on-chain permission of this key: {"FunctionCall":{"allowance":"497928019152310200000000","method_names":["post_verdict"],"receiver_id":"contract.rc-judge-6610194e.testnet"}}
+  per-program pending view (list_pending(program_id)):
+    program 0: verifier verifier.rc-judge-6610194e.testnet (the stolen key's account), pending []
+    program 1: verifier verifier2.rc-judge-6610194e.testnet (another verifier), pending [5]
+  judged submission: 0, submission of a program with another verifier: 5, other contract: contract.replaycourt.testnet
+
+[1] transfer 0.01 NEAR to hunter1.rc-judge-6610194e.testnet
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[2] add a new full-access key to the verifier account
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[3] add a new function-call key without allowance limit
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[4] delete the verifier account (beneficiary hunter1.rc-judge-6610194e.testnet)
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[5] call withdraw_pool(0) on the contract
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method withdraw_pool
+[6] call finalize (another method of the same contract)
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method finalize
+[7] post_verdict with 1 yoctoNEAR attached
+    -> refused by the RPC (never included): AccessKeyDepositWithFunctionCallActionError: Deposit is not allowed with function call
+[8] post_verdict on another contract (contract.replaycourt.testnet)
+    -> refused by the RPC (never included): AccessKeyReceiverMismatchActionError: Access key receiver contract.rc-judge-6610194e.testnet does not match transaction receiver contract.replaycourt.testnet
+[9] post_verdict on submission #5 of a program with another verifier
+    -> failed on chain: FunctionCallError: only the program verifier can post verdicts
+       tx 6cm51T6odkrSNzYr82f5ezcS8BmmhMo3oavUrgZ8fL6X https://testnet.nearblocks.io/txns/6cm51T6odkrSNzYr82f5ezcS8BmmhMo3oavUrgZ8fL6X
+[10] post a second verdict on the already judged submission #0
+    -> failed on chain: FunctionCallError: submission is not pending
+       tx B2o7EoJh5iRXmVaAaQrPow1eNEgw7zFtiFrzW14Xqj99 https://testnet.nearblocks.io/txns/B2o7EoJh5iRXmVaAaQrPow1eNEgw7zFtiFrzW14Xqj99
+
+allowance of the worker key: 0.497928 NEAR left of 0.5 NEAR granted
+setup (operator, full-access key): added function-call key ed25519:6EyivtJm61GPUVioVvjx5ZZ1PfDrgFnuepjWiboqhDfH with allowance 0.001 NEAR - tx 9KFvUtYnPeA7oLDHeAF9HFizezHMAEQ9PmYaa1R6Am3B
+[11] post_verdict with a key whose allowance (0.001 NEAR) is below the cost of the call
+    -> refused by the RPC (never included): AccessKeyNotEnoughAllowanceActionError: Not enough allowance for access key ed25519:6EyivtJm61GPUVioVvjx5ZZ1PfDrgFnuepjWiboqhDfH on account verifier.rc-judge-6610194e.testnet (allowance: 1000000000000000000000, cost: 100920854672762000000000)
+cleanup (operator, full-access key): deleted that key - tx GKEGG3yaJFWNwTfTR9xNRm5ffyYCC6EbPUP1YH2gqx6f
+
+| # | attempt with the stolen function-call key | result | error | tx |
+|---|---|---|---|---|
+| 1 | transfer 0.01 NEAR to hunter1.rc-judge-6610194e.testnet | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 2 | add a new full-access key to the verifier account | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 3 | add a new function-call key without allowance limit | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 4 | delete the verifier account (beneficiary hunter1.rc-judge-6610194e.testnet) | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 5 | call withdraw_pool(0) on the contract | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method withdraw_pool | - |
+| 6 | call finalize (another method of the same contract) | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method finalize | - |
+| 7 | post_verdict with 1 yoctoNEAR attached | refused by the RPC (never included) | `AccessKeyDepositWithFunctionCallActionError`: Deposit is not allowed with function call | - |
+| 8 | post_verdict on another contract (contract.replaycourt.testnet) | refused by the RPC (never included) | `AccessKeyReceiverMismatchActionError`: Access key receiver contract.rc-judge-6610194e.testnet does not match transaction receiver contract.replaycourt.testnet | - |
+| 9 | post_verdict on submission #5 of a program with another verifier | failed on chain | `FunctionCallError`: only the program verifier can post verdicts | [`6cm51T6o…`](https://testnet.nearblocks.io/txns/6cm51T6odkrSNzYr82f5ezcS8BmmhMo3oavUrgZ8fL6X) |
+| 10 | post a second verdict on the already judged submission #0 | failed on chain | `FunctionCallError`: submission is not pending | [`B2o7EoJh…`](https://testnet.nearblocks.io/txns/B2o7EoJh5iRXmVaAaQrPow1eNEgw7zFtiFrzW14Xqj99) |
+| 11 | post_verdict with a key whose allowance (0.001 NEAR) is below the cost of the call | refused by the RPC (never included) | `AccessKeyNotEnoughAllowanceActionError`: Not enough allowance for access key ed25519:6EyivtJm61GPUVioVvjx5ZZ1PfDrgFnuepjWiboqhDfH on account verifier.rc-judge-6610194e.testnet (allowance: 1000000000000000000000, cost: 100920854672762000000000) | - |
+
+ALL 11 ATTEMPTS FAILED, as they must.
+
+== 7. hunter withdraws the target report after its 60 s pending timeout; owner withdraws program 2's pool
+pending timeout not over yet (1/12), next try in 10 s
+pending timeout not over yet (2/12), next try in 10 s
+pending timeout not over yet (3/12), next try in 10 s
+withdrew #5
+program 1 pool withdrawn
+
+== 8. verify-onchain: every posted verdict against its evidence file in runs/
+verify-onchain: contract contract.rc-judge-6610194e.testnet (testnet), version 2.0.0: evidence must be a replaycourt.evidence/v1 envelope bound to its submission
+evidence files: below runs/ in the repository; all programs (none pinned for this contract)
+
+program 0 "Judge run: Ethereum DeFi replay bounty": 5 submission(s)
+  id  status     outcome                       severity      payout (NEAR)  evidence
+  --  ---------  ----------------------------  ------------  -------------  --------
+  #0  paid       valid                         critical      0.2            ok
+  #1  duplicate  duplicate of #0               -             -              ok
+  #2  invalid    invalid                       -             -              ok
+  #3  paid       needs_human -> valid (owner)  high (owner)  0.1            ok
+  #4  invalid    invalid                       -             -              ok
+
+program 1 "Second program, judged by verifier2": 1 submission(s)
+  id  status     outcome  severity  payout (NEAR)  evidence
+  --  ---------  -------  --------  -------------  --------------
+  #5  withdrawn  -        -         -              - (no verdict)
+
+5 posted verdict(s) checked: 5 ok, 0 mismatch, 0 unbound, 0 refused, 0 missing, 0 not disclosed yet; 1 submission(s) without a verdict
+result: every posted verdict matches its evidence file
+
+== status
+contract contract.rc-judge-6610194e.testnet (testnet)  https://testnet.nearblocks.io/address/contract.rc-judge-6610194e.testnet
+
+program 0 "Judge run: Ethereum DeFi replay bounty"  owner owner.rc-judge-6610194e.testnet  verifier verifier.rc-judge-6610194e.testnet  active
+  pool 1.2665 NEAR, reserved 0, bond 0.05, fee 0.01, dispute bond 0.05, challenge 60 s, resolve timeout 86400 s
+  stats {"submissions":5,"paid":2,"invalid":2,"duplicate":1,"needs_human":1,"disputes":0,"overruled":0,"total_paid":"300000000000000000000000"}
+  #0 [paid] verdict valid/critical  paid 0.2 NEAR + bond back  hunter hunter1.rc-judge-6610194e.testnet
+      "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens"
+      reason: PoC test `testExploit()` passes on the fork. Real outflow of value from third parties to the attacker, without taking over identities and without faked state.
+  #1 [duplicate] verdict duplicate of #0  bond 0.0531 NEAR refunded minus fee  hunter hunter2.rc-judge-6610194e.testnet
+      "StaxLPStaking lets anyone withdraw all LP tokens via a fake old-staking address"
+      reason: duplicate of submission 0. PoC test `testDrain()` passes on the fork. Real outflow of value from third parties to the attacker, without taking over identities and without faked state. Duplicate of `sub-0` (already triaged).
+  #2 [invalid] verdict invalid  bond 0.0559 NEAR slashed  hunter hunter2.rc-judge-6610194e.testnet
+      "Alleged arbitrary token theft via a direct transferFrom around the Seneca Chamber"
+      reason: The PoC test fails on the fork: ERC20: insufficient allowance
+  #3 [paid] verdict needs_human  paid 0.1 NEAR + bond back  hunter hunter1.rc-judge-6610194e.testnet
+      "Reentrancy in Vault.withdraw() (local test contract, no fork)"
+      reason: PoC test `testExploit()` passes (local mode, no fork). Local mode: the bundled code was checked, not a deployment. Whether it matches the protocol's code must be checked by a human. State changed via cheatcode (deal@0x00000000). Attacker's starting capital comes from a cheatco…
+      resolution: {"by":"owner","outcome":"valid","severity":"high","note":"judge run: owner accepts the local reentrancy PoC","at":"1793653196502317022"}
+  #4 [invalid] verdict invalid  bond 0.0559 NEAR slashed  hunter hunter2.rc-judge-6610194e.testnet
+      "Reentrancy in a lending pool (details follow)"
+      reason: sealed report does not match commitment
+
+hunter reputation:
+  hunter1.rc-judge-6610194e.testnet: submissions 3, valid 2, invalid 0, duplicate 0, needs_human 1, earned 0.3 NEAR
+  hunter2.rc-judge-6610194e.testnet: submissions 3, valid 0, invalid 2, duplicate 1, needs_human 0, earned 0 NEAR
+
+account balances:
+  contract_owner rc-judge-6610194e.testnet: 1.5073 NEAR
+  owner     owner.rc-judge-6610194e.testnet: 1.294 NEAR
+  verifier  verifier.rc-judge-6610194e.testnet: 0.3474 NEAR
+  verifier2 verifier2.rc-judge-6610194e.testnet: 0.15 NEAR
+  hunter1   hunter1.rc-judge-6610194e.testnet: 1.1015 NEAR
+  hunter2   hunter2.rc-judge-6610194e.testnet: 0.654 NEAR
+
+contract:  https://testnet.nearblocks.io/address/contract.rc-judge-6610194e.testnet
+explorer:  python3 -m http.server 8000 --bind 127.0.0.1   then  http://127.0.0.1:8000/web/?contract=contract.rc-judge-6610194e.testnet
+evidence:  runs/testnet/contract.rc-judge-6610194e.testnet/   keys and run log: .secrets/rc-judge-6610194e/
+FULL TESTNET RUN PASSED
+exit 0

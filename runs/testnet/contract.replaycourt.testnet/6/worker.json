@@ -1,0 +1,20 @@
+{
+  "submission_id": 6,
+  "program_id": 0,
+  "hunter_id": "agent.replaycourt.testnet",
+  "engine_exit": 0,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "valid",
+    "severity": "critical",
+    "duplicate_of": null,
+    "fingerprint": "09a718fee25f12f4edcd1e7ba1e64876383a367343b154da81673c23f4d7e2ea",
+    "evidence_sha256": "86e33d1b8e08dc22aad16e245d775c7a4d760e1a3a9d1f37a554a5d225a8db13",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/6/evidence.json",
+    "chain_id": 1,
+    "fork_block": "19325936",
+    "reason": "PoC test `testExploit()` passes on the fork. Real outflow of value from third parties to the attacker, without taking over identities and without faked state."
+  },
+  "tx_hash": "CZkNUyqELPKx3zjfcPmPc6M2hTQU3MJ3envRxgSfupEf",
+  "posted_at": "2026-11-02T20:51:09.240Z"
+}

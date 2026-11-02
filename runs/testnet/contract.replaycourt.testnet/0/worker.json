@@ -1,0 +1,20 @@
+{
+  "submission_id": 0,
+  "program_id": 0,
+  "hunter_id": "hunter2.replaycourt.testnet",
+  "engine_exit": 1,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "invalid",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "",
+    "evidence_sha256": "2c9326aac46b7145d341bdb4bb40c30361f458041d22445efb7b45f51440f1c6",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/0/evidence.json",
+    "chain_id": 1,
+    "fork_block": "15725066",
+    "reason": "The PoC test fails on the fork: typo in my first PoC"
+  },
+  "tx_hash": "E9BXf71doNUV43E364pFocMNEoMGjVHLWXbBZp5jssV",
+  "posted_at": "2026-11-02T20:47:22.592Z"
+}

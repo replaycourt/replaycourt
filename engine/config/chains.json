@@ -1,0 +1,97 @@
+{
+  "_note": "Chain configuration of the ReplayCourt engine. rpcs are probed in order for archive access at the fork block; the first one that answers is used. verified=false: not tried in the demos.",
+  "ethereum": {
+    "chain_id": 1,
+    "aliases": [
+      "mainnet",
+      "ethereum",
+      "eth"
+    ],
+    "native_symbol": "ETH",
+    "wrapped_native": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "native_usd_feed": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+    "stablecoins": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "USDC",
+      "0xdAC17F958D2ee523a2206206994597C13D831ec7": "USDT",
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F": "DAI"
+    },
+    "rpcs": [
+      "https://ethereum-rpc.publicnode.com",
+      "https://eth.drpc.org",
+      "https://gateway.tenderly.co/public/mainnet",
+      "https://eth-mainnet.public.blastapi.io"
+    ],
+    "evm_version": "shanghai",
+    "verified": true
+  },
+  "bsc": {
+    "chain_id": 56,
+    "aliases": [
+      "bsc",
+      "bnb",
+      "binance"
+    ],
+    "native_symbol": "BNB",
+    "wrapped_native": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "native_usd_feed": "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE",
+    "stablecoins": {
+      "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56": "BUSD",
+      "0x55d398326f99059fF775485246999027B3197955": "USDT",
+      "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": "USDC"
+    },
+    "rpcs": [
+      "https://bsc-rpc.publicnode.com",
+      "https://bsc-mainnet.public.blastapi.io"
+    ],
+    "evm_version": "shanghai",
+    "verified": true
+  },
+  "arbitrum": {
+    "chain_id": 42161,
+    "aliases": [
+      "arbitrum",
+      "arb"
+    ],
+    "native_symbol": "ETH",
+    "wrapped_native": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    "stablecoins": {
+      "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": "USDC"
+    },
+    "rpcs": [
+      "https://arbitrum-one-rpc.publicnode.com",
+      "https://arbitrum.drpc.org"
+    ],
+    "evm_version": "shanghai",
+    "verified": false
+  },
+  "base": {
+    "chain_id": 8453,
+    "aliases": [
+      "base"
+    ],
+    "native_symbol": "ETH",
+    "wrapped_native": "0x4200000000000000000000000000000000000006",
+    "stablecoins": {
+      "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": "USDC"
+    },
+    "rpcs": [
+      "https://base-rpc.publicnode.com",
+      "https://base.drpc.org"
+    ],
+    "evm_version": "cancun",
+    "verified": false
+  },
+  "local": {
+    "chain_id": 31337,
+    "aliases": [
+      "local",
+      "anvil"
+    ],
+    "native_symbol": "ETH",
+    "stablecoins": {},
+    "rpcs": [],
+    "evm_version": "shanghai",
+    "local": true,
+    "verified": true
+  }
+}

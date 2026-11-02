@@ -1,0 +1,6 @@
+{
+  "name": "replaycourt-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Demo and attack scripts; they import ../agent/src (run npm ci in agent/ first)"
+}

@@ -1,0 +1,56 @@
+=== setup-testnet.sh
+master replaycourt.testnet exists
+>>> create contract.replaycourt.testnet (3.5 NEAR)
+    tx 3A1NiCT83AqVCdYXn9mXCytjC5X2KAu4zCkCVuVpdCFH
+>>> create owner.replaycourt.testnet (5 NEAR)
+    tx HRZhNvZn5a6LNnTDg9NKeRfHKrMsgNDrKR86LXLhyyyy
+>>> create verifier.replaycourt.testnet (0.3 NEAR)
+    tx FocmB8Xejfan8dU6sAYDYpcLgr1WCRyvYK5vxd12tEuo
+>>> create hunter1.replaycourt.testnet (1 NEAR)
+    tx 9ZehAJ8k175Y97JzcA3NT4d3GiCbU2xyH2Qhs9LvTzun
+>>> create hunter2.replaycourt.testnet (1 NEAR)
+    tx 6jBDizQi3GWGkpHevu3fNpTKbnAwRhUP31VBvM2o3V6z
+>>> create hunter3.replaycourt.testnet (1 NEAR)
+    tx BiM31ZPHxaWc8VD3wD2Gp7SNFR6J61SDPsJ6kqYLe9NX
+>>> create verifier2.replaycourt.testnet (0.2 NEAR)
+    tx HrqpqE3z125MT75HVvWRKcR4QW4ztxZgX8VjrjmsLtC7
+>>> create agent.replaycourt.testnet (1 NEAR)
+    tx EJYrHwR9DrTsogdWYZuKF16gwje9jdFdJUWVr2jFymu6
+>>> create thief.replaycourt.testnet (0.5 NEAR)
+    tx 3hfQs68VdrPW974JEfBUU6wvdpYGGHpNpGEPxMD35abD
+>>> deploy replaycourt.wasm to contract.replaycourt.testnet + new(owner_id=replaycourt.testnet)
+    tx 8bfgJqjsqZFaTVt6sKYmCd4HoDWuJakp1YsDeTrosFie
+contract contract.replaycourt.testnet version "2.0.0"
+wrote <repo>/.secrets/showcase-v2.json
+setup done; report: <tmp>/run/setup/report.md
+
+=== on-chain code
+code_hash(base58) 5fuWijh2LZQTuCtACJmpxkvoSLmZs99QWXC3Vjz3F42V sha256 456631c55d04492c6f4143a19f82ebd66942af4333d05997db910d7a1608bd32 295116 local paths: []
+
+=== keygen (verifier)
+wrote <repo>/.secrets/showcase-v2/verifier-x25519.json (mode 600). Public key (use as verifier_pubkey):
+xWsu4jezcZJ26M6TEoY8JLaO/r2t9/ekTDMPuj9PIyc=
+
+=== create-program (program 0)
+program id: 0
+owner: owner.replaycourt.testnet, verifier: verifier.replaycourt.testnet, verifier_pubkey: xWsu4jezcZJ26M6TEoY8JLaO/r2t9/ekTDMPuj9PIyc=
+bond 0.05 NEAR, dispute bond 0.1 NEAR, challenge 120 s, pending timeout 86400 s, resolve timeout 180 s
+create_program: tx 24fSxW7Cf1WaaWND4sLcCSMKrHDcsnCLNzs62PaN5Z2w
+  https://testnet.nearblocks.io/txns/24fSxW7Cf1WaaWND4sLcCSMKrHDcsnCLNzs62PaN5Z2w
+
+=== setup-verifier-key
+function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D added to verifier.replaycourt.testnet: receiver contract.replaycourt.testnet, methods [post_verdict], allowance 1 NEAR
+private key stored in <repo>/.secrets/showcase-v2/verifier-fc-key.json (mode 600)
+add_key: tx J5EdUBaLU5B37dWu6FQgWzuYUTLErDLFnMD4eXAq7eP4
+  https://testnet.nearblocks.io/txns/J5EdUBaLU5B37dWu6FQgWzuYUTLErDLFnMD4eXAq7eP4
+
+=== keygen (verifier2)
+wrote <repo>/.secrets/showcase-v2-verifier2/verifier-x25519.json (mode 600). Public key (use as verifier_pubkey):
+hSscr0kVpkIXqKuQJzieMMfLkSzO3JqhTRF1IB8rSQA=
+
+=== create-program (program 1)
+program id: 1
+owner: owner.replaycourt.testnet, verifier: verifier2.replaycourt.testnet, verifier_pubkey: hSscr0kVpkIXqKuQJzieMMfLkSzO3JqhTRF1IB8rSQA=
+bond 0.05 NEAR, dispute bond 0.05 NEAR, challenge 60 s, pending timeout 60 s, resolve timeout 60 s
+create_program: tx AhY8oTfSxdpSjBPb1MzyVsfXRUHqxq5cP4M5b7qNHnzu
+  https://testnet.nearblocks.io/txns/AhY8oTfSxdpSjBPb1MzyVsfXRUHqxq5cP4M5b7qNHnzu

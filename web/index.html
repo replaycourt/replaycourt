@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://test.rpc.fastnear.com https://near-testnet.drpc.org; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>ReplayCourt explorer</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#/"><img src="favicon.svg" alt="" width="22" height="22">ReplayCourt</a>
+    <span class="net" id="net">testnet</span>
+    <span class="proto" id="proto" hidden></span>
+    <nav class="nav">
+      <a href="#/" data-nav="">Overview</a>
+      <a href="#/hunters" data-nav="hunters">Hunters</a>
+    </nav>
+    <span class="spacer"></span>
+    <span class="ro">read-only</span>
+    <button id="theme" type="button" class="theme-btn">Theme</button>
+  </div>
+</header>
+<div id="banner" class="banner" hidden></div>
+<main id="main" class="wrap">
+  <p class="loading">Loading…</p>
+  <noscript><p>This explorer needs JavaScript (ES modules) to read the NEAR contract.</p></noscript>
+</main>
+<footer id="footer" class="wrap foot"></footer>
+</body>
+</html>

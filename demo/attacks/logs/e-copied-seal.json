@@ -1,0 +1,31 @@
+{
+  "contract": "contract.replaycourt.testnet",
+  "program": 0,
+  "victim": "hunter1.replaycourt.testnet",
+  "thief": "thief.replaycourt.testnet",
+  "steps": [
+    {
+      "step": "thief resubmits the commitment + sealed blob of #1",
+      "signer": "thief.replaycourt.testnet",
+      "outcome": "failed on chain",
+      "message": "commitment already used",
+      "tx": "DcCTF3mx4gNRsK2BHD1zhT2Wusgj5DJzXN3etjuHd62b"
+    },
+    {
+      "step": "victim's submit_report with 0.01 NEAR attached",
+      "signer": "hunter1.replaycourt.testnet",
+      "outcome": "failed on chain",
+      "message": "attached deposit 10000000000000000000000 is too small: required bond 25000000000000000000000 plus storage",
+      "tx": "FAdX82XWpErbgPXsavJdSmuqQrAAoLdL117DmSmz2iFM"
+    },
+    {
+      "step": "thief submits the copied commitment + sealed blob",
+      "signer": "thief.replaycourt.testnet",
+      "outcome": "succeeded",
+      "message": "returned 10",
+      "tx": "DxcggVbpsgTkk4QjDZFmQ43BYf43LhWoFLcb5YkSDaBA",
+      "submission_id": 10
+    }
+  ],
+  "at": "2026-11-02T20:51:54.486Z"
+}

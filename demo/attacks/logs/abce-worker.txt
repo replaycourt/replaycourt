@@ -1,0 +1,17 @@
+=== worker round 3 (#7 to #10)
+worker: verifier verifier.replaycourt.testnet, contract contract.replaycourt.testnet (testnet), signing with function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D (post_verdict only)
+worker: disclosure after-settlement (evidence stays in runs-private/ until final; then: npm run cli -- publish); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:52:06Z] #7: commitment ok, running the engine (program 0) …
+posted #7 invalid: tx BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg  https://testnet.nearblocks.io/txns/BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg
+[worker 20:52:23Z] #7: posted invalid - tx BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg
+[worker 20:52:23Z] #8: commitment ok, running the engine (program 0) …
+posted #8 invalid: tx 8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E  https://testnet.nearblocks.io/txns/8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E
+[worker 20:52:39Z] #8: posted invalid - tx 8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E
+[worker 20:52:39Z] #9: sealed report does not match commitment (commitment mismatch: commitment v2 for hunter2.replaycourt.testnet=f4e9a2e3734c58efc36d7fdf00f7894882b6be1a7e12cd4de01fdcafd881df08, on-chain=d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e)
+posted #9 invalid: tx 5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae  https://testnet.nearblocks.io/txns/5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae
+[worker 20:52:43Z] #9: posted invalid - tx 5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae
+[worker 20:52:43Z] #10: sealed report does not match commitment (commitment mismatch: commitment v2 for thief.replaycourt.testnet=c999b6e2c43df814b3254aa2e0dd1f426e146811f1f2733e9685e84826753616, on-chain=73d3e55426cde158dae7232f8b0e092dc398fbb788aee1fe015d68ce13146be9)
+posted #10 invalid: tx BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV  https://testnet.nearblocks.io/txns/BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV
+[worker 20:52:47Z] #10: posted invalid - tx BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV
+worker: round done - 4 pending, 4 posted, 0 waiting for retry

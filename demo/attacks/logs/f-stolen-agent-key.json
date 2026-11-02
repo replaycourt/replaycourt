@@ -1,0 +1,144 @@
+{
+  "contract": "contract.replaycourt.testnet",
+  "signer": "agent.replaycourt.testnet",
+  "public_key": "ed25519:37ugn3ZBbkH7oU6wp1JKYDi6Y7dS9fBjGWDvZNsnAmPD",
+  "permission": {
+    "FunctionCall": {
+      "allowance": "499508013282872200000000",
+      "method_names": [
+        "submit_report_from_vault",
+        "finalize",
+        "withdraw_pending"
+      ],
+      "receiver_id": "contract.replaycourt.testnet"
+    }
+  },
+  "permission_after": {
+    "FunctionCall": {
+      "allowance": "498815826798791700000000",
+      "method_names": [
+        "submit_report_from_vault",
+        "finalize",
+        "withdraw_pending"
+      ],
+      "receiver_id": "contract.replaycourt.testnet"
+    }
+  },
+  "vault_before": {
+    "account_id": "agent.replaycourt.testnet",
+    "balance": "361350000000000000000001",
+    "max_bond_per_report": "100000000000000000000000",
+    "max_spend_per_day": "300000000000000000000000",
+    "allowed_programs": [
+      0
+    ],
+    "spent_in_window": "134610000000000000000000",
+    "window_start": "1793652646662916760",
+    "policy_set": true
+  },
+  "vault_after": {
+    "account_id": "agent.replaycourt.testnet",
+    "balance": "361350000000000000000001",
+    "max_bond_per_report": "100000000000000000000000",
+    "max_spend_per_day": "300000000000000000000000",
+    "allowed_programs": [
+      0
+    ],
+    "spent_in_window": "134610000000000000000000",
+    "window_start": "1793652646662916760",
+    "policy_set": true
+  },
+  "balance_before": "499017037084301899999999",
+  "balance_after": "498324850600221399999999",
+  "attempts": [
+    {
+      "n": 1,
+      "attempt": "vault_withdraw 0.1 NEAR with the 1 yoctoNEAR it requires",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyDepositWithFunctionCallActionError",
+      "message": "Deposit is not allowed with function call",
+      "tx": null
+    },
+    {
+      "n": 2,
+      "attempt": "vault_withdraw 0.1 NEAR without a deposit",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyMethodNameMismatchActionError",
+      "message": "Access key does not allow method vault_withdraw",
+      "tx": null
+    },
+    {
+      "n": 3,
+      "attempt": "vault_set_policy: 10 NEAR per report and per day, any program (1 yoctoNEAR)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyDepositWithFunctionCallActionError",
+      "message": "Deposit is not allowed with function call",
+      "tx": null
+    },
+    {
+      "n": 4,
+      "attempt": "vault_set_policy: the same without a deposit",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyMethodNameMismatchActionError",
+      "message": "Access key does not allow method vault_set_policy",
+      "tx": null
+    },
+    {
+      "n": 5,
+      "attempt": "transfer 0.1 NEAR to thief.replaycourt.testnet",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 6,
+      "attempt": "add a new full-access key to the agent account",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 7,
+      "attempt": "add a function-call key that may call vault_withdraw",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 8,
+      "attempt": "delete the agent account (beneficiary thief.replaycourt.testnet)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 9,
+      "attempt": "finalize on another contract (contract.rc-judge-8807c00f.testnet)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyReceiverMismatchActionError",
+      "message": "Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet",
+      "tx": null
+    },
+    {
+      "n": 10,
+      "attempt": "submit_report_from_vault to program 1, which is not in the vault's allowed programs",
+      "outcome": "failed on chain",
+      "kind": "FunctionCallError",
+      "message": "program is not in the vault's allowed_programs",
+      "tx": "6j1LD7Vf3gKRcjhXbN5xiBEqGaXp1XyoyENz1bcGDwgg"
+    },
+    {
+      "n": 11,
+      "attempt": "submit_report_from_vault to program 0 with a report over the daily cap (6692 bytes)",
+      "outcome": "failed on chain",
+      "kind": "FunctionCallError",
+      "message": "vault max_spend_per_day exceeded: spent 134610000000000000000000 + bond 50000000000000000000000 + storage 141560000000000000000000 > 300000000000000000000000",
+      "tx": "26RCYGtqKWUTqVK12Fth4oraHf94LP2XnzEMDBTMweub"
+    }
+  ],
+  "at": "2026-11-02T20:53:33.494Z"
+}

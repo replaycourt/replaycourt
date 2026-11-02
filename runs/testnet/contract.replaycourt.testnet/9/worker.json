@@ -1,0 +1,20 @@
+{
+  "submission_id": 9,
+  "program_id": 0,
+  "hunter_id": "hunter2.replaycourt.testnet",
+  "engine_exit": null,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "invalid",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "",
+    "evidence_sha256": "5176294040c4f48dde6bad7cff0bb94e01787722c5f74cd3148f0587ce72e5f1",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/9/evidence.json",
+    "chain_id": 0,
+    "fork_block": "0",
+    "reason": "sealed report does not match commitment"
+  },
+  "tx_hash": "5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae",
+  "posted_at": "2026-11-02T20:52:43.243Z"
+}

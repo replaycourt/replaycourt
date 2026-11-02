@@ -1,0 +1,15 @@
+{
+  "_comment": "Local policy of the vault-mode showcase run: the second layer. The first layer is the agent account's on-chain vault policy (max bond 0.1 NEAR per report, max 0.3 NEAR per 24 h, program 0), which the contract enforces.",
+  "version": 1,
+  "network": "testnet",
+  "contract_id": "contract.replaycourt.testnet",
+  "allowed_program_ids": [
+    0
+  ],
+  "max_bond_per_report_near": "0.1",
+  "max_deposit_per_report_near": "0.3",
+  "max_total_deposit_24h_near": "0.3",
+  "max_total_deposit_lifetime_near": "1",
+  "min_account_balance_near": "0.2",
+  "max_reports_per_hour": 4
+}

@@ -1,0 +1,7 @@
+# throw-away workspaces, caches and run outputs - never commit
+work/
+.sandbox-home/
+verdicts/
+register/*.jsonl
+register/*.tmp
+**/__pycache__/

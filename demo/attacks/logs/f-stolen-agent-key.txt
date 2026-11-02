@@ -1,0 +1,52 @@
+=== f-stolen-agent-key.ts
+attack f: stolen AI-hunter key on contract.replaycourt.testnet
+  signer agent.replaycourt.testnet, key ed25519:37ugn3ZBbkH7oU6wp1JKYDi6Y7dS9fBjGWDvZNsnAmPD
+  on-chain permission of this key: {"FunctionCall":{"allowance":"499508013282872200000000","method_names":["submit_report_from_vault","finalize","withdraw_pending"],"receiver_id":"contract.replaycourt.testnet"}}
+  vault before: balance 0.36135 NEAR, policy max_bond_per_report 0.1, max_spend_per_day 0.3, allowed_programs [0], spent_in_window 0.13461
+  account balance before: 0.49901 NEAR
+
+[1] vault_withdraw 0.1 NEAR with the 1 yoctoNEAR it requires
+    -> refused by the RPC (never included): AccessKeyDepositWithFunctionCallActionError: Deposit is not allowed with function call
+[2] vault_withdraw 0.1 NEAR without a deposit
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method vault_withdraw
+[3] vault_set_policy: 10 NEAR per report and per day, any program (1 yoctoNEAR)
+    -> refused by the RPC (never included): AccessKeyDepositWithFunctionCallActionError: Deposit is not allowed with function call
+[4] vault_set_policy: the same without a deposit
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method vault_set_policy
+[5] transfer 0.1 NEAR to thief.replaycourt.testnet
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[6] add a new full-access key to the agent account
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[7] add a function-call key that may call vault_withdraw
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[8] delete the agent account (beneficiary thief.replaycourt.testnet)
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[9] finalize on another contract (contract.rc-judge-8807c00f.testnet)
+    -> refused by the RPC (never included): AccessKeyReceiverMismatchActionError: Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet
+[10] submit_report_from_vault to program 1, which is not in the vault's allowed programs
+    -> failed on chain: FunctionCallError: program is not in the vault's allowed_programs
+       tx 6j1LD7Vf3gKRcjhXbN5xiBEqGaXp1XyoyENz1bcGDwgg https://testnet.nearblocks.io/txns/6j1LD7Vf3gKRcjhXbN5xiBEqGaXp1XyoyENz1bcGDwgg
+  (left in the vault's 24 h window: 0.16539 NEAR; the probe report needs about 0.19739 NEAR: bond 0.05 + storage)
+[11] submit_report_from_vault to program 0 with a report over the daily cap (6692 bytes)
+    -> failed on chain: FunctionCallError: vault max_spend_per_day exceeded: spent 134610000000000000000000 + bond 50000000000000000000000 + storage 141560000000000000000000 > 300000000000000000000000
+       tx 26RCYGtqKWUTqVK12Fth4oraHf94LP2XnzEMDBTMweub https://testnet.nearblocks.io/txns/26RCYGtqKWUTqVK12Fth4oraHf94LP2XnzEMDBTMweub
+
+vault after: balance 0.36135 NEAR (before 0.36135), max_bond_per_report 0.1, max_spend_per_day 0.3, allowed_programs [0]
+account balance after: 0.49832 NEAR (before 0.49901; the difference is gas of the two executed probes)
+key allowance: 0.4995 NEAR before, 0.49881 NEAR after
+
+| # | attempt with the stolen function-call key | result | error | tx |
+|---|---|---|---|---|
+| 1 | vault_withdraw 0.1 NEAR with the 1 yoctoNEAR it requires | refused by the RPC (never included) | `AccessKeyDepositWithFunctionCallActionError`: Deposit is not allowed with function call | - |
+| 2 | vault_withdraw 0.1 NEAR without a deposit | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method vault_withdraw | - |
+| 3 | vault_set_policy: 10 NEAR per report and per day, any program (1 yoctoNEAR) | refused by the RPC (never included) | `AccessKeyDepositWithFunctionCallActionError`: Deposit is not allowed with function call | - |
+| 4 | vault_set_policy: the same without a deposit | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method vault_set_policy | - |
+| 5 | transfer 0.1 NEAR to thief.replaycourt.testnet | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 6 | add a new full-access key to the agent account | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 7 | add a function-call key that may call vault_withdraw | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 8 | delete the agent account (beneficiary thief.replaycourt.testnet) | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 9 | finalize on another contract (contract.rc-judge-8807c00f.testnet) | refused by the RPC (never included) | `AccessKeyReceiverMismatchActionError`: Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet | - |
+| 10 | submit_report_from_vault to program 1, which is not in the vault's allowed programs | failed on chain | `FunctionCallError`: program is not in the vault's allowed_programs | [`6j1LD7Vf…`](https://testnet.nearblocks.io/txns/6j1LD7Vf3gKRcjhXbN5xiBEqGaXp1XyoyENz1bcGDwgg) |
+| 11 | submit_report_from_vault to program 0 with a report over the daily cap (6692 bytes) | failed on chain | `FunctionCallError`: vault max_spend_per_day exceeded: spent 134610000000000000000000 + bond 50000000000000000000000 + storage 141560000000000000000000 > 300000000000000000000000 | [`26RCYGtq…`](https://testnet.nearblocks.io/txns/26RCYGtqKWUTqVK12Fth4oraHf94LP2XnzEMDBTMweub) |
+
+ALL 11 ATTEMPTS FAILED, as they must.

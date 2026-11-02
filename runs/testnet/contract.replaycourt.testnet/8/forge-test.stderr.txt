@@ -1,0 +1,2 @@
+Warning: Found unknown `fork_retries` config for profile `default` defined in foundry.toml.
+Warning: Found unknown `fork_retry_backoff` config for profile `default` defined in foundry.toml.

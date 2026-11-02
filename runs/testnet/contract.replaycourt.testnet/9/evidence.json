@@ -1,0 +1,19 @@
+{
+  "schema": "replaycourt.evidence/v1",
+  "network": "testnet",
+  "contract_id": "contract.replaycourt.testnet",
+  "program_id": 0,
+  "submission_id": 9,
+  "hunter_id": "hunter2.replaycourt.testnet",
+  "commitment": "d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e",
+  "engine": {
+    "schema": "replaycourt.worker-verdict/v1",
+    "submission_id": 9,
+    "outcome": "invalid",
+    "reason": "sealed report does not match commitment",
+    "detail": "commitment mismatch: commitment v2 for hunter2.replaycourt.testnet=f4e9a2e3734c58efc36d7fdf00f7894882b6be1a7e12cd4de01fdcafd881df08, on-chain=d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e",
+    "commitment": "d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e",
+    "hunter_id": "hunter2.replaycourt.testnet",
+    "checked_at": "2026-11-02T20:52:39.368Z"
+  }
+}

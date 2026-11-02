@@ -1,0 +1,20 @@
+{
+  "submission_id": 2,
+  "program_id": 0,
+  "hunter_id": "hunter3.replaycourt.testnet",
+  "engine_exit": 3,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "duplicate",
+    "severity": null,
+    "duplicate_of": 1,
+    "fingerprint": "9bb9ff4398ee16f014bf4137cc793559c1ea1298f869e1a6aa81ed15d547f1fc",
+    "evidence_sha256": "e1b000aa3920feb165e6683af4f17b811392da701fe62b9ef64c5b01f8deb796",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/2/evidence.json",
+    "chain_id": 1,
+    "fork_block": "15725066",
+    "reason": "duplicate of submission 1. PoC test `testDrain()` passes on the fork. Real outflow of value from third parties to the attacker, without taking over identities and without faked state. Duplicate of `sub-1` (already triaged)."
+  },
+  "tx_hash": "F9jjLYmFFXJRohiuDrYRkrxLWYjfqj9XATUkrkFjoLgW",
+  "posted_at": "2026-11-02T20:47:55.851Z"
+}

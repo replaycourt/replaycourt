@@ -1,0 +1,20 @@
+{
+  "submission_id": 7,
+  "program_id": 0,
+  "hunter_id": "hunter2.replaycourt.testnet",
+  "engine_exit": 1,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "invalid",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "5edf1ef7dde5baaf3d3c635577333edce68e25cf0f456584877df7b5e3c27df5",
+    "evidence_sha256": "690e585462c9ce3580804a89e1d36692c3cf296c9f8f78b802f976b9bdcc7862",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/7/evidence.json",
+    "chain_id": 1,
+    "fork_block": "19000000",
+    "reason": "PoC test `testExploit()` passes on the fork. No measurable value movement: neither a gain for the attacker nor a loss for third parties. The test passes but proves no damage."
+  },
+  "tx_hash": "BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg",
+  "posted_at": "2026-11-02T20:52:23.684Z"
+}

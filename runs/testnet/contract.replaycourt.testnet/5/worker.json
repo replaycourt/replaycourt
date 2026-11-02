@@ -1,0 +1,20 @@
+{
+  "submission_id": 5,
+  "program_id": 0,
+  "hunter_id": "hunter1.replaycourt.testnet",
+  "engine_exit": 2,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "needs_human",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "742d47fcbf6731fcc52e2ac65f44d608ef8677bfbbf9ba7d92a751b2357c1c4d",
+    "evidence_sha256": "6882e15fd3ae7d237cb10450a2858160b829d3e514b0392b0751a7a8881a53c5",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/5/evidence.json",
+    "chain_id": 0,
+    "fork_block": "0",
+    "reason": "PoC test `testExploit()` passes (local mode, no fork). Local mode: the bundled code was checked, not a deployment. Whether it matches the protocol's code must be checked by a human. State changed via cheatcode (deal@0x00000000). Attacker's starting capital comes from a cheatco…"
+  },
+  "tx_hash": "7YK2LhfqG8zGWHBGaxrJeGB8XbF8cXWFjGdmwkf939h",
+  "posted_at": "2026-11-02T20:50:16.204Z"
+}

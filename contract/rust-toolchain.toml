@@ -1,0 +1,8 @@
+# Pinned toolchain for reproducible builds. rustc 1.95.0 is the MSRV of near-sdk 5.30 and the
+# compiler nearcore 2.14 itself is built with. Newer rustc releases may emit wasm features that
+# the NEAR runtime rejects; keep the pin unless you have deployed a newer build successfully.
+[toolchain]
+channel = "1.95.0"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-unknown-unknown"]
+profile = "minimal"

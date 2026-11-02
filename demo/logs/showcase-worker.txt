@@ -1,0 +1,64 @@
+=== worker round 1 (#0 to #5): #5 could not be posted, see SHOWCASE.md, What this run found
+worker: verifier verifier.replaycourt.testnet, contract contract.replaycourt.testnet (testnet), signing with function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D (post_verdict only)
+worker: disclosure after-settlement (evidence stays in runs-private/ until final; then: npm run cli -- publish); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:47:06Z] #0: commitment ok, running the engine (program 0) …
+posted #0 invalid: tx E9BXf71doNUV43E364pFocMNEoMGjVHLWXbBZp5jssV  https://testnet.nearblocks.io/txns/E9BXf71doNUV43E364pFocMNEoMGjVHLWXbBZp5jssV
+[worker 20:47:22Z] #0: posted invalid - tx E9BXf71doNUV43E364pFocMNEoMGjVHLWXbBZp5jssV
+[worker 20:47:22Z] #1: commitment ok, running the engine (program 0) …
+posted #1 valid: tx GkFdHxRBQ96cQVXQXXC5fNToL8WtCUCmMYFsuXrSr2ws  https://testnet.nearblocks.io/txns/GkFdHxRBQ96cQVXQXXC5fNToL8WtCUCmMYFsuXrSr2ws
+[worker 20:47:39Z] #1: posted valid (critical) - tx GkFdHxRBQ96cQVXQXXC5fNToL8WtCUCmMYFsuXrSr2ws
+[worker 20:47:39Z] #2: commitment ok, running the engine (program 0) …
+posted #2 duplicate: tx F9jjLYmFFXJRohiuDrYRkrxLWYjfqj9XATUkrkFjoLgW  https://testnet.nearblocks.io/txns/F9jjLYmFFXJRohiuDrYRkrxLWYjfqj9XATUkrkFjoLgW
+[worker 20:47:55Z] #2: posted duplicate of #1 - tx F9jjLYmFFXJRohiuDrYRkrxLWYjfqj9XATUkrkFjoLgW
+[worker 20:47:55Z] #3: commitment ok, running the engine (program 0) …
+posted #3 invalid: tx BfBiqFaWn1LLnV273jNp6kKfmjoGNrUxmf1m4V5Qtow2  https://testnet.nearblocks.io/txns/BfBiqFaWn1LLnV273jNp6kKfmjoGNrUxmf1m4V5Qtow2
+[worker 20:48:14Z] #3: posted invalid - tx BfBiqFaWn1LLnV273jNp6kKfmjoGNrUxmf1m4V5Qtow2
+[worker 20:48:14Z] #4: commitment ok, running the engine (program 0) …
+posted #4 invalid: tx EMXodkQ5d4JPkmAQmb3TpKfN35txoR75ygATCEibqjvY  https://testnet.nearblocks.io/txns/EMXodkQ5d4JPkmAQmb3TpKfN35txoR75ygATCEibqjvY
+[worker 20:48:37Z] #4: posted invalid - tx EMXodkQ5d4JPkmAQmb3TpKfN35txoR75ygATCEibqjvY
+[worker 20:48:37Z] #5: commitment ok, running the engine (program 0) …
+[worker 20:48:49Z] #5: error: Smart contract panicked: reason must be at most 280 bytes; will retry
+worker: round done - 6 pending, 5 posted, 1 waiting for retry
+worker exit 75
+
+=== resolve #5, too early (no verdict yet)
+error: Smart contract panicked: only needs_human or disputed submissions can be resolved
+resolve exit 1
+
+=== worker round 1b (#5, after the fix)
+worker: verifier verifier.replaycourt.testnet, contract contract.replaycourt.testnet (testnet), signing with function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D (post_verdict only)
+worker: disclosure after-settlement (evidence stays in runs-private/ until final; then: npm run cli -- publish); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:50:05Z] #5: commitment ok, running the engine (program 0) …
+posted #5 needs_human: tx 7YK2LhfqG8zGWHBGaxrJeGB8XbF8cXWFjGdmwkf939h  https://testnet.nearblocks.io/txns/7YK2LhfqG8zGWHBGaxrJeGB8XbF8cXWFjGdmwkf939h
+[worker 20:50:16Z] #5: posted needs_human - tx 7YK2LhfqG8zGWHBGaxrJeGB8XbF8cXWFjGdmwkf939h
+worker: round done - 1 pending, 1 posted, 0 waiting for retry
+
+=== worker round 2 (#6)
+worker: verifier verifier.replaycourt.testnet, contract contract.replaycourt.testnet (testnet), signing with function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D (post_verdict only)
+worker: disclosure after-settlement (evidence stays in runs-private/ until final; then: npm run cli -- publish); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:50:53Z] #6: commitment ok, running the engine (program 0) …
+posted #6 valid: tx CZkNUyqELPKx3zjfcPmPc6M2hTQU3MJ3envRxgSfupEf  https://testnet.nearblocks.io/txns/CZkNUyqELPKx3zjfcPmPc6M2hTQU3MJ3envRxgSfupEf
+[worker 20:51:09Z] #6: posted valid (critical) - tx CZkNUyqELPKx3zjfcPmPc6M2hTQU3MJ3envRxgSfupEf
+worker: round done - 1 pending, 1 posted, 0 waiting for retry
+worker exit 0
+
+=== worker round 3 (attacks #7 to #10)
+worker: verifier verifier.replaycourt.testnet, contract contract.replaycourt.testnet (testnet), signing with function-call key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D (post_verdict only)
+worker: disclosure after-settlement (evidence stays in runs-private/ until final; then: npm run cli -- publish); engine wrapped in: <memory/time cap> --limit 4G --timeout 30m --, time limit 30m
+worker: serving programs 0 (allow-list)
+[worker 20:52:06Z] #7: commitment ok, running the engine (program 0) …
+posted #7 invalid: tx BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg  https://testnet.nearblocks.io/txns/BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg
+[worker 20:52:23Z] #7: posted invalid - tx BJ9w66rbY157MU2dgsEX68feFD7x2neJqyAd7D3bomwg
+[worker 20:52:23Z] #8: commitment ok, running the engine (program 0) …
+posted #8 invalid: tx 8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E  https://testnet.nearblocks.io/txns/8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E
+[worker 20:52:39Z] #8: posted invalid - tx 8bpKNEdryEWZTP6GeYLzWaqNj8pE7tcYq1sQC2Lpje9E
+[worker 20:52:39Z] #9: sealed report does not match commitment (commitment mismatch: commitment v2 for hunter2.replaycourt.testnet=f4e9a2e3734c58efc36d7fdf00f7894882b6be1a7e12cd4de01fdcafd881df08, on-chain=d19720676b839821d760853b2d2fee43ca199620678de0e2154c6e7f36d4171e)
+posted #9 invalid: tx 5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae  https://testnet.nearblocks.io/txns/5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae
+[worker 20:52:43Z] #9: posted invalid - tx 5AsP17yeSjjiLdRtAMBfvQbDaHBqmgrz2q2j753ERrae
+[worker 20:52:43Z] #10: sealed report does not match commitment (commitment mismatch: commitment v2 for thief.replaycourt.testnet=c999b6e2c43df814b3254aa2e0dd1f426e146811f1f2733e9685e84826753616, on-chain=73d3e55426cde158dae7232f8b0e092dc398fbb788aee1fe015d68ce13146be9)
+posted #10 invalid: tx BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV  https://testnet.nearblocks.io/txns/BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV
+[worker 20:52:47Z] #10: posted invalid - tx BJumAuZS1E4FE5dRGtAHZbtWEv9sTMei21Vk97MAe2iV
+worker: round done - 4 pending, 4 posted, 0 waiting for retry

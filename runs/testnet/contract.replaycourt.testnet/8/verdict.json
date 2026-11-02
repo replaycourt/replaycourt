@@ -1,0 +1,331 @@
+{
+  "schema": "replaycourt.verdict/v1",
+  "report": {
+    "id": "sub-8",
+    "title": "Oracle manipulation in the ETH/USD feed (PoC needs a few helpers)",
+    "file": "report.md",
+    "path_rel": "../runs-private/testnet/contract.replaycourt.testnet/8/report.md",
+    "sha256": "52fb821978cba41fbf660c2cd6e2ee04d69d6b7a0b244563ac90868deec5201f",
+    "author": "attack demo b (sandbox escape attempt from inside the PoC)",
+    "claimed_severity": "critical",
+    "declared": {
+      "attackers": [],
+      "victims": [],
+      "targets": [
+        "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+      ]
+    }
+  },
+  "outcome": "invalid",
+  "verdict": "invalid",
+  "verdict_label": "invalid",
+  "exit_code": 1,
+  "severity_hint": {
+    "level": "none",
+    "provisional": false,
+    "basis": []
+  },
+  "reasons": [
+    "PoC test `testExploit()` passes on the fork.",
+    "No measurable value movement: neither a gain for the attacker nor a loss for third parties. The test passes but proves no damage."
+  ],
+  "warnings": [
+    "The PoC called host cheatcodes (envString, ffi, readFile); see poc_logs for what the sandbox answered.",
+    "The PoC opened a fork from an RPC the engine did not choose (http://127.0.0.1:9/attacker-rpc)."
+  ],
+  "duplicate": {
+    "status": "none",
+    "of": null,
+    "thresholds": {
+      "duplicate": {
+        "fingerprint": 0.75,
+        "text": 0.7,
+        "code": 0.9
+      },
+      "possible": {
+        "fingerprint": 0.5,
+        "text": 0.45,
+        "code": 0.7
+      }
+    },
+    "candidates": [
+      {
+        "id": "sub-1",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "valid",
+        "onchain_status": "paid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.211,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:34Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-6",
+        "title": "Seneca Chamber.performOperations() executes arbitrary calls - theft of approved tokens",
+        "verdict_code": "valid",
+        "onchain_status": "disputed",
+        "scores": {
+          "text": 0.0,
+          "code": 0.2,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-6",
+        "triaged_at": "2026-11-02T20:51:05Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-5",
+        "title": "Reentrancy in Vault.withdraw() (local test contract, no fork)",
+        "verdict_code": "needs_human",
+        "onchain_status": "paid",
+        "scores": {
+          "text": 0.004,
+          "code": 0.172,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-5",
+        "triaged_at": "2026-11-02T20:50:12Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-2",
+        "title": "StaxLPStaking lets anyone withdraw all LP tokens via a fake old-staking address",
+        "verdict_code": "valid",
+        "onchain_status": "duplicate",
+        "scores": {
+          "text": 0.004,
+          "code": 0.147,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:51Z",
+        "duplicate_of": "sub-1"
+      },
+      {
+        "id": "sub-0",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.23,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:47:17Z",
+        "duplicate_of": null
+      }
+    ],
+    "compared_with": 8,
+    "not_original": []
+  },
+  "fork": {
+    "chain": "ethereum",
+    "chain_src": "front-matter",
+    "chain_id": 1,
+    "local": false,
+    "declared_block": 19000000,
+    "block_source": "front-matter",
+    "rpc_attempts": [
+      {
+        "url": "https://ethereum-rpc.publicnode.com",
+        "chain_id": 1,
+        "head": 26329603,
+        "reason": "no archive access: HTTP 403: {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32602,\"message\":\"Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode\"},\"id\":1",
+        "ok": false
+      },
+      {
+        "url": "https://eth.drpc.org",
+        "chain_id": 1,
+        "head": 26329603,
+        "archive_ok": true,
+        "ok": true
+      }
+    ],
+    "rpc_url": "https://eth.drpc.org",
+    "poc_fork_block": 19000000
+  },
+  "poc": {
+    "origin": "inline",
+    "sha256": "6a942ff5b8ed06d6091cbc5057d839f78e548140a755a786ea99efdc240ec46b",
+    "fork_calls": [
+      {
+        "call": "createSelectFork",
+        "arg": "mainnet",
+        "literal": true,
+        "block": 19000000
+      },
+      {
+        "call": "createFork",
+        "arg": "string",
+        "literal": false,
+        "block": null
+      }
+    ],
+    "copy": "PoC.t.sol"
+  },
+  "execution": {
+    "build": {
+      "ok": true,
+      "duration_s": 3.42,
+      "solc": [
+        "0.8.38+commit.1835d247"
+      ],
+      "evm_version": "shanghai"
+    },
+    "tests": [
+      {
+        "suite": "test/poc/PoC.t.sol:SandboxEscapeTest",
+        "name": "testExploit()",
+        "status": "Success",
+        "reason": null,
+        "gas": 358273,
+        "duration": "27ms 109µs 846ns",
+        "fork_block_number": 19000000
+      }
+    ],
+    "selected_test": "testExploit()",
+    "poc_logs": [
+      "ffi: sh -c 'cat .secrets' -> refused: vm.ffi: FFI is disabled; add the `--ffi` flag to allow tests to call external commands",
+      "readFile: ../.secrets/verifier-x25519.json -> refused: vm.readFile: the path ../.secrets/verifier-x25519.json is not allowed to be accessed for read operations",
+      "readFile: ../../../.secrets/showcase-v2/verifier-fc-key.json -> refused: vm.readFile: the path ../../../.secrets/showcase-v2/verifier-fc-key.json is not allowed to be accessed for read operations",
+      "envString: PRIVATE_KEY -> refused: vm.envString: environment variable \"PRIVATE_KEY\" not found",
+      "envString: NEAR_PRIVATE_KEY -> refused: vm.envString: environment variable \"NEAR_PRIVATE_KEY\" not found",
+      "rpcUrl: mainnet -> GOT: https://eth.drpc.org",
+      "createFork: own RPC URL -> refused: vm.createFork: could not instantiate forked environment with provider 127.0.0.1; failed to retrieve chain ID from fork endpoint; MPP HTTP request to http://127.0.0.1:9/ failed: HTTP request failed: error sending request: error sending request: client error (Connect): tcp connect error: Connection refused (os error 61)",
+      "Oracle answer manipulated to: 1"
+    ]
+  },
+  "evidence": {
+    "static_flags": [],
+    "fork_cheatcodes": [
+      {
+        "phase": "Setup",
+        "cheat": "createSelectFork(string,uint256)",
+        "target": "mainnet",
+        "allowed": true,
+        "success": true
+      },
+      {
+        "phase": "Execution",
+        "cheat": "createFork(string)",
+        "target": "http://127.0.0.1:9/attacker-rpc",
+        "allowed": false,
+        "success": false
+      }
+    ],
+    "attacker_addresses": [
+      "0x7fa9385be102ac3eac297483dd6233d62b3e1496"
+    ],
+    "balance_changes": [],
+    "valuation": {
+      "native_usd": 2562.92441874,
+      "damage_usd": null,
+      "max_fraction": null,
+      "attacker_gain_usd": null,
+      "attacker_spent_usd": 0.0,
+      "attacker_fully_priced": true,
+      "unpriced_assets": [],
+      "price_block": 19000000
+    },
+    "cheatcodes": {
+      "counts": {
+        "createFork": 1,
+        "createSelectFork": 1,
+        "envString": 2,
+        "ffi": 1,
+        "readFile": 2,
+        "rpcUrl": 1
+      },
+      "funding_to_attacker": [],
+      "state_manipulation": [],
+      "time": [],
+      "fork": [
+        {
+          "phase": "Setup",
+          "cheat": "createSelectFork(string,uint256)",
+          "args": [
+            19000000
+          ]
+        },
+        {
+          "phase": "Execution",
+          "cheat": "createFork(string)",
+          "args": []
+        }
+      ],
+      "host": [
+        {
+          "phase": "Execution",
+          "cheat": "ffi(string[])"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "readFile(string)"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "readFile(string)"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "envString(string)"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "envString(string)"
+        }
+      ],
+      "expect": []
+    },
+    "pranked": [],
+    "code_checks": [
+      {
+        "role": "target",
+        "address": "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
+        "has_code": true
+      }
+    ],
+    "nft_transfers": 0,
+    "trace_summary": [],
+    "gas": {
+      "test_gas": 358273,
+      "execution_gas_used": 358273
+    }
+  },
+  "fingerprint": {
+    "chain": "ethereum",
+    "calls": [],
+    "losers": [],
+    "gain_assets": []
+  },
+  "pipeline": {
+    "engine": "replaycourt-engine",
+    "version": "0.4.0",
+    "started_at": "2026-11-02T20:52:24Z",
+    "forge_version": "forge Version: 1.8.7",
+    "finished_at": "2026-11-02T20:52:35Z",
+    "duration_s": 10.5,
+    "workspace_kept": null
+  },
+  "status": "ok"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "replaycourt-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ReplayCourt hunter CLI and verifier worker (NEAR testnet)",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "cli": "node src/cli.ts",
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "near-api-js": "7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

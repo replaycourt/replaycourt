@@ -1,0 +1,16 @@
+target/
+node_modules/
+dist/
+.secrets/
+*.key
+.env
+.env.*
+engine/.sandbox-home/
+engine/work/
+__pycache__/
+.DS_Store
+demo/video/*.mp4
+runs/testnet/contract.*-judge-*/
+runs/demo/
+# evidence not disclosed yet (worker --disclose after-settlement) and the worker's registry
+runs-private/

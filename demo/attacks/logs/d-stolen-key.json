@@ -1,0 +1,127 @@
+{
+  "contract": "contract.replaycourt.testnet",
+  "signer": "verifier.replaycourt.testnet",
+  "public_key": "ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D",
+  "permission": {
+    "FunctionCall": {
+      "allowance": "995192321211583800000000",
+      "method_names": [
+        "post_verdict"
+      ],
+      "receiver_id": "contract.replaycourt.testnet"
+    }
+  },
+  "pending_view": [
+    {
+      "program_id": 0,
+      "verifier_id": "verifier.replaycourt.testnet",
+      "own": true,
+      "pending": []
+    },
+    {
+      "program_id": 1,
+      "verifier_id": "verifier2.replaycourt.testnet",
+      "own": false,
+      "pending": [
+        11
+      ]
+    }
+  ],
+  "allowance_left": "995192321211583800000000",
+  "allowance_granted": "1000000000000000000000000",
+  "allowance_demo": {
+    "add_key_tx": "3GCZUfAdBgmnhSpi6XtHmoTP5kxeidGaeHAVPzfPa4Fw",
+    "delete_key_tx": "HytEn4nnKH6o9hc5ZQ1Ht3jWYxFjrLutoJPmPkV4oA9T"
+  },
+  "attempts": [
+    {
+      "n": 1,
+      "attempt": "transfer 0.01 NEAR to hunter1.replaycourt.testnet",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 2,
+      "attempt": "add a new full-access key to the verifier account",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 3,
+      "attempt": "add a new function-call key without allowance limit",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 4,
+      "attempt": "delete the verifier account (beneficiary hunter1.replaycourt.testnet)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyRequiresFullAccessActionError",
+      "message": "Access key requires full access",
+      "tx": null
+    },
+    {
+      "n": 5,
+      "attempt": "call withdraw_pool(0) on the contract",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyMethodNameMismatchActionError",
+      "message": "Access key does not allow method withdraw_pool",
+      "tx": null
+    },
+    {
+      "n": 6,
+      "attempt": "call finalize (another method of the same contract)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyMethodNameMismatchActionError",
+      "message": "Access key does not allow method finalize",
+      "tx": null
+    },
+    {
+      "n": 7,
+      "attempt": "post_verdict with 1 yoctoNEAR attached",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyDepositWithFunctionCallActionError",
+      "message": "Deposit is not allowed with function call",
+      "tx": null
+    },
+    {
+      "n": 8,
+      "attempt": "post_verdict on another contract (contract.rc-judge-8807c00f.testnet)",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyReceiverMismatchActionError",
+      "message": "Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet",
+      "tx": null
+    },
+    {
+      "n": 9,
+      "attempt": "post_verdict on submission #11 of a program with another verifier",
+      "outcome": "failed on chain",
+      "kind": "FunctionCallError",
+      "message": "only the program verifier can post verdicts",
+      "tx": "GejWN3XsGEGTqUucNp5Jr12m1APvWERPLWqMHd2CBSxL"
+    },
+    {
+      "n": 10,
+      "attempt": "post a second verdict on the already judged submission #0",
+      "outcome": "failed on chain",
+      "kind": "FunctionCallError",
+      "message": "submission is not pending",
+      "tx": "2NU1yutzv8tas2TosKjXvsEd9niun78Pmpf2zLorNHEc"
+    },
+    {
+      "n": 11,
+      "attempt": "post_verdict with a key whose allowance (0.001 NEAR) is below the cost of the call",
+      "outcome": "refused by the RPC (never included)",
+      "kind": "AccessKeyNotEnoughAllowanceActionError",
+      "message": "Not enough allowance for access key ed25519:5Ys4RNMGyvDaLNiY2S6KgVtr3fRy2J6stfSwmgTQPEAB on account verifier.replaycourt.testnet (allowance: 1000000000000000000000, cost: 100920854672762000000000)",
+      "tx": null
+    }
+  ],
+  "at": "2026-11-02T20:53:15.762Z"
+}

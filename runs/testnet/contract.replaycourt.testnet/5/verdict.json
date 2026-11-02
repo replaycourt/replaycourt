@@ -1,0 +1,306 @@
+{
+  "schema": "replaycourt.verdict/v1",
+  "report": {
+    "id": "sub-5",
+    "title": "Reentrancy in Vault.withdraw() (local test contract, no fork)",
+    "file": "report.md",
+    "path_rel": "../runs-private/testnet/contract.replaycourt.testnet/5/report.md",
+    "sha256": "c9a84aaa35ff5ad322440a7b2911d8c0b03f6a0eecf2beb49b2974a0eac3708c",
+    "author": "Demo (local fallback case: no fork, bundled vulnerable contract)",
+    "claimed_severity": "high",
+    "declared": {
+      "attackers": [],
+      "victims": [],
+      "targets": []
+    }
+  },
+  "outcome": "needs_human",
+  "verdict": "needs_human",
+  "verdict_label": "needs human",
+  "exit_code": 2,
+  "severity_hint": {
+    "level": "high",
+    "provisional": true,
+    "basis": [
+      "amount cannot be valued"
+    ],
+    "scale": "Direct theft: critical from 1M USD or 50 % of a holding, high from 100,000 USD or 10 %, medium from 1,000 USD or 1 %."
+  },
+  "reasons": [
+    "PoC test `testExploit()` passes (local mode, no fork).",
+    "Local mode: the bundled code was checked, not a deployment. Whether it matches the protocol's code must be checked by a human.",
+    "State changed via cheatcode (deal@0x00000000).",
+    "Attacker's starting capital comes from a cheatcode (deal) - check the net gain against that capital.",
+    "The PoC acts as a foreign address via vm.prank (0x00000000000000000000000000000000000a11ce) - privileged precondition?"
+  ],
+  "warnings": [],
+  "duplicate": {
+    "status": "none",
+    "of": null,
+    "thresholds": {
+      "duplicate": {
+        "fingerprint": 0.75,
+        "text": 0.7,
+        "code": 0.9
+      },
+      "possible": {
+        "fingerprint": 0.5,
+        "text": 0.45,
+        "code": 0.7
+      }
+    },
+    "candidates": [
+      {
+        "id": "sub-2",
+        "title": "StaxLPStaking lets anyone withdraw all LP tokens via a fake old-staking address",
+        "verdict_code": "valid",
+        "onchain_status": "duplicate",
+        "scores": {
+          "text": 0.004,
+          "code": 0.358,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:51Z",
+        "duplicate_of": "sub-1"
+      },
+      {
+        "id": "sub-1",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "valid",
+        "onchain_status": "valid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.335,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:34Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-0",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.336,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:47:17Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-3",
+        "title": "Alleged arbitrary token theft via a direct transferFrom around the Seneca Chamber",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.005,
+          "code": 0.32,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:48:10Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-4",
+        "title": "Alleged drain: the attacker ends up holding 1,000,000 USDC",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.005,
+          "code": 0.315,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:48:32Z",
+        "duplicate_of": null
+      }
+    ],
+    "compared_with": 5,
+    "not_original": []
+  },
+  "fork": {
+    "chain": "local",
+    "chain_src": "front-matter",
+    "chain_id": 31337,
+    "local": true,
+    "declared_block": null,
+    "block_source": null,
+    "poc_fork_block": null
+  },
+  "poc": {
+    "origin": "inline",
+    "sha256": "e63021dc58a489667180f71e809ccbdbdf6b8c772c6863fc5aad25e297c82210",
+    "fork_calls": [],
+    "copy": "PoC.t.sol"
+  },
+  "execution": {
+    "build": {
+      "ok": true,
+      "duration_s": 3.34,
+      "solc": [
+        "0.8.38+commit.1835d247"
+      ],
+      "evm_version": "shanghai"
+    },
+    "tests": [
+      {
+        "suite": "test/poc/PoC.t.sol:ReentrancyTest",
+        "name": "testExploit()",
+        "status": "Success",
+        "reason": null,
+        "gas": 326100,
+        "duration": "305µs 537ns",
+        "fork_block_number": null
+      }
+    ],
+    "selected_test": "testExploit()",
+    "poc_logs": []
+  },
+  "evidence": {
+    "static_flags": [],
+    "attacker_addresses": [
+      "0x2e234dae75c793f67a35089c9d99245e1c58470b",
+      "0x7fa9385be102ac3eac297483dd6233d62b3e1496"
+    ],
+    "balance_changes": [
+      {
+        "role": "attacker",
+        "address": "0x7fa9385be102ac3eac297483dd6233d62b3e1496",
+        "label": "attacker total (2 addr.)",
+        "asset": "native",
+        "symbol": "ETH",
+        "decimals": 18,
+        "delta_raw": "10000000000000000000",
+        "usd": null,
+        "sources": [
+          {
+            "from": "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f",
+            "amount": "11000000000000000000"
+          }
+        ]
+      },
+      {
+        "role": "loser",
+        "address": "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f",
+        "label": "",
+        "asset": "native",
+        "symbol": "ETH",
+        "decimals": 18,
+        "delta_raw": "-10000000000000000000",
+        "prebalance_raw": null,
+        "fraction_of_prebalance": null,
+        "usd": null
+      }
+    ],
+    "valuation": {
+      "native_usd": null,
+      "damage_usd": null,
+      "max_fraction": null,
+      "attacker_gain_usd": null,
+      "attacker_spent_usd": 0.0,
+      "attacker_fully_priced": false,
+      "unpriced_assets": [
+        "ETH"
+      ],
+      "price_block": null
+    },
+    "cheatcodes": {
+      "counts": {
+        "assertEq": 1,
+        "assertGt": 1,
+        "deal": 2,
+        "prank": 1
+      },
+      "funding_to_attacker": [
+        {
+          "phase": "Execution",
+          "cheat": "deal(address,uint256)",
+          "address": "0x2e234dae75c793f67a35089c9d99245e1c58470b",
+          "amount": 1000000000000000000,
+          "target": "attacker"
+        }
+      ],
+      "state_manipulation": [
+        {
+          "phase": "Setup",
+          "cheat": "deal(address,uint256)",
+          "address": "0x00000000000000000000000000000000000a11ce",
+          "amount": 10000000000000000000,
+          "target": "foreign"
+        }
+      ],
+      "time": [],
+      "fork": [],
+      "host": [],
+      "expect": []
+    },
+    "pranked": [
+      {
+        "address": "0x00000000000000000000000000000000000a11ce",
+        "phases": [
+          "Setup"
+        ],
+        "count": 1,
+        "role": "foreign_identity",
+        "has_code_at_fork": null
+      }
+    ],
+    "code_checks": [],
+    "nft_transfers": 0,
+    "trace_summary": [
+      "- creates attack contract",
+      "- attack contract.attack() [value 1 ETH]",
+      "  - 0x5615…b72f.deposit() [value 1 ETH]",
+      "  - 0x5615…b72f.withdraw()",
+      "    - attack contract.receive/fallback() [value 1 ETH] [callback to attacker]",
+      "  (… 20 more calls hidden)"
+    ],
+    "gas": {
+      "test_gas": 326100,
+      "execution_gas_used": 346000
+    }
+  },
+  "fingerprint": {
+    "chain": "local",
+    "calls": [
+      "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f:0x3ccfd60b"
+    ],
+    "losers": [
+      "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f"
+    ],
+    "gain_assets": [
+      "native"
+    ]
+  },
+  "pipeline": {
+    "engine": "replaycourt-engine",
+    "version": "0.4.0",
+    "started_at": "2026-11-02T20:50:05Z",
+    "forge_version": "forge Version: 1.8.7",
+    "finished_at": "2026-11-02T20:50:12Z",
+    "duration_s": 6.6,
+    "workspace_kept": null
+  },
+  "status": "ok"
+}

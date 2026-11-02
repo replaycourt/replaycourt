@@ -1,0 +1,20 @@
+{
+  "submission_id": 3,
+  "program_id": 0,
+  "hunter_id": "hunter2.replaycourt.testnet",
+  "engine_exit": 1,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "invalid",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "",
+    "evidence_sha256": "b5070f335f5ee7135b1cbe0aaa3d28d0c7614ff7be7659322860b421c6151da0",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/3/evidence.json",
+    "chain_id": 1,
+    "fork_block": "19325936",
+    "reason": "The PoC test fails on the fork: ERC20: insufficient allowance"
+  },
+  "tx_hash": "BfBiqFaWn1LLnV273jNp6kKfmjoGNrUxmf1m4V5Qtow2",
+  "posted_at": "2026-11-02T20:48:14.496Z"
+}

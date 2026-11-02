@@ -1,0 +1,30 @@
+=== e-copied-seal.ts
+attack e: copied sealed report on contract.replaycourt.testnet, program 0 "Ethereum DeFi replay bounty"
+  victim hunter1.replaycourt.testnet, thief thief.replaycourt.testnet
+
+[e.1] copy of submission #1 (hunter hunter1.replaycourt.testnet, status paid), read with get_submission + get_sealed
+  commitment 9d6b5f17de5dd2cf68b3084d5a4eb3f1b6bdda0f09b0607149c99433bde39ccd, sealed blob 7144 bytes, title "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens"
+    thief attaches 0.148 NEAR (its required bond 0.05 + storage estimate)
+    -> failed on chain: commitment already used
+       tx DcCTF3mx4gNRsK2BHD1zhT2Wusgj5DJzXN3etjuHd62b https://testnet.nearblocks.io/txns/DcCTF3mx4gNRsK2BHD1zhT2Wusgj5DJzXN3etjuHd62b
+
+[e.2] the victim hunter1.replaycourt.testnet sends engine/reports/02_seneca_chamber.md; the transaction fails (deposit below the required bond)
+  commitment v2 of (hunter1.replaycourt.testnet, report) = 73d3e55426cde158dae7232f8b0e092dc398fbb788aee1fe015d68ce13146be9, sealed blob 6120 bytes
+    -> failed on chain: attached deposit 10000000000000000000000 is too small: required bond 25000000000000000000000 plus storage
+       tx FAdX82XWpErbgPXsavJdSmuqQrAAoLdL117DmSmz2iFM https://testnet.nearblocks.io/txns/FAdX82XWpErbgPXsavJdSmuqQrAAoLdL117DmSmz2iFM
+  the thief reads the failed transaction FAdX82XWpErbgPXsavJdSmuqQrAAoLdL117DmSmz2iFM from the chain (RPC "tx")
+  copied: commitment 73d3e55426cde158dae7232f8b0e092dc398fbb788aee1fe015d68ce13146be9, sealed blob 6120 bytes, title "Unchecked operation in Chamber.performOperations() lets anyone move approved tokens"
+    thief attaches 0.1378 NEAR (its required bond 0.05 + storage estimate)
+    -> succeeded: returned 10
+       tx DxcggVbpsgTkk4QjDZFmQ43BYf43LhWoFLcb5YkSDaBA https://testnet.nearblocks.io/txns/DxcggVbpsgTkk4QjDZFmQ43BYf43LhWoFLcb5YkSDaBA
+  submission id 10: now the worker judges it
+  as the verifier: the blob opens; v2 commitment for hunter1.replaycourt.testnet: matches; for thief.replaycourt.testnet: no match -> "sealed report does not match commitment"
+
+| step | signer | result | message | tx |
+|---|---|---|---|---|
+| thief resubmits the commitment + sealed blob of #1 | thief.replaycourt.testnet | failed on chain | commitment already used | [`DcCTF3mx…`](https://testnet.nearblocks.io/txns/DcCTF3mx4gNRsK2BHD1zhT2Wusgj5DJzXN3etjuHd62b) |
+| victim's submit_report with 0.01 NEAR attached | hunter1.replaycourt.testnet | failed on chain | attached deposit 10000000000000000000000 is too small: required bond 25000000000000000000000 plus storage | [`FAdX82XW…`](https://testnet.nearblocks.io/txns/FAdX82XWpErbgPXsavJdSmuqQrAAoLdL117DmSmz2iFM) |
+| thief submits the copied commitment + sealed blob | thief.replaycourt.testnet | succeeded (#10) | returned 10 | [`DxcggVbp…`](https://testnet.nearblocks.io/txns/DxcggVbpsgTkk4QjDZFmQ43BYf43LhWoFLcb5YkSDaBA) |
+
+next: run the worker (node src/cli.ts worker --once in agent/); for the copy that landed it must post
+      `invalid` with the reason "sealed report does not match commitment", and the contract slashes the bond.

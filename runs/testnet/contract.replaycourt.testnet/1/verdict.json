@@ -1,0 +1,266 @@
+{
+  "schema": "replaycourt.verdict/v1",
+  "report": {
+    "id": "sub-1",
+    "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+    "file": "report.md",
+    "path_rel": "../runs-private/testnet/contract.replaycourt.testnet/1/report.md",
+    "sha256": "26440ec23304a3c26829ee6165df1d8468075e90303640c515adbd32f52e23e1",
+    "author": "Demo (re-enactment of the public TempleDAO/STAX incident of 2022-10-11, PoC from DeFiHackLabs)",
+    "claimed_severity": "critical",
+    "declared": {
+      "attackers": [],
+      "victims": [
+        "0xd2869042e12a3506100af1d192b5b04d65137941"
+      ],
+      "targets": [
+        "0xd2869042e12a3506100af1d192b5b04d65137941"
+      ]
+    }
+  },
+  "outcome": "valid",
+  "verdict": "valid",
+  "verdict_label": "valid",
+  "exit_code": 0,
+  "severity_hint": {
+    "level": "critical",
+    "provisional": false,
+    "basis": [
+      "up to 100 % of a victim's holdings"
+    ],
+    "scale": "Direct theft: critical from 1M USD or 50 % of a holding, high from 100,000 USD or 10 %, medium from 1,000 USD or 1 %."
+  },
+  "reasons": [
+    "PoC test `testExploit()` passes on the fork.",
+    "Real outflow of value from third parties to the attacker, without taking over identities and without faked state."
+  ],
+  "warnings": [],
+  "duplicate": {
+    "status": "none",
+    "of": null,
+    "thresholds": {
+      "duplicate": {
+        "fingerprint": 0.75,
+        "text": 0.7,
+        "code": 0.9
+      },
+      "possible": {
+        "fingerprint": 0.5,
+        "text": 0.45,
+        "code": 0.7
+      }
+    },
+    "candidates": [
+      {
+        "id": "sub-0",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 1.0,
+          "code": 0.976,
+          "fingerprint": 0.0
+        },
+        "level": "duplicate",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:47:17Z",
+        "duplicate_of": null
+      }
+    ],
+    "compared_with": 1,
+    "not_original": [
+      "sub-0"
+    ]
+  },
+  "fork": {
+    "chain": "ethereum",
+    "chain_src": "front-matter",
+    "chain_id": 1,
+    "local": false,
+    "declared_block": 15725066,
+    "block_source": "front-matter",
+    "rpc_attempts": [
+      {
+        "url": "https://ethereum-rpc.publicnode.com",
+        "chain_id": 1,
+        "head": 26329578,
+        "reason": "no archive access: HTTP 403: {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32602,\"message\":\"Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode\"},\"id\":1",
+        "ok": false
+      },
+      {
+        "url": "https://eth.drpc.org",
+        "chain_id": 1,
+        "head": 26329578,
+        "archive_ok": true,
+        "ok": true
+      }
+    ],
+    "rpc_url": "https://eth.drpc.org",
+    "poc_fork_block": 15725066
+  },
+  "poc": {
+    "origin": "inline",
+    "sha256": "3a459dd07a7fd3562e78c67ddce4d80988c5decd472e9031ee2d6c62ffe5d069",
+    "fork_calls": [
+      {
+        "call": "createSelectFork",
+        "arg": "mainnet",
+        "literal": true,
+        "block": 15725066
+      }
+    ],
+    "copy": "PoC.t.sol"
+  },
+  "execution": {
+    "build": {
+      "ok": true,
+      "duration_s": 3.39,
+      "solc": [
+        "0.8.38+commit.1835d247"
+      ],
+      "evm_version": "shanghai"
+    },
+    "tests": [
+      {
+        "suite": "test/poc/PoC.t.sol:ContractTest",
+        "name": "testExploit()",
+        "status": "Success",
+        "reason": null,
+        "gas": 248665,
+        "duration": "6ms 968µs 813ns",
+        "fork_block_number": 15725066
+      }
+    ],
+    "selected_test": "testExploit()",
+    "poc_logs": [
+      "[Start] Attacker xFraxTempleLP balance before exploit: 0.000000000000000000",
+      "[End] Attacker xFraxTempleLP balance after exploit: 321154.865567124596801893"
+    ]
+  },
+  "evidence": {
+    "static_flags": [],
+    "fork_cheatcodes": [
+      {
+        "phase": "Setup",
+        "cheat": "createSelectFork(string,uint256)",
+        "target": "mainnet",
+        "allowed": true,
+        "success": true
+      }
+    ],
+    "attacker_addresses": [
+      "0x7fa9385be102ac3eac297483dd6233d62b3e1496"
+    ],
+    "balance_changes": [
+      {
+        "role": "attacker",
+        "address": "0x7fa9385be102ac3eac297483dd6233d62b3e1496",
+        "label": "attacker total (1 addr.)",
+        "asset": "0xbcb8b7fc9197feda75c101fa69d3211b5a30dcd9",
+        "symbol": "xFraxTempleLP",
+        "decimals": 18,
+        "delta_raw": "321154865567124596801893",
+        "usd": null,
+        "sources": [
+          {
+            "from": "0xd2869042e12a3506100af1d192b5b04d65137941",
+            "amount": "321154865567124596801893"
+          }
+        ]
+      },
+      {
+        "role": "victim",
+        "address": "0xd2869042e12a3506100af1d192b5b04d65137941",
+        "label": "StaxLPStaking",
+        "asset": "0xbcb8b7fc9197feda75c101fa69d3211b5a30dcd9",
+        "symbol": "xFraxTempleLP",
+        "decimals": 18,
+        "delta_raw": "-321154865567124596801893",
+        "prebalance_raw": "321154865567124596801893",
+        "fraction_of_prebalance": 1.0,
+        "usd": null
+      }
+    ],
+    "valuation": {
+      "native_usd": 1285.9167948,
+      "damage_usd": null,
+      "max_fraction": 1.0,
+      "attacker_gain_usd": null,
+      "attacker_spent_usd": 0.0,
+      "attacker_fully_priced": false,
+      "unpriced_assets": [
+        "xFraxTempleLP"
+      ],
+      "price_block": 15725066
+    },
+    "cheatcodes": {
+      "counts": {
+        "createSelectFork": 1,
+        "label": 2
+      },
+      "funding_to_attacker": [],
+      "state_manipulation": [],
+      "time": [],
+      "fork": [
+        {
+          "phase": "Setup",
+          "cheat": "createSelectFork(string,uint256)",
+          "args": [
+            15725066
+          ]
+        }
+      ],
+      "host": [],
+      "expect": []
+    },
+    "pranked": [],
+    "code_checks": [
+      {
+        "role": "target",
+        "address": "0xd2869042e12a3506100af1d192b5b04d65137941",
+        "has_code": true
+      },
+      {
+        "role": "victim",
+        "address": "0xd2869042e12a3506100af1d192b5b04d65137941",
+        "has_code": true
+      }
+    ],
+    "nft_transfers": 0,
+    "trace_summary": [
+      "- StaxLPStaking.migrateStake(address,uint256)",
+      "  - test contract.migrateWithdraw(address,uint256) [callback to attacker]",
+      "- StaxLPStaking.withdrawAll(bool)",
+      "  - xFraxTempleLP.transfer(address,uint256)"
+    ],
+    "gas": {
+      "test_gas": 248665,
+      "execution_gas_used": 258265
+    }
+  },
+  "fingerprint": {
+    "chain": "ethereum",
+    "calls": [
+      "0xd2869042e12a3506100af1d192b5b04d65137941:0x1c1c6fe5",
+      "0xd2869042e12a3506100af1d192b5b04d65137941:0xbdcd9c80"
+    ],
+    "losers": [
+      "0xd2869042e12a3506100af1d192b5b04d65137941"
+    ],
+    "gain_assets": [
+      "0xbcb8b7fc9197feda75c101fa69d3211b5a30dcd9"
+    ]
+  },
+  "pipeline": {
+    "engine": "replaycourt-engine",
+    "version": "0.4.0",
+    "started_at": "2026-11-02T20:47:23Z",
+    "forge_version": "forge Version: 1.8.7",
+    "finished_at": "2026-11-02T20:47:34Z",
+    "duration_s": 11.3,
+    "workspace_kept": null
+  },
+  "status": "ok"
+}

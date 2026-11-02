@@ -1,0 +1,53 @@
+=== d-stolen-key.ts
+attack d: stolen verifier key on contract.replaycourt.testnet
+  signer verifier.replaycourt.testnet, key ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D
+  on-chain permission of this key: {"FunctionCall":{"allowance":"995192321211583800000000","method_names":["post_verdict"],"receiver_id":"contract.replaycourt.testnet"}}
+  per-program pending view (list_pending(program_id)):
+    program 0: verifier verifier.replaycourt.testnet (the stolen key's account), pending []
+    program 1: verifier verifier2.replaycourt.testnet (another verifier), pending [11]
+  judged submission: 0, submission of a program with another verifier: 11, other contract: contract.rc-judge-8807c00f.testnet
+
+[1] transfer 0.01 NEAR to hunter1.replaycourt.testnet
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[2] add a new full-access key to the verifier account
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[3] add a new function-call key without allowance limit
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[4] delete the verifier account (beneficiary hunter1.replaycourt.testnet)
+    -> refused by the RPC (never included): AccessKeyRequiresFullAccessActionError: Access key requires full access
+[5] call withdraw_pool(0) on the contract
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method withdraw_pool
+[6] call finalize (another method of the same contract)
+    -> refused by the RPC (never included): AccessKeyMethodNameMismatchActionError: Access key does not allow method finalize
+[7] post_verdict with 1 yoctoNEAR attached
+    -> refused by the RPC (never included): AccessKeyDepositWithFunctionCallActionError: Deposit is not allowed with function call
+[8] post_verdict on another contract (contract.rc-judge-8807c00f.testnet)
+    -> refused by the RPC (never included): AccessKeyReceiverMismatchActionError: Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet
+[9] post_verdict on submission #11 of a program with another verifier
+    -> failed on chain: FunctionCallError: only the program verifier can post verdicts
+       tx GejWN3XsGEGTqUucNp5Jr12m1APvWERPLWqMHd2CBSxL https://testnet.nearblocks.io/txns/GejWN3XsGEGTqUucNp5Jr12m1APvWERPLWqMHd2CBSxL
+[10] post a second verdict on the already judged submission #0
+    -> failed on chain: FunctionCallError: submission is not pending
+       tx 2NU1yutzv8tas2TosKjXvsEd9niun78Pmpf2zLorNHEc https://testnet.nearblocks.io/txns/2NU1yutzv8tas2TosKjXvsEd9niun78Pmpf2zLorNHEc
+
+allowance of the worker key: 0.995192 NEAR left of 1 NEAR granted
+setup (operator, full-access key): added function-call key ed25519:5Ys4RNMGyvDaLNiY2S6KgVtr3fRy2J6stfSwmgTQPEAB with allowance 0.001 NEAR - tx 3GCZUfAdBgmnhSpi6XtHmoTP5kxeidGaeHAVPzfPa4Fw
+[11] post_verdict with a key whose allowance (0.001 NEAR) is below the cost of the call
+    -> refused by the RPC (never included): AccessKeyNotEnoughAllowanceActionError: Not enough allowance for access key ed25519:5Ys4RNMGyvDaLNiY2S6KgVtr3fRy2J6stfSwmgTQPEAB on account verifier.replaycourt.testnet (allowance: 1000000000000000000000, cost: 100920854672762000000000)
+cleanup (operator, full-access key): deleted that key - tx HytEn4nnKH6o9hc5ZQ1Ht3jWYxFjrLutoJPmPkV4oA9T
+
+| # | attempt with the stolen function-call key | result | error | tx |
+|---|---|---|---|---|
+| 1 | transfer 0.01 NEAR to hunter1.replaycourt.testnet | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 2 | add a new full-access key to the verifier account | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 3 | add a new function-call key without allowance limit | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 4 | delete the verifier account (beneficiary hunter1.replaycourt.testnet) | refused by the RPC (never included) | `AccessKeyRequiresFullAccessActionError`: Access key requires full access | - |
+| 5 | call withdraw_pool(0) on the contract | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method withdraw_pool | - |
+| 6 | call finalize (another method of the same contract) | refused by the RPC (never included) | `AccessKeyMethodNameMismatchActionError`: Access key does not allow method finalize | - |
+| 7 | post_verdict with 1 yoctoNEAR attached | refused by the RPC (never included) | `AccessKeyDepositWithFunctionCallActionError`: Deposit is not allowed with function call | - |
+| 8 | post_verdict on another contract (contract.rc-judge-8807c00f.testnet) | refused by the RPC (never included) | `AccessKeyReceiverMismatchActionError`: Access key receiver contract.replaycourt.testnet does not match transaction receiver contract.rc-judge-8807c00f.testnet | - |
+| 9 | post_verdict on submission #11 of a program with another verifier | failed on chain | `FunctionCallError`: only the program verifier can post verdicts | [`GejWN3Xs…`](https://testnet.nearblocks.io/txns/GejWN3XsGEGTqUucNp5Jr12m1APvWERPLWqMHd2CBSxL) |
+| 10 | post a second verdict on the already judged submission #0 | failed on chain | `FunctionCallError`: submission is not pending | [`2NU1yutz…`](https://testnet.nearblocks.io/txns/2NU1yutzv8tas2TosKjXvsEd9niun78Pmpf2zLorNHEc) |
+| 11 | post_verdict with a key whose allowance (0.001 NEAR) is below the cost of the call | refused by the RPC (never included) | `AccessKeyNotEnoughAllowanceActionError`: Not enough allowance for access key ed25519:5Ys4RNMGyvDaLNiY2S6KgVtr3fRy2J6stfSwmgTQPEAB on account verifier.replaycourt.testnet (allowance: 1000000000000000000000, cost: 100920854672762000000000) | - |
+
+ALL 11 ATTEMPTS FAILED, as they must.

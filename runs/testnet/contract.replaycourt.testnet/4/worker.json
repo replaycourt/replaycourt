@@ -1,0 +1,20 @@
+{
+  "submission_id": 4,
+  "program_id": 0,
+  "hunter_id": "hunter3.replaycourt.testnet",
+  "engine_exit": 1,
+  "disclose": "after-settlement",
+  "posted": {
+    "outcome": "invalid",
+    "severity": null,
+    "duplicate_of": null,
+    "fingerprint": "731497400b6eccd21b9f598c48efadf7750ccd181017277644a616b026c16ac9",
+    "evidence_sha256": "0792d124f3e06be8088cf5d1aceff21a2dde9dce80edcbe864d5208f82f6445d",
+    "evidence_uri": "runs/testnet/contract.replaycourt.testnet/4/evidence.json",
+    "chain_id": 1,
+    "fork_block": "19000000",
+    "reason": "PoC test `testExploit()` passes on the fork. The \"damage\" only happens because the PoC acts as the victim via vm.prank (0x28c6c06298d514db089934071355e5743bf21d60). A real attacker cannot do that."
+  },
+  "tx_hash": "EMXodkQ5d4JPkmAQmb3TpKfN35txoR75ygATCEibqjvY",
+  "posted_at": "2026-11-02T20:48:37.227Z"
+}

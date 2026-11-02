@@ -1,0 +1,47 @@
+=== #0 hunter2 demo/v2/s1-first-try.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1487 NEAR (bond 0.05 + storage estimate 0.0987); sealed 7208 bytes; commitment 772414c5d6c702913532c6bf479c6730686fc67d49801a2b8bea9c6177e95964
+submission id: 0
+hunter: hunter2.replaycourt.testnet
+commitment: 772414c5d6c702913532c6bf479c6730686fc67d49801a2b8bea9c6177e95964
+submit_report: tx 5mCmGWEfHUNhYccu2wcaRuqWDbgrELCydFteLAHmP21G
+  https://testnet.nearblocks.io/txns/5mCmGWEfHUNhYccu2wcaRuqWDbgrELCydFteLAHmP21G
+
+=== #1 hunter1 engine/reports/01_templedao_stax.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1481 NEAR (bond 0.05 + storage estimate 0.0981); sealed 7144 bytes; commitment 9d6b5f17de5dd2cf68b3084d5a4eb3f1b6bdda0f09b0607149c99433bde39ccd
+submission id: 1
+hunter: hunter1.replaycourt.testnet
+commitment: 9d6b5f17de5dd2cf68b3084d5a4eb3f1b6bdda0f09b0607149c99433bde39ccd
+submit_report: tx B9zDQa3f46rTFjAfE9ZpELeEiMJkcCA4EhSc6ktmTxzf
+  https://testnet.nearblocks.io/txns/B9zDQa3f46rTFjAfE9ZpELeEiMJkcCA4EhSc6ktmTxzf
+
+=== #2 hunter3 engine/reports/03_stax_duplicate.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.127 NEAR (bond 0.05 + storage estimate 0.077); sealed 5040 bytes; commitment 783c4f8bf45bd3c0d77f10a6f77dbc3ac7484614c44a3f85c1773c7e1184ee4f
+submission id: 2
+hunter: hunter3.replaycourt.testnet
+commitment: 783c4f8bf45bd3c0d77f10a6f77dbc3ac7484614c44a3f85c1773c7e1184ee4f
+submit_report: tx 6S4pXQLd1DN95mR5bzTDfTUPVGGFjdBMbgotT5Fzopuy
+  https://testnet.nearblocks.io/txns/6S4pXQLd1DN95mR5bzTDfTUPVGGFjdBMbgotT5Fzopuy
+
+=== #3 hunter2 engine/reports/04_seneca_bogus.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1119 NEAR (bond 0.05 + storage estimate 0.0619); sealed 3536 bytes; commitment ab437372c4dcd5a46f4815a519538ff285dbaa4cca8d613877f111620478410e
+submission id: 3
+hunter: hunter2.replaycourt.testnet
+commitment: ab437372c4dcd5a46f4815a519538ff285dbaa4cca8d613877f111620478410e
+submit_report: tx DkSABkQARfMj831Sk4JgidVhvAKew7CnxKwcG6QAA4eu
+  https://testnet.nearblocks.io/txns/DkSABkQARfMj831Sk4JgidVhvAKew7CnxKwcG6QAA4eu
+
+=== #4 hunter3 engine/reports/05_fake_profit.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1116 NEAR (bond 0.05 + storage estimate 0.0616); sealed 3528 bytes; commitment a8e262a458e0043df6c657c10c48b20e782a8e905065e1ff13f05c8fd409f3e1
+submission id: 4
+hunter: hunter3.replaycourt.testnet
+commitment: a8e262a458e0043df6c657c10c48b20e782a8e905065e1ff13f05c8fd409f3e1
+submit_report: tx 5ArVEop1wb2gkGcX2W8h1Q7G967yQCKSkdCNVY52oz3H
+  https://testnet.nearblocks.io/txns/5ArVEop1wb2gkGcX2W8h1Q7G967yQCKSkdCNVY52oz3H
+
+=== #5 hunter1 engine/reports/06_local_reentrancy.md
+program 0 "Ethereum DeFi replay bounty": required bond 0.05 NEAR, attaching 0.1255 NEAR (bond 0.05 + storage estimate 0.0755); sealed 4916 bytes; commitment e899f0012509c583e06fd6bfc4464a53dfa2627bac3673cfce19e9da55258dd9
+submission id: 5
+hunter: hunter1.replaycourt.testnet
+commitment: e899f0012509c583e06fd6bfc4464a53dfa2627bac3673cfce19e9da55258dd9
+submit_report: tx BjQFGwWQdWJGaDT1ADcmU1g6fPs8sPKNVuW4DDnYteov
+  https://testnet.nearblocks.io/txns/BjQFGwWQdWJGaDT1ADcmU1g6fPs8sPKNVuW4DDnYteov

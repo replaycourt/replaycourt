@@ -1,0 +1,122 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contract
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v5
+      # rust-toolchain.toml pins rustc 1.95.0 with the wasm32 target; rustup installs it on first use.
+      - name: Toolchain
+        run: rustup show active-toolchain || rustup toolchain install
+      - name: Format
+        run: cargo fmt --check
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Unit tests
+        run: cargo test --lib
+      - name: Install cargo-near 0.22.0
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/cargo-near/releases/download/cargo-near-v0.22.0/cargo-near-installer.sh | sh
+      # build.sh remaps local paths, fails if the wasm still contains /Users/, /home/ or the
+      # user name, and compares the sha256 with contract/WASM_SHA256 (exit 3 on a mismatch).
+      # WASM_SHA256 is recorded from a developer build. cargo-near's non-reproducible build is
+      # not guaranteed to be bit-identical across operating systems, so a mismatch is reported
+      # as a warning while any other failure (build, privacy check) fails the job.
+      - name: Build wasm (path-remapped) and compare with WASM_SHA256
+        run: |
+          set +e
+          ./build.sh --check
+          code=$?
+          set -e
+          if [ "$code" -eq 3 ]; then
+            echo "::warning file=contract/WASM_SHA256::wasm sha256 $(sha256sum target/near/replaycourt.wasm | cut -d' ' -f1) differs from contract/WASM_SHA256 $(cat WASM_SHA256)"
+          elif [ "$code" -ne 0 ]; then
+            exit "$code"
+          fi
+          sha256sum target/near/replaycourt.wasm
+      - name: Fetch near-sandbox 2.14.0
+        run: |
+          mkdir -p "$RUNNER_TEMP/sandbox"
+          curl -sSfL https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore/Linux-x86_64/2.14.0/near-sandbox.tar.gz \
+            | tar -xz -C "$RUNNER_TEMP/sandbox"
+          echo "NEAR_SANDBOX_BIN_PATH=$(find "$RUNNER_TEMP/sandbox" -type f -name near-sandbox | head -n1)" >> "$GITHUB_ENV"
+      - name: Sandbox integration test
+        run: cargo test --test sandbox -- --nocapture
+
+  agent:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node --test web/test/*.test.mjs
+
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.7
+      - name: Verify vendored third-party files
+        run: python3 -I engine/tools/vendor.py verify
+      # Registry and duplicate check (including the S1 regression: an invalid first try never makes
+      # the fixed report a duplicate), UTC timestamps. Standard library only, no network, no forge.
+      - name: Engine unit tests
+        run: python3 -I -m unittest discover -s engine/tests -v
+      # Report 06 runs in local mode (no fork, no archive RPC needed). Expected verdict:
+      # needs_human, exit code 2. Fork reports 01-05 need an Ethereum archive RPC; see engine/README.md.
+      - name: Replay report 06 (local mode)
+        run: |
+          set +e
+          python3 -I engine/replay.py check engine/reports/06_local_reentrancy.md --json --no-register > verdict06.json
+          code=$?
+          set -e
+          cat verdict06.json
+          test "$code" -eq 2
+
+  mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      # mcp/ imports modules from agent/, so both need their dependencies.
+      - run: npm ci
+        working-directory: agent
+      - run: npm ci
+        working-directory: mcp
+      - run: npm test
+        working-directory: mcp
+      - run: npm run typecheck
+        working-directory: mcp

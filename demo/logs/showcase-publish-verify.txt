@@ -1,0 +1,56 @@
+=== publish --dry-run
+publish: contract.replaycourt.testnet (testnet), runs-private/testnet/contract.replaycourt.testnet/ -> runs/testnet/contract.replaycourt.testnet/ (dry run)
+  #0: final -> would publish
+  #1: final -> would publish
+  #2: final -> would publish
+  #3: final -> would publish
+  #4: final -> would publish
+  #5: final -> would publish
+  #6: final -> would publish
+  #7: final -> would publish
+  #8: final -> would publish
+  #9: final -> would publish
+  #10: final -> would publish
+11 to publish, 0 kept private
+
+=== publish
+publish: contract.replaycourt.testnet (testnet), runs-private/testnet/contract.replaycourt.testnet/ -> runs/testnet/contract.replaycourt.testnet/
+  #0: final -> published
+  #1: final -> published
+  #2: final -> published
+  #3: final -> published
+  #4: final -> published
+  #5: final -> published
+  #6: final -> published
+  #7: final -> published
+  #8: final -> published
+  #9: final -> published
+  #10: final -> published
+11 published, 0 kept private
+
+=== verify-onchain
+verify-onchain: contract contract.replaycourt.testnet (testnet), version 2.0.0: evidence must be a replaycourt.evidence/v1 envelope bound to its submission
+evidence files: below runs/ in the repository; pinned showcase programs 0, 1 (--all-programs checks every program)
+
+program 0 "Ethereum DeFi replay bounty": 11 submission(s)
+  id   status     outcome                       severity      payout (NEAR)  evidence
+  ---  ---------  ----------------------------  ------------  -------------  --------
+  #0   invalid    invalid                       -             -              ok
+  #1   paid       valid                         critical      0.4            ok
+  #2   duplicate  duplicate of #1               -             -              ok
+  #3   invalid    invalid                       -             -              ok
+  #4   invalid    invalid                       -             -              ok
+  #5   paid       needs_human -> valid (owner)  high (owner)  0.25           ok
+  #6   paid       valid                         critical      0.4            ok
+  #7   invalid    invalid                       -             -              ok
+  #8   invalid    invalid                       -             -              ok
+  #9   invalid    invalid                       -             -              ok
+  #10  invalid    invalid                       -             -              ok
+
+program 1 "Attack demo d: program judged by another verifier": 1 submission(s)
+  id   status     outcome  severity  payout (NEAR)  evidence
+  ---  ---------  -------  --------  -------------  --------------
+  #11  withdrawn  -        -         -              - (no verdict)
+
+11 posted verdict(s) checked: 11 ok, 0 mismatch, 0 unbound, 0 refused, 0 missing, 0 not disclosed yet; 1 submission(s) without a verdict
+result: every posted verdict matches its evidence file

@@ -1,0 +1,334 @@
+{
+  "schema": "replaycourt.verdict/v1",
+  "report": {
+    "id": "sub-4",
+    "title": "Alleged drain: the attacker ends up holding 1,000,000 USDC",
+    "file": "report.md",
+    "path_rel": "../runs-private/testnet/contract.replaycourt.testnet/4/report.md",
+    "sha256": "00ba6064884abd907d2dcd486a84cc54cdd747a4ee668144c13e52ef5f4cd729",
+    "author": "Demo (deliberately invalid: the \"profit\" is faked with cheatcodes)",
+    "claimed_severity": "critical",
+    "declared": {
+      "attackers": [],
+      "victims": [
+        "0x28c6c06298d514db089934071355e5743bf21d60"
+      ],
+      "targets": [
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+      ]
+    }
+  },
+  "outcome": "invalid",
+  "verdict": "invalid",
+  "verdict_label": "invalid",
+  "exit_code": 1,
+  "severity_hint": {
+    "level": "none",
+    "provisional": false,
+    "basis": []
+  },
+  "reasons": [
+    "PoC test `testExploit()` passes on the fork.",
+    "The \"damage\" only happens because the PoC acts as the victim via vm.prank (0x28c6c06298d514db089934071355e5743bf21d60). A real attacker cannot do that."
+  ],
+  "warnings": [],
+  "duplicate": {
+    "status": "none",
+    "of": null,
+    "thresholds": {
+      "duplicate": {
+        "fingerprint": 0.75,
+        "text": 0.7,
+        "code": 0.9
+      },
+      "possible": {
+        "fingerprint": 0.5,
+        "text": 0.45,
+        "code": 0.7
+      }
+    },
+    "candidates": [
+      {
+        "id": "sub-2",
+        "title": "StaxLPStaking lets anyone withdraw all LP tokens via a fake old-staking address",
+        "verdict_code": "valid",
+        "onchain_status": "duplicate",
+        "scores": {
+          "text": 0.005,
+          "code": 0.474,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:51Z",
+        "duplicate_of": "sub-1"
+      },
+      {
+        "id": "sub-1",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "valid",
+        "onchain_status": "valid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.437,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": true,
+        "original": "sub-1",
+        "triaged_at": "2026-11-02T20:47:34Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-3",
+        "title": "Alleged arbitrary token theft via a direct transferFrom around the Seneca Chamber",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.011,
+          "code": 0.699,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:48:10Z",
+        "duplicate_of": null
+      },
+      {
+        "id": "sub-0",
+        "title": "Missing access control in StaxLPStaking.migrateStake() allows draining all LP tokens",
+        "verdict_code": "invalid",
+        "onchain_status": "invalid",
+        "scores": {
+          "text": 0.0,
+          "code": 0.44,
+          "fingerprint": 0.0
+        },
+        "level": "none",
+        "exact_copy": false,
+        "eligible": false,
+        "original": null,
+        "triaged_at": "2026-11-02T20:47:17Z",
+        "duplicate_of": null
+      }
+    ],
+    "compared_with": 4,
+    "not_original": []
+  },
+  "fork": {
+    "chain": "ethereum",
+    "chain_src": "front-matter",
+    "chain_id": 1,
+    "local": false,
+    "declared_block": 19000000,
+    "block_source": "front-matter",
+    "rpc_attempts": [
+      {
+        "url": "https://ethereum-rpc.publicnode.com",
+        "chain_id": 1,
+        "head": 26329583,
+        "reason": "no archive access: HTTP 403: {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32602,\"message\":\"Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode\"},\"id\":1",
+        "ok": false
+      },
+      {
+        "url": "https://eth.drpc.org",
+        "chain_id": 1,
+        "head": 26329583,
+        "archive_ok": true,
+        "ok": true
+      }
+    ],
+    "rpc_url": "https://eth.drpc.org",
+    "poc_fork_block": 19000000
+  },
+  "poc": {
+    "origin": "inline",
+    "sha256": "2b13068e57a43a7c34f775b568d93295cc68dd416f22f942eb44f32c9a6ddd09",
+    "fork_calls": [
+      {
+        "call": "createSelectFork",
+        "arg": "mainnet",
+        "literal": true,
+        "block": 19000000
+      }
+    ],
+    "copy": "PoC.t.sol"
+  },
+  "execution": {
+    "build": {
+      "ok": true,
+      "duration_s": 4.47,
+      "solc": [
+        "0.8.38+commit.1835d247"
+      ],
+      "evm_version": "shanghai"
+    },
+    "tests": [
+      {
+        "suite": "test/poc/PoC.t.sol:FakeProfitTest",
+        "name": "testExploit()",
+        "status": "Success",
+        "reason": null,
+        "gas": 328556,
+        "duration": "8ms 289µs 981ns",
+        "fork_block_number": 19000000
+      }
+    ],
+    "selected_test": "testExploit()",
+    "poc_logs": [
+      "Profit: USDC: 1001000"
+    ]
+  },
+  "evidence": {
+    "static_flags": [],
+    "fork_cheatcodes": [
+      {
+        "phase": "Setup",
+        "cheat": "createSelectFork(string,uint256)",
+        "target": "mainnet",
+        "allowed": true,
+        "success": true
+      }
+    ],
+    "attacker_addresses": [
+      "0x7fa9385be102ac3eac297483dd6233d62b3e1496"
+    ],
+    "balance_changes": [
+      {
+        "role": "attacker",
+        "address": "0x7fa9385be102ac3eac297483dd6233d62b3e1496",
+        "label": "attacker total (1 addr.)",
+        "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "delta_raw": "1000000000",
+        "usd": 1000.0,
+        "sources": [
+          {
+            "from": "0x28c6c06298d514db089934071355e5743bf21d60",
+            "amount": "1000000000"
+          }
+        ]
+      },
+      {
+        "role": "victim",
+        "address": "0x28c6c06298d514db089934071355e5743bf21d60",
+        "label": "victim",
+        "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "delta_raw": "-1000000000",
+        "prebalance_raw": "673729857178891",
+        "fraction_of_prebalance": 0.0,
+        "usd": -1000.0
+      }
+    ],
+    "valuation": {
+      "native_usd": 2562.92441874,
+      "damage_usd": 1000.0,
+      "max_fraction": 1.484274430388613e-06,
+      "attacker_gain_usd": 1000.0,
+      "attacker_spent_usd": 0.0,
+      "attacker_fully_priced": true,
+      "unpriced_assets": [],
+      "price_block": 19000000
+    },
+    "cheatcodes": {
+      "counts": {
+        "accesses": 1,
+        "assertGe": 1,
+        "createSelectFork": 1,
+        "load": 3,
+        "prank": 1,
+        "record": 1,
+        "store": 3
+      },
+      "funding_to_attacker": [],
+      "state_manipulation": [
+        {
+          "phase": "Execution",
+          "cheat": "store(address,bytes32,bytes32)",
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "store(address,bytes32,bytes32)",
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        },
+        {
+          "phase": "Execution",
+          "cheat": "store(address,bytes32,bytes32)",
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        }
+      ],
+      "time": [],
+      "fork": [
+        {
+          "phase": "Setup",
+          "cheat": "createSelectFork(string,uint256)",
+          "args": [
+            19000000
+          ]
+        }
+      ],
+      "host": [],
+      "expect": []
+    },
+    "pranked": [
+      {
+        "address": "0x28c6c06298d514db089934071355e5743bf21d60",
+        "phases": [
+          "Execution"
+        ],
+        "count": 1,
+        "role": "victim_impersonated",
+        "has_code_at_fork": false
+      }
+    ],
+    "code_checks": [
+      {
+        "role": "target",
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "has_code": true
+      },
+      {
+        "role": "victim",
+        "address": "0x28c6c06298d514db089934071355e5743bf21d60",
+        "has_code": false
+      }
+    ],
+    "nft_transfers": 0,
+    "trace_summary": [
+      "- USDC.transfer(address,uint256) [as victim via vm.prank]"
+    ],
+    "gas": {
+      "test_gas": 328556,
+      "execution_gas_used": 408156
+    }
+  },
+  "fingerprint": {
+    "chain": "ethereum",
+    "calls": [],
+    "losers": [
+      "0x28c6c06298d514db089934071355e5743bf21d60"
+    ],
+    "gain_assets": [
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    ]
+  },
+  "pipeline": {
+    "engine": "replaycourt-engine",
+    "version": "0.4.0",
+    "started_at": "2026-11-02T20:48:15Z",
+    "forge_version": "forge Version: 1.8.7",
+    "finished_at": "2026-11-02T20:48:32Z",
+    "duration_s": 17.7,
+    "workspace_kept": null
+  },
+  "status": "ok"
+}
