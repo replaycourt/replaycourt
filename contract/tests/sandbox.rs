@@ -46,7 +46,23 @@ fn amount(v: &Value) -> u128 {
     v.as_str().unwrap().parse().unwrap()
 }
 
-async fn balance(a: &Account) -> R<u128> {
+/// Wait for three more blocks. A call returns once its outcome is known, but the refund of its
+/// unused gas lands a block or two later (and transfers it started may still be in flight), so
+/// a balance read straight after a call can miss money that is already on its way.
+async fn settle(worker: &Worker<Sandbox>) -> R<()> {
+    let start = worker.view_block().await?.height();
+    for _ in 0..600 {
+        if worker.view_block().await?.height() >= start + 3 {
+            return Ok(());
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+    }
+    Err("the sandbox produced no new block for 60 s".into())
+}
+
+/// Balance after all refunds and transfers in flight have landed.
+async fn balance(worker: &Worker<Sandbox>, a: &Account) -> R<u128> {
+    settle(worker).await?;
     Ok(a.view_account().await?.balance.as_yoctonear())
 }
 
@@ -213,8 +229,8 @@ async fn sandbox_end_to_end() -> R<()> {
     );
 
     // --- verdicts, all signed with the function-call key
-    let v_balance0 = balance(&verifier).await?;
-    let h2_balance0 = balance(&hunter2).await?;
+    let v_balance0 = balance(&worker, &verifier).await?;
+    let h2_balance0 = balance(&worker, &hunter2).await?;
     let pool0 = amount(&program(&contract, pid).await?["pool"]);
     let bond_b = amount(&submission(&contract, b).await?["bond"]);
     let bond_c = amount(&submission(&contract, c).await?["bond"]);
@@ -241,9 +257,9 @@ async fn sandbox_end_to_end() -> R<()> {
         verdict_logs.extend(r.logs().iter().map(|l| l.to_string()));
     }
     // the verifier earned two fees (invalid + duplicate). Its balance also pays the gas of the
-    // function-call key, and gas is expensive on the sandbox, so count the fees in the events;
-    // the exact arrival of a fee is checked at `finalize` below, where the verifier pays no gas
-    let v_balance1 = balance(&verifier).await?;
+    // function-call key, so count the fees in the events; the exact arrival of a fee is checked
+    // at `finalize` below, where the verifier pays no gas
+    let v_balance1 = balance(&worker, &verifier).await?;
     assert!(v_balance1 <= v_balance0 + 2 * FEE);
     let fee_field = format!("\"verifier_fee\":\"{}\"", FEE);
     assert_eq!(
@@ -255,7 +271,7 @@ async fn sandbox_end_to_end() -> R<()> {
         "verifier fees"
     );
     assert_eq!(
-        balance(&hunter2).await? - h2_balance0,
+        balance(&worker, &hunter2).await? - h2_balance0,
         bond_c - FEE,
         "duplicate refund"
     );
@@ -298,7 +314,7 @@ async fn sandbox_end_to_end() -> R<()> {
         Err(_) => true,
         Ok(r) => r.is_failure(),
     });
-    assert_eq!(balance(&verifier).await?, v_balance1);
+    assert_eq!(balance(&worker, &verifier).await?, v_balance1);
 
     // --- dispute e inside the window
     let no_bond = owner
@@ -361,7 +377,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .into_result()?;
     assert_eq!(submission(&contract, d).await?["status"], "paid");
     let bond_e = amount(&submission(&contract, e).await?["bond"]);
-    let h1_before = balance(&hunter1).await?;
+    let h1_before = balance(&worker, &hunter1).await?;
     owner
         .call(contract.id(), "resolve")
         .args_json(json!({ "submission_id": e, "outcome": "invalid", "severity": null, "note": "dup of internal" }))
@@ -370,7 +386,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .into_result()?;
     assert_eq!(submission(&contract, e).await?["status"], "rejected");
     assert_eq!(
-        balance(&hunter1).await? - h1_before,
+        balance(&worker, &hunter1).await? - h1_before,
         bond_e + DISPUTE_BOND,
         "overruled dispute: bond + dispute bond to the hunter"
     );
@@ -388,8 +404,8 @@ async fn sandbox_end_to_end() -> R<()> {
             break;
         }
     }
-    let h1_before = balance(&hunter1).await?;
-    let v_before = balance(&verifier).await?;
+    let h1_before = balance(&worker, &hunter1).await?;
+    let v_before = balance(&worker, &verifier).await?;
     let bond_a = amount(&submission(&contract, a).await?["bond"]);
     anyone
         .call(contract.id(), "finalize")
@@ -398,11 +414,11 @@ async fn sandbox_end_to_end() -> R<()> {
         .await?
         .into_result()?;
     assert_eq!(
-        balance(&hunter1).await? - h1_before,
+        balance(&worker, &hunter1).await? - h1_before,
         500 * MILLI + bond_a,
         "payout + bond"
     );
-    assert_eq!(balance(&verifier).await? - v_before, FEE);
+    assert_eq!(balance(&worker, &verifier).await? - v_before, FEE);
     let sa = submission(&contract, a).await?;
     assert_eq!(sa["status"], "paid");
     assert_eq!(amount(&sa["payout"]), 500 * MILLI);
@@ -427,7 +443,7 @@ async fn sandbox_end_to_end() -> R<()> {
         }
     }
     let bond_f = amount(&submission(&contract, f).await?["bond"]);
-    let h2_before = balance(&hunter2).await?;
+    let h2_before = balance(&worker, &hunter2).await?;
     let wd = hunter2
         .call(contract.id(), "withdraw_pending")
         .args_json(json!({ "submission_id": f }))
@@ -435,9 +451,10 @@ async fn sandbox_end_to_end() -> R<()> {
         .await?
         .into_result()?;
     assert!(wd.logs().iter().any(|l| l.contains("report_withdrawn")));
-    // the sandbox charges up to 1 milliNEAR per Tgas, and the default call attaches 30 Tgas
+    // hunter2 paid the gas of this call: the default 10 Tgas cost at most about 10 milliNEAR at
+    // the sandbox's gas price
     let gas_cost = 40 * MILLI;
-    let got = balance(&hunter2).await? - h2_before;
+    let got = balance(&worker, &hunter2).await? - h2_before;
     assert!(
         got <= bond_f && got + gas_cost >= bond_f,
         "refund {} vs bond {}",
@@ -470,8 +487,8 @@ async fn sandbox_end_to_end() -> R<()> {
             AccessKey::function_call_access(
                 contract.id(),
                 &["submit_report_from_vault", "finalize", "withdraw_pending"],
-                // max_gas at the sandbox's gas price needs far more allowance than on testnet
-                Some(NearToken::from_near(3)),
+                // each call below attaches 100 Tgas, about 0.1 NEAR of allowance on the sandbox
+                Some(NearToken::from_near(1)),
             ),
         )
         .transact()
@@ -482,7 +499,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .call(contract.id(), "submit_report_from_vault")
         .args_json(json!({ "program_id": pid2, "title": "from the vault",
                            "commitment": format!("{:064x}", 7), "sealed": "eA==" }))
-        .max_gas()
+        .gas(near_workspaces::types::Gas::from_tgas(100))
         .transact()
         .await?
         .into_result()?
@@ -518,7 +535,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .call(contract.id(), "submit_report_from_vault")
         .args_json(json!({ "program_id": pid2, "title": "second",
                            "commitment": format!("{:064x}", 8), "sealed": "eA==" }))
-        .max_gas()
+        .gas(near_workspaces::types::Gas::from_tgas(100))
         .transact()
         .await?
         .into_result()?;
@@ -526,7 +543,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .call(contract.id(), "submit_report_from_vault")
         .args_json(json!({ "program_id": pid2, "title": "third",
                            "commitment": format!("{:064x}", 9), "sealed": "eA==" }))
-        .max_gas()
+        .gas(near_workspaces::types::Gas::from_tgas(100))
         .transact()
         .await?;
     assert!(format!("{:?}", over.into_result().unwrap_err()).contains("max_spend_per_day"));
@@ -609,7 +626,7 @@ async fn sandbox_end_to_end() -> R<()> {
 
     // drain program 0 completely: the owner gets exactly the pool back
     let p = program(&contract, pid).await?;
-    let o_before = balance(&owner).await?;
+    let o_before = balance(&worker, &owner).await?;
     let w = owner
         .call(contract.id(), "withdraw_pool")
         .args_json(json!({ "program_id": pid, "amount": p["pool"] }))
@@ -617,7 +634,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .await?
         .into_result()?;
     assert!(w.logs().iter().any(|l| l.contains("pool_withdrawn")));
-    assert!(balance(&owner).await? > o_before);
+    assert!(balance(&worker, &owner).await? > o_before);
     assert_eq!(amount(&program(&contract, pid).await?["pool"]), 0);
     Ok(())
 }
