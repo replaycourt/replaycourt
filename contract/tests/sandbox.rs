@@ -218,6 +218,7 @@ async fn sandbox_end_to_end() -> R<()> {
     let pool0 = amount(&program(&contract, pid).await?["pool"]);
     let bond_b = amount(&submission(&contract, b).await?["bond"]);
     let bond_c = amount(&submission(&contract, c).await?["bond"]);
+    let mut verdict_logs: Vec<String> = Vec::new();
     for (id, v) in [
         (a, verdict("valid", Some("high"), None)),
         (b, verdict("invalid", None, None)),
@@ -237,13 +238,20 @@ async fn sandbox_end_to_end() -> R<()> {
                 .iter()
                 .any(|l| l.contains("\"event\":\"verdict_posted\""))
         );
+        verdict_logs.extend(r.logs().iter().map(|l| l.to_string()));
     }
-    // the verifier earned two fees (invalid + duplicate); the function-call key's gas is
-    // charged to the account (and counted against the key's allowance), so allow for it
+    // the verifier earned two fees (invalid + duplicate). Its balance also pays the gas of the
+    // function-call key, and gas is expensive on the sandbox, so count the fees in the events;
+    // the exact arrival of a fee is checked at `finalize` below, where the verifier pays no gas
     let v_balance1 = balance(&verifier).await?;
     assert!(v_balance1 <= v_balance0 + 2 * FEE);
-    assert!(
-        v_balance1 + 10 * MILLI >= v_balance0 + 2 * FEE,
+    let fee_field = format!("\"verifier_fee\":\"{}\"", FEE);
+    assert_eq!(
+        verdict_logs
+            .iter()
+            .filter(|l| l.contains(&fee_field))
+            .count(),
+        2,
         "verifier fees"
     );
     assert_eq!(
@@ -426,7 +434,9 @@ async fn sandbox_end_to_end() -> R<()> {
         .transact()
         .await?
         .into_result()?;
-    let gas_cost = wd.total_gas_burnt.as_gas() as u128 * 100_000_000; // upper bound at 0.1 Ggas price
+    assert!(wd.logs().iter().any(|l| l.contains("report_withdrawn")));
+    // the sandbox charges up to 1 milliNEAR per Tgas, and the default call attaches 30 Tgas
+    let gas_cost = 40 * MILLI;
     let got = balance(&hunter2).await? - h2_before;
     assert!(
         got <= bond_f && got + gas_cost >= bond_f,
@@ -460,7 +470,8 @@ async fn sandbox_end_to_end() -> R<()> {
             AccessKey::function_call_access(
                 contract.id(),
                 &["submit_report_from_vault", "finalize", "withdraw_pending"],
-                Some(NearToken::from_millinear(250)),
+                // max_gas at the sandbox's gas price needs far more allowance than on testnet
+                Some(NearToken::from_near(3)),
             ),
         )
         .transact()
