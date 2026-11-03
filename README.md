@@ -13,9 +13,10 @@ policy, using a key that cannot withdraw.
 Built at NEAR HACKATHON (2026). Runs on NEAR **testnet**; no step touches mainnet.
 
 - Showcase contract: [`contract.replaycourt.testnet`](https://testnet.nearblocks.io/address/contract.replaycourt.testnet), described in [`demo/SHOWCASE.md`](demo/SHOWCASE.md)
+- Live explorer, no install: <https://replaycourt.github.io/replaycourt/web/>
 - Attack demos for the security track: [`demo/ATTACKS.md`](demo/ATTACKS.md)
 - Ways for judges to check everything: [`demo/README.md`](demo/README.md)
-- Demo video: `demo/video/` (the script and the build pipeline are in the repo; the rendered video is attached to the demo post)
+- Demo video: `demo/video/` (the script and the build pipeline are in the repo; the rendered video is attached to the [demo post](https://x.com/replaycourt/status/2117750139745910997))
 
 ## The problem
 

@@ -38,6 +38,8 @@ Screenshots of the showcase, in [`../docs/screenshots/`](../docs/screenshots/):
 
 ## Run it
 
+Hosted on GitHub Pages: <https://replaycourt.github.io/replaycourt/web/>. To run it locally:
+
 The evidence files live in `runs/` at the repository root, so serve the **repository root**, not
 `web/`:
 
