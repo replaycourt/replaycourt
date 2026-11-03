@@ -24,10 +24,16 @@ import sys
 import wave
 
 RATE = 48000
+PIPER_OPTIONS = {
+    "lengthScale": "--length-scale",
+    "noiseScale": "--noise-scale",
+    "noiseW": "--noise-w-scale",
+    "sentenceSilence": "--sentence-silence",
+}
 
 
 def clip_path(work, voice, text):
-    settings = json.dumps({k: voice.get(k) for k in ("engine", "name", "rate", "lengthScale")}, sort_keys=True)
+    settings = json.dumps({k: voice.get(k) for k in ("engine", "name", "rate", *PIPER_OPTIONS)}, sort_keys=True)
     key = hashlib.sha256(f"{settings}|{text}".encode("utf-8")).hexdigest()[:16]
     return os.path.join(work, "voice", key)
 
@@ -45,8 +51,9 @@ def synthesize(voice, text, out):
     if not python or not voices:
         sys.exit("voice engine piper needs REPLAYCOURT_PIPER_PYTHON and REPLAYCOURT_PIPER_VOICES (see README.md)")
     cmd = [python, "-I", "-m", "piper", "--model", os.path.join(voices, voice["name"] + ".onnx"), "--output-file", out]
-    if voice.get("lengthScale"):
-        cmd += ["--length-scale", str(voice["lengthScale"])]
+    for key, flag in PIPER_OPTIONS.items():
+        if voice.get(key) is not None:
+            cmd += [flag, str(voice[key])]
     subprocess.run(cmd, input=text.encode("utf-8"), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 

@@ -16,12 +16,15 @@
   "voice": {
     "engine": "piper",
     "name": "en_US-lessac-high",
-    "lengthScale": 1.02,
-    "sceneLeadIn": 0.35,
-    "cueGap": 0.25,
-    "sceneTail": 0.45,
-    "endHold": 1.3,
-    "captionHold": 0.7
+    "lengthScale": 1.2,
+    "sceneLeadIn": 0.45,
+    "cueGap": 0.45,
+    "sceneTail": 0.6,
+    "endHold": 1.0,
+    "captionHold": 0.7,
+    "noiseScale": 0.5,
+    "noiseW": 0.6,
+    "sentenceSilence": 0.3
   },
   "scenes": [
     {
@@ -158,26 +161,23 @@
           "say": "A real testnet run: the Temple DAO exploit."
         },
         {
-          "caption": "On chain: a commitment bound to the hunter, the sealed report, a bond."
+          "caption": "On chain: a commitment, the sealed report, a bond."
         },
         {
-          "caption": "The verifier replays it on an Ethereum fork, at the stated block."
+          "caption": "The verifier replays it at the stated block."
         },
         {
-          "caption": "It reads the trace, not the exploit's output: the victim lost all its LP tokens.",
-          "gapAfter": 0.25
+          "caption": "It reads the trace, not the output: the victim lost all its LP tokens."
         },
         {
-          "caption": "Valid, critical. Posted with a key that can call nothing else.",
-          "gapAfter": 0.2
+          "caption": "Valid, critical. Posted with a key that can call nothing else."
         },
         {
           "caption": "After the challenge window, escrow pays 0.4 NEAR.",
-          "say": "After the challenge window, escrow pays zero point four NEAR.",
-          "gapAfter": 0.15
+          "say": "After the challenge window, escrow pays zero point four NEAR."
         },
         {
-          "caption": "And the evidence matches on chain, bound to this submission."
+          "caption": "The evidence matches on chain."
         }
       ],
       "rail": [
@@ -424,7 +424,7 @@
           "say": "A reworded copy, same fingerprint, later commit: duplikit of number one."
         },
         {
-          "caption": "A broken first try loses its bond, and does not block the real report."
+          "caption": "A broken first try loses its bond, but blocks nothing."
         }
       ],
       "cards": [
@@ -749,13 +749,13 @@
       "minDuration": 0,
       "cues": [
         {
-          "caption": "NEAR gives escrow without a custodian, limited keys, an on-chain spending policy, and commit order that settles who was first."
+          "caption": "NEAR gives escrow without a custodian, limited keys, an on-chain spending policy, and a provable commit order."
         },
         {
           "caption": "Code and testnet logs are on GitHub."
         },
         {
-          "caption": "Bounty teams: what would you need to see to trust a replay verdict?"
+          "caption": "Bounty teams: what would you need to trust a replay verdict?"
         }
       ],
       "tiles": [
@@ -787,7 +787,7 @@
       },
       "question": {
         "at": "c2",
-        "text": "Bounty teams: what would you need to see to trust a replay verdict?"
+        "text": "Bounty teams: what would you need to trust a replay verdict?"
       }
     }
   ]

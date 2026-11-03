@@ -1,6 +1,6 @@
 # ReplayCourt demo video
 
-`replaycourt-demo.mp4` is the demo video for the NEAR hackathon entry. Specs: 1920x1080, 30 fps, H.264 High with AAC stereo audio, 130.0 s. Burned-in captions are included. `replaycourt-demo.srt` has the same captions as a subtitle file.
+`replaycourt-demo.mp4` is the demo video for the NEAR hackathon entry. Specs: 1920x1080, 30 fps, H.264 High with AAC stereo audio, 138.5 s. Burned-in captions are included. `replaycourt-demo.srt` has the same captions as a subtitle file.
 
 The video is generated from [`storyboard.json`](storyboard.json). It is not screen-recorded. Every number, account, hash and transaction id shown comes from a file in this repository, and everything from scene 3 on shows the showcase deployment `contract.replaycourt.testnet`:
 
@@ -17,14 +17,14 @@ The terminal panels show the commands from `demo/SHOWCASE.md` and selected lines
 
 | # | Scene | Time | What is shown |
 |---|---|---|---|
-| 1 | The problem | 0:00-0:20 | AI-report flood: Ethereum Foundation "allow up to a week", Cosmos +900 %, Decred paused. A real Cosmos EVM bug was marked "unable to reproduce" and later exploited for about $5.7M |
-| 2 | The idea | 0:20-0:33 | A bug report that proves itself: hunter → commit on NEAR → replay on a fork → valid / invalid / duplicate |
-| 3 | One report, start to finish | 0:33-1:02 | #1 (TempleDAO, hunter1): `submit` (tx `B9zDQa3f…`, bond 0.05321 NEAR, commitment bound to the hunter), worker replay at Ethereum block 15,725,066 (attacker +321,154.87 xFraxTempleLP, victim −100 %, 11.3 s), verdict valid/critical with the function-call key (tx `GkFdHxRB…`), `finalize` by hunter3 (tx `HkGucff6…`), payout 0.4 NEAR, and the explorer showing "Evidence matches on-chain and is bound to this submission" |
-| 4 | Spam pays for itself | 1:02-1:18 | #4 fake profit via `vm.prank`: invalid, 0.05585 NEAR slashed (tx `EMXodkQ5…`). #2 reworded copy: same fingerprint, committed in NEAR block 275,950,743 after #1 (275,950,735): duplicate of #1 (tx `F9jjLYmF…`). #0 broken first try: invalid, 0.05321 NEAR slashed (tx `E9BXf71d…`), and it does not block #1 |
-| 5 | Built for hostile input | 1:18-1:27 | Attack d, stolen verifier key: `AccessKeyRequiresFullAccessActionError`, `AccessKeyMethodNameMismatchActionError`, `AccessKeyDepositWithFunctionCallActionError`. Attack a, prompt injection in report #7: invalid, "No measurable value movement" (tx `BJ9w66rb…`) |
-| 6 | The AI hunter | 1:27-1:43 | Vault plus function-call key: #6 (Seneca) submitted through MCP from the vault (tx `98c5qCNu…`), valid, bounty 0.4 NEAR. MCP refusal `vault_policy` / `daily_spend_cap`. Attack f, stolen agent key: `vault_withdraw` and `vault_set_policy` refused with the exact protocol errors, vault unchanged |
-| 7 | An owner who stalls pays | 1:43-1:54 | The owner disputes #6 (tx `H8x5uNL1…`) and does not resolve. `finalize` is refused before the deadline, then paid after it (tx `6d82aM5X…`): the agent gets +0.5 NEAR, payout 0.4 plus dispute bond 0.1 |
-| 8 | Why NEAR | 1:54-2:10 | Escrow without a custodian, function-call access keys, on-chain spending policy, on-chain commit order. Repo link and a question |
+| 1 | The problem | 0:00-0:22 | AI-report flood: Ethereum Foundation "allow up to a week", Cosmos +900 %, Decred paused. A real Cosmos EVM bug was marked "unable to reproduce" and later exploited for about $5.7M |
+| 2 | The idea | 0:22-0:37 | A bug report that proves itself: hunter → commit on NEAR → replay on a fork → valid / invalid / duplicate |
+| 3 | One report, start to finish | 0:37-1:07 | #1 (TempleDAO, hunter1): `submit` (tx `B9zDQa3f…`, bond 0.05321 NEAR, commitment bound to the hunter), worker replay at Ethereum block 15,725,066 (attacker +321,154.87 xFraxTempleLP, victim −100 %, 11.3 s), verdict valid/critical with the function-call key (tx `GkFdHxRB…`), `finalize` by hunter3 (tx `HkGucff6…`), payout 0.4 NEAR, and the explorer showing "Evidence matches on-chain and is bound to this submission" |
+| 4 | Spam pays for itself | 1:07-1:22 | #4 fake profit via `vm.prank`: invalid, 0.05585 NEAR slashed (tx `EMXodkQ5…`). #2 reworded copy: same fingerprint, committed in NEAR block 275,950,743 after #1 (275,950,735): duplicate of #1 (tx `F9jjLYmF…`). #0 broken first try: invalid, 0.05321 NEAR slashed (tx `E9BXf71d…`), and it does not block #1 |
+| 5 | Built for hostile input | 1:22-1:32 | Attack d, stolen verifier key: `AccessKeyRequiresFullAccessActionError`, `AccessKeyMethodNameMismatchActionError`, `AccessKeyDepositWithFunctionCallActionError`. Attack a, prompt injection in report #7: invalid, "No measurable value movement" (tx `BJ9w66rb…`) |
+| 6 | The AI hunter | 1:32-1:50 | Vault plus function-call key: #6 (Seneca) submitted through MCP from the vault (tx `98c5qCNu…`), valid, bounty 0.4 NEAR. MCP refusal `vault_policy` / `daily_spend_cap`. Attack f, stolen agent key: `vault_withdraw` and `vault_set_policy` refused with the exact protocol errors, vault unchanged |
+| 7 | An owner who stalls pays | 1:50-2:02 | The owner disputes #6 (tx `H8x5uNL1…`) and does not resolve. `finalize` is refused before the deadline, then paid after it (tx `6d82aM5X…`): the agent gets +0.5 NEAR, payout 0.4 plus dispute bond 0.1 |
+| 8 | Why NEAR | 2:02-2:18 | Escrow without a custodian, function-call access keys, on-chain spending policy, on-chain commit order. Repo link and a question |
 
 The exact times are printed by `voice.py` (see below). They follow from the length of the spoken cues.
 
@@ -110,6 +110,7 @@ node demo/video/tools/render.mjs --work $WORK --stills 2,40,58   # -> $WORK/stil
 All content is in `storyboard.json`. Edit it and run `build.sh` again. `build.sh` stops if a placeholder in angle brackets is left in it.
 
 - **Texts and narration**: each scene has `cues`. `caption` is shown and written to the `.srt`. `say` (optional) is what the voice speaks, for example numbers spelled out or a respelling for the voice ("Dee-cred", "duplikit"). The scene length follows the speech. Keep the total under 140 s, X's limit (`voice.py` prints it); tighten the narration rather than speeding the voice.
+- **Voice**: in `voice`, `lengthScale` sets the pace (larger is slower), `noiseScale` and `noiseW` the variation (smaller is steadier), `sentenceSilence`, `cueGap`, `sceneLeadIn` and `sceneTail` the pauses in seconds.
 - **Tx hashes, accounts, numbers**: the `submit`, `replay`, `verdict` and `paid` blocks of scene `moment`, `cards` and `strip` of `spam`, `cols` of `security` and `agent`, `steps` of `dispute`.
 - **Contract name**: `meta.contract` and `meta.dataNote` (header line), plus the strings in the blocks above.
 - **Screenshots**: `src` (path from the repository root), `crop` (pixels of the source image), `pan` (a list of `{at, y}` scrolls) and `highlights` (boxes in source-image pixels, each with the cue time `at` at which it appears).
