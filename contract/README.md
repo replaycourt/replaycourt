@@ -78,7 +78,7 @@ method:
 | `src/lib.rs` | contract: programs, submissions, verdicts, settlement, vault, views, NEP-297 events |
 | `src/types.rs` | stored types and their JSON views |
 | `src/tests.rs` | 195 unit tests: every rule, refusal and money path, the vault, regression tests S1 to S8 |
-| `tests/sandbox.rs` | near-workspaces sandbox test of the full v2 flow, including the verifier key, the vault and the agent key (compiles; not executed yet, see below) |
+| `tests/sandbox.rs` | near-workspaces sandbox test of the full v2 flow, including the verifier key, the vault and the agent key (runs in CI, see below) |
 | `build.sh` | path-remapped, privacy-checked wasm build; writes or checks `WASM_SHA256` |
 | `WASM_SHA256` | sha256 of the wasm that `build.sh` produces from this source |
 | `scripts/setup-testnet.sh` | creates faucet and sub-accounts, deploys and initializes on testnet |
@@ -210,9 +210,9 @@ mkdir -p ~/.near/sandbox-2.14.0 && cd ~/.near/sandbox-2.14.0 \
 NEAR_SANDBOX_BIN_PATH=~/.near/sandbox-2.14.0/Darwin-x86_64/near-sandbox cargo test --test sandbox -- --nocapture
 ```
 
-Status: `tests/sandbox.rs` compiles against v2 (`cargo clippy --all-targets`) but **has not
-been executed yet**. CI runs it on Linux. `scripts/e2e-testnet.sh` runs the same flows against a
-deployed contract on testnet.
+Status: CI runs `tests/sandbox.rs` on Linux (near-sandbox 2.14.0) on every push, and it passes.
+The macOS x86_64 commands above have not been run. `scripts/e2e-testnet.sh` runs the same flows
+against a deployed contract on testnet.
 
 ## Deploy to testnet
 
