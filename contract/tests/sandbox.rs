@@ -81,13 +81,13 @@ async fn submit(c: &Contract, hunter: &Account, pid: u64, n: u64) -> R<u64> {
     Ok(res.json()?)
 }
 
-async fn create_program(c: &Contract, owner: &Account, timeout: u64) -> R<u64> {
+async fn create_program(c: &Contract, owner: &Account, verifier: &Account, timeout: u64) -> R<u64> {
     let res = owner
         .call(c.id(), "create_program")
         .args_json(json!({
             "name": "sandbox program",
             "scope": [{ "chain_id": 1, "address": "0x00000000000000000000000000000000000000aa" }],
-            "verifier_id": "verifier.test.near",
+            "verifier_id": verifier.id(),
             "verifier_pubkey": "BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc=",
             "payouts": { "critical": "1000000000000000000000000", "high": "500000000000000000000000",
                          "medium": "200000000000000000000000", "low": "100000000000000000000000" },
@@ -136,7 +136,6 @@ async fn sandbox_end_to_end() -> R<()> {
     let hunter1 = sub_account(&worker, "hunter1", 10).await?;
     let hunter2 = sub_account(&worker, "hunter2", 10).await?;
     let anyone = sub_account(&worker, "anyone", 5).await?;
-    assert_eq!(verifier.id().as_str(), "verifier.test.near");
 
     // --- function-call key for the verifier: only post_verdict on this contract
     let fc_sk = SecretKey::from_random(KeyType::ED25519);
@@ -155,7 +154,7 @@ async fn sandbox_end_to_end() -> R<()> {
         .into_result()?;
     let verifier_fc = Account::from_secret_key(verifier.id().clone(), fc_sk, &worker);
 
-    let pid = create_program(&contract, &owner, 3_600).await?;
+    let pid = create_program(&contract, &owner, &verifier, 3_600).await?;
     let p = program(&contract, pid).await?;
     assert_eq!(p["owner_id"], owner.id().as_str());
     assert!(amount(&p["pool"]) > 9 * NEAR && amount(&p["pool"]) < 10 * NEAR);
@@ -343,6 +342,32 @@ async fn sandbox_end_to_end() -> R<()> {
         .await?;
     assert!(format!("{:?}", rug.into_result().unwrap_err()).contains("only the program owner"));
 
+    // --- owner resolves the escalations, before fast-forwarding past their deadlines
+    owner
+        .call(contract.id(), "resolve")
+        .args_json(
+            json!({ "submission_id": d, "outcome": "valid", "severity": "low", "note": "ok" }),
+        )
+        .transact()
+        .await?
+        .into_result()?;
+    assert_eq!(submission(&contract, d).await?["status"], "paid");
+    let bond_e = amount(&submission(&contract, e).await?["bond"]);
+    let h1_before = balance(&hunter1).await?;
+    owner
+        .call(contract.id(), "resolve")
+        .args_json(json!({ "submission_id": e, "outcome": "invalid", "severity": null, "note": "dup of internal" }))
+        .transact()
+        .await?
+        .into_result()?;
+    assert_eq!(submission(&contract, e).await?["status"], "rejected");
+    assert_eq!(
+        balance(&hunter1).await? - h1_before,
+        bond_e + DISPUTE_BOND,
+        "overruled dispute: bond + dispute bond to the hunter"
+    );
+    assert_eq!(program(&contract, pid).await?["stats"]["overruled"], 1);
+
     // --- advance past the challenge window (sandbox blocks are ~1 s apart; fast-forward)
     let t0: u64 = submission(&contract, a).await?["verdict"]["posted_at"]
         .as_str()
@@ -374,34 +399,8 @@ async fn sandbox_end_to_end() -> R<()> {
     assert_eq!(sa["status"], "paid");
     assert_eq!(amount(&sa["payout"]), 500 * MILLI);
 
-    // --- owner resolves the escalations
-    owner
-        .call(contract.id(), "resolve")
-        .args_json(
-            json!({ "submission_id": d, "outcome": "valid", "severity": "low", "note": "ok" }),
-        )
-        .transact()
-        .await?
-        .into_result()?;
-    assert_eq!(submission(&contract, d).await?["status"], "paid");
-    let bond_e = amount(&submission(&contract, e).await?["bond"]);
-    let h1_before = balance(&hunter1).await?;
-    owner
-        .call(contract.id(), "resolve")
-        .args_json(json!({ "submission_id": e, "outcome": "invalid", "severity": null, "note": "dup of internal" }))
-        .transact()
-        .await?
-        .into_result()?;
-    assert_eq!(submission(&contract, e).await?["status"], "rejected");
-    assert_eq!(
-        balance(&hunter1).await? - h1_before,
-        bond_e + DISPUTE_BOND,
-        "overruled dispute: bond + dispute bond to the hunter"
-    );
-    assert_eq!(program(&contract, pid).await?["stats"]["overruled"], 1);
-
     // --- withdraw_pending after the (minimum, 60 s) pending timeout
-    let pid2 = create_program(&contract, &owner, WINDOW).await?;
+    let pid2 = create_program(&contract, &owner, &verifier, WINDOW).await?;
     let f = submit(&contract, &hunter2, pid2, 6).await?;
     let early = hunter2
         .call(contract.id(), "withdraw_pending")

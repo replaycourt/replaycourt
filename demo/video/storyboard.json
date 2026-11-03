@@ -16,10 +16,10 @@
   "voice": {
     "engine": "piper",
     "name": "en_US-lessac-high",
-    "lengthScale": 0.93,
-    "sceneLeadIn": 0.25,
-    "cueGap": 0.15,
-    "sceneTail": 0.3,
+    "lengthScale": 1.02,
+    "sceneLeadIn": 0.35,
+    "cueGap": 0.25,
+    "sceneTail": 0.45,
     "endHold": 1.3,
     "captionHold": 0.7
   },

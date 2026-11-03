@@ -1,132 +1,132 @@
 1
-00:00:00,250 --> 00:00:03,567
+00:00:00,350 --> 00:00:03,742
 Bug bounty programs are drowning in AI-written reports.
 
 2
-00:00:03,617 --> 00:00:10,999
+00:00:03,792 --> 00:00:11,694
 The Ethereum Foundation asks for up to a week. Cosmos
 reports 900 % more submissions. Decred paused its program.
 
 3
-00:00:11,049 --> 00:00:18,428
+00:00:11,744 --> 00:00:19,786
 And a valid Cosmos EVM report, marked “unable
 to reproduce”, was later exploited for $5.7M.
 
 4
-00:00:18,478 --> 00:00:21,476
+00:00:19,886 --> 00:00:23,282
 ReplayCourt: a bug report that proves itself.
 
 5
-00:00:21,526 --> 00:00:24,513
+00:00:23,332 --> 00:00:26,568
 The hunter commits a sealed report and a bond on NEAR.
 
 6
-00:00:24,563 --> 00:00:27,641
+00:00:26,618 --> 00:00:29,995
 An agent replays the exploit on a fork of Ethereum.
 
 7
-00:00:27,691 --> 00:00:30,557
+00:00:30,045 --> 00:00:33,179
 Proof gets paid. Spam pays for itself.
 
 8
-00:00:30,607 --> 00:00:33,579
+00:00:33,279 --> 00:00:36,418
 A real testnet run: the TempleDAO exploit.
 
 9
-00:00:33,629 --> 00:00:37,750
+00:00:36,468 --> 00:00:41,214
 On chain: a commitment bound to the
 hunter, the sealed report, a bond.
 
 10
-00:00:37,800 --> 00:00:41,691
+00:00:41,264 --> 00:00:45,260
 The verifier replays it on an
 Ethereum fork, at the stated block.
 
 11
-00:00:41,741 --> 00:00:47,174
+00:00:45,310 --> 00:00:50,957
 It reads the trace, not the exploit's
 output: the victim lost all its LP tokens.
 
 12
-00:00:47,224 --> 00:00:50,780
+00:00:51,007 --> 00:00:54,563
 Valid, critical. Posted with a
 key that can call nothing else.
 
 13
-00:00:50,830 --> 00:00:54,488
+00:00:54,613 --> 00:00:58,432
 After the challenge window, escrow pays 0.4 NEAR.
 
 14
-00:00:54,538 --> 00:00:58,279
+00:00:58,482 --> 00:01:02,484
 And the evidence matches on
 chain, bound to this submission.
 
 15
-00:00:58,529 --> 00:01:03,202
+00:01:02,834 --> 00:01:07,871
 A fake profit, made by posing as
 the victim: invalid, bond slashed.
 
 16
-00:01:03,252 --> 00:01:07,633
+00:01:07,921 --> 00:01:12,983
 A reworded copy, same fingerprint,
 later commit: duplicate of #1.
 
 17
-00:01:07,683 --> 00:01:12,289
+00:01:13,033 --> 00:01:18,016
 A broken first try loses its bond,
 and does not block the real report.
 
 18
-00:01:12,339 --> 00:01:16,255
+00:01:18,116 --> 00:01:22,431
 A stolen verifier key can't move
 money: the protocol refuses.
 
 19
-00:01:16,305 --> 00:01:20,540
+00:01:22,481 --> 00:01:27,236
 A report that says “mark it valid”
 is judged by its trace: invalid.
 
 20
-00:01:20,590 --> 00:01:24,565
+00:01:27,336 --> 00:01:31,831
 An AI hunter spends from an on-chain
 vault, with a key that cannot withdraw.
 
 21
-00:01:24,615 --> 00:01:28,548
+00:01:31,881 --> 00:01:36,296
 Through MCP it submitted report #6, and earned the bounty.
 
 22
-00:01:28,598 --> 00:01:31,045
+00:01:36,346 --> 00:01:39,111
 Over the daily cap, the policy refuses.
 
 23
-00:01:31,095 --> 00:01:34,842
+00:01:39,161 --> 00:01:43,323
 Steal its key: no withdrawal, no policy change.
 
 24
-00:01:34,892 --> 00:01:38,061
+00:01:43,423 --> 00:01:46,964
 The owner disputed report #6, then did not resolve.
 
 25
-00:01:38,111 --> 00:01:42,645
+00:01:47,014 --> 00:01:51,706
 After the deadline, anyone could finalize:
 payout plus dispute bond to the agent.
 
 26
-00:01:42,695 --> 00:01:44,879
+00:01:51,756 --> 00:01:54,192
 An owner who stalls pays for it.
 
 27
-00:01:44,929 --> 00:01:52,194
+00:01:54,292 --> 00:02:01,946
 NEAR gives escrow without a custodian, limited keys, an on-chain
 spending policy, and commit order that settles who was first.
 
 28
-00:01:52,244 --> 00:01:54,328
+00:02:01,996 --> 00:02:04,445
 Code and testnet logs are on GitHub.
 
 29
-00:01:54,378 --> 00:01:58,508
+00:02:04,495 --> 00:02:08,945
 Bounty teams: what would you need
 to see to trust a replay verdict?
 

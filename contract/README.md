@@ -129,8 +129,9 @@ sha256 456631c55d04492c6f4143a19f82ebd66942af4333d05997db910d7a1608bd32
 The same hash is in [`WASM_SHA256`](WASM_SHA256). Two builds, one with a different
 `CARGO_TARGET_DIR`, produced the same hash.
 
-cargo-near's non-reproducible build is not guaranteed to be bit-identical on another operating
-system. CI therefore runs `./build.sh --check`:
+The pinned hash is the macOS x86_64 build that is deployed. On Linux the same sources gave another
+hash in CI (`959be9a9…`): cargo-near's non-reproducible build is not bit-identical across operating
+systems. CI therefore runs `./build.sh --check`:
 - a build error or a failed privacy check fails the job;
 - a hash mismatch is reported as a warning.
 

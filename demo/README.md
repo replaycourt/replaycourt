@@ -122,9 +122,10 @@ demo/full-testnet.sh myname.testnet       # or a name of your choice (must not e
 ```
 
 Needs Node >= 24, Python >= 3.8, forge and internet. Your Rust toolchain is not needed: the
-script deploys `contract/target/near/replaycourt.wasm` if you built it, and otherwise the code of
-the showcase contract, read over RPC. In both cases it checks that the sha256 is the pinned build
-hash `456631c5…` (contract v2.0.0, `contract/WASM_SHA256`). Steps (every wait is bounded; on
+script deploys the code of the showcase contract, read over RPC, and checks that its sha256 is the
+pinned build hash `456631c5…`. If you built `contract/target/near/replaycourt.wasm` and it has that
+hash, it uses your build. Builds usually differ across operating systems; pass `--allow-other-wasm`
+to `demo/testnet-setup.ts` to deploy yours anyway.0.0, `contract/WASM_SHA256`). Steps (every wait is bounded; on
 failure, run the same command again and it continues where it stopped):
 
 1. `<name>.testnet` from the testnet faucet (10 NEAR). Then the sub-accounts `contract.`,

@@ -115,6 +115,12 @@ if (values.wasm) {
 } else if (fs.existsSync(built)) {
   wasm = fs.readFileSync(built);
   wasmSource = path.relative(REPO_ROOT, built);
+  // Builds are not bit-identical across operating systems, so a judge's own build usually differs.
+  if (sha256Hex(wasm) !== REPLAYCOURT_WASM_SHA256 && !values["allow-other-wasm"]) {
+    log(`${wasmSource} differs from the pinned build (builds differ across systems); using the showcase contract's code instead`);
+    wasm = await fetchDeployedCode(provider, DEMO_CONTRACT.testnet);
+    wasmSource = `code of ${DEMO_CONTRACT.testnet} (read over RPC; the local build differs from the pin)`;
+  }
 } else {
   wasm = await fetchDeployedCode(provider, DEMO_CONTRACT.testnet);
   wasmSource = `code of ${DEMO_CONTRACT.testnet} (read over RPC; no local build found)`;
