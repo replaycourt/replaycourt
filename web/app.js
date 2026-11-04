@@ -252,28 +252,37 @@ const HOW_IT_WORKS = [
 const repoFile = (path) => `${cfg.repoUrl}/blob/main/${path}`;
 const ext = (url, label) => html`<a href="${safeHref(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 
+const ICON = {
+  bug: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8a4 4 0 0 1 8 0v1H8V8Zm-1 3h10v3a5 5 0 0 1-10 0v-3Zm5 0v8M4 8l3 2M20 8l-3 2M3 14h4M21 14h-4M4 20l3-3M20 20l-3-3"/></svg>`,
+  bounty: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3Zm-3.5 9 2.5 2.5 4.5-5"/></svg>`,
+  Submit: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6v-9Zm3 0V8a3 3 0 0 1 6 0v3"/></svg>`,
+  Replay: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v4.5h4.5M10 9l5 3-5 3V9Z"/></svg>`,
+  Verdict: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6M11 7l6 6M12.5 5.5l-4 4 6 6 4-4M10 12l-6 6 2 2 6-6M4 21h9"/></svg>`,
+  Settle: html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm3 6.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.8 3 2 3 .8 3 2-1.300 2-3 2c-1.400 0-2.500-.5-3-1.500M12 6v2M12 16v2"/></svg>`,
+};
+
 /** The two ways in for a person. The page itself only reads, so each path ends in commands. */
 function rolePaths() {
   return html`
     <div class="roles">
-      <details class="more role">
-        <summary>I found a bug</summary>
+      <details class="role role-hunter">
+        <summary><span class="role-icon">${ICON.bug}</span><span class="role-head"><strong>I found a bug</strong><span>Get paid for a bug you can prove</span></span><span class="role-open" aria-hidden="true"></span></summary>
         <ol class="role-steps">
           <li>Write a report: a Markdown file with a Foundry test that runs the attack. ${ext(repoFile("docs/report-template.md"), "Template")} · ${ext(repoFile("engine/reports/01_templedao_stax.md"), "real example")}</li>
           <li>Check it on your machine, free: <code class="cmd">python3 -I engine/replay.py check report.md --no-register --dest check</code></li>
           <li>Submit, which locks the deposit: <code class="cmd">node src/cli.ts submit --program 0 --report report.md --as you.testnet</code></li>
           <li>Follow it here. After the challenge window: <code class="cmd">node src/cli.ts finalize &lt;id&gt;</code></li>
         </ol>
-        <p class="small">${ext(repoFile("docs/HUNTER.md"), "Full guide for hunters →")}</p>
+        <p class="role-more">${ext(repoFile("docs/HUNTER.md"), "Full guide for hunters →")}</p>
       </details>
-      <details class="more role">
-        <summary>I run a bounty</summary>
+      <details class="role role-owner">
+        <summary><span class="role-icon">${ICON.bounty}</span><span class="role-head"><strong>I run a bounty</strong><span>Let replays filter out the noise</span></span><span class="role-open" aria-hidden="true"></span></summary>
         <ol class="role-steps">
           <li>Create a program with a reward pool and the contracts in scope: <code class="cmd">node src/cli.ts create-program --name "My bounty" --pool 10 --scope 1:0xYOUR_CONTRACT</code></li>
           <li>Run the verifier, or have someone run it: <code class="cmd">node src/cli.ts worker</code></li>
-          <li>Reports appear here. Object to a verdict or decide a doubtful case: <code class="cmd">node src/cli.ts dispute &lt;id&gt;</code> · <code class="cmd">node src/cli.ts resolve &lt;id&gt;</code></li>
+          <li>Reports appear here. Object to a verdict or decide a doubtful case: <code class="cmd">node src/cli.ts dispute &lt;id&gt;</code> <code class="cmd">node src/cli.ts resolve &lt;id&gt;</code></li>
         </ol>
-        <p class="small">${ext(repoFile("docs/OWNER.md"), "Full guide for owners →")}</p>
+        <p class="role-more">${ext(repoFile("docs/OWNER.md"), "Full guide for owners →")}</p>
       </details>
     </div>`;
 }
@@ -320,35 +329,73 @@ async function tourCases() {
   return cfg.tour.flatMap((c, i) => (subs[i] ? [{ ...c, s: subs[i] }] : []));
 }
 
-/** The result of a guided case in plain words; the values come from the chain. */
-function caseResult(s) {
-  if (s.status === "paid") return html`<span class="badge st-paid">paid ${fmtNear(s.payout)} NEAR</span>`;
-  if (s.status === "invalid") return html`<span class="badge st-invalid">deposit lost</span>`;
-  return badge(s.status);
+/** The outcome as a court stamp, in plain words; the values come from the chain. */
+function stamp(s) {
+  const [kind, text] = s.status === "paid" ? ["ok", `paid ${fmtNear(s.payout)} NEAR`]
+    : s.status === "invalid" ? ["bad", "deposit lost"]
+    : s.status === "rejected" ? ["bad", "rejected"]
+    : s.status === "duplicate" ? ["warn", "duplicate"]
+    : ["info", own(STATUS, s.status) ? STATUS[s.status].split(" · ")[0] : String(s.status)];
+  return html`<span class="stamp stamp-${kind}">${text}</span>`;
+}
+
+/** A replay played back line by line, with the real numbers of one showcase report. */
+function heroReplay(cases) {
+  const r = cfg.heroReplay;
+  const c = r && cases.find((x) => x.id === r.id);
+  if (!c) return "";
+  return html`
+    <a class="replay" href="#/submission/${Number(r.id)}">
+      <div class="replay-bar"><span></span><span></span><span></span><em>replaying report #${Number(r.id)}</em></div>
+      <dl>${r.lines.map(([k, v], i) => html`<div class="replay-line d${i + 1}"><dt>${k}</dt><dd>${v}</dd></div>`)}</dl>
+      <div class="replay-stamp">${stamp(c.s)}</div>
+    </a>`;
 }
 
 async function overview() {
   document.title = "ReplayCourt explorer";
-  const [, cases] = await Promise.all([contractVersion(), tourCases()]);
+  const [, programs, cases] = await Promise.all([contractVersion(), listAll("list_programs"), tourCases()]);
+  const count = (k) => programs.reduce((a, p) => a + Number(p.stats?.[k] ?? 0), 0);
+  let paid = 0n;
+  for (const p of programs) {
+    try {
+      paid += BigInt(p.stats?.total_paid ?? 0);
+    } catch {
+      // ignore malformed values
+    }
+  }
   return html`
-    <h1>Bug reports that prove themselves</h1>
-    <p class="lede">A bug bounty where reports are judged by replaying the attack.</p>
-    <ol class="steps">
-      ${HOW_IT_WORKS.map(([title, who, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><span class="who">${who}</span><p>${text}</p></li>`)}
-    </ol>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot"></span>Live on NEAR ${cfg.network}${onShowcase() ? " · staged demo with play money" : ""}</p>
+          <h1>Bug reports that <em>prove</em> themselves</h1>
+          <p class="lede">A bug bounty where reports are judged by replaying the attack.</p>
+          <dl class="hero-stats">
+            <div><dd>${fmtInt(count("submissions"))}</dd><dt>reports</dt></div>
+            <div><dd>${fmtNear(paid.toString())}</dd><dt>NEAR paid out</dt></div>
+            <div><dd>${fmtInt(count("invalid"))}</dd><dt>rejected</dt></div>
+          </dl>
+        </div>
+        ${heroReplay(cases)}
+      </div>
+    </section>
     ${rolePaths()}
+    <h2 class="section">How it works</h2>
+    <ol class="flow">
+      ${HOW_IT_WORKS.map(([title, who, text]) => html`<li><span class="flow-icon">${ICON[title]}</span><h3>${title}</h3><span class="who">${who}</span><p>${text}</p></li>`)}
+    </ol>
     ${cases.length ? html`
-    <h2>Open a case</h2>
+    <h2 class="section">Open a case</h2>
     <div class="cases">
       ${cases.map((c) => html`
         <a class="case" href="#/submission/${Number(c.id)}">
           <span class="case-id">#${Number(c.id)}</span>
           <span class="case-title">${c.title}</span>
-          <span class="case-result">${caseResult(c.s)}</span>
-          <span class="case-go" aria-hidden="true">→</span>
+          ${stamp(c.s)}
         </a>`)}
     </div>` : ""}
-    <p class="muted small fineprint">Live on NEAR ${cfg.network}${onShowcase() ? " with play money. The cases are staged demos" : ""}. This page only reads. <a href="#/details">Numbers and glossary →</a> · ${ext(cfg.repoUrl, "Code")}${cfg.demoPostUrl ? html` · ${ext(cfg.demoPostUrl, "Demo video")}` : ""}</p>`;
+    <p class="muted small fineprint">This page only reads. <a href="#/details">Numbers and glossary →</a> · ${ext(cfg.repoUrl, "Code")}${cfg.demoPostUrl ? html` · ${ext(cfg.demoPostUrl, "Demo video")}` : ""}</p>`;
 }
 
 async function detailsView() {
@@ -489,10 +536,9 @@ async function submissionView(id) {
     ${crumbs(html`<a href="#/">Overview</a>`, progLink(s.program_id, p ? p.name : undefined), html`submission #${id}`)}
     <div class="title-row">
       <h1><span class="muted">#${id}</span> ${s.title}</h1>
-      ${badge(s.status)}
     </div>
     <p class="meta">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>
-    ${statusMeaning(s) ? html`<div class="result"><p class="result-main">${statusMeaning(s)}</p>${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}</div>` : ""}
+    ${statusMeaning(s) ? html`<div class="result"><div class="result-stamp">${stamp(s)}</div><p class="result-main">${statusMeaning(s)}</p>${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}</div>` : ""}
     ${reportTrail(s, v)}
 
     <section class="evcheck wait" id="evcheck" aria-live="polite">

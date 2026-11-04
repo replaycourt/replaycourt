@@ -22,6 +22,16 @@ export default {
   // Guided cases on the overview page, with one plain sentence each for the case page. They describe
   // submissions of this one contract, so they are shown only for it; results are read live from the chain.
   tourContract: "contract.replaycourt.testnet",
+  // Shown in the hero: a replay of case #1, from runs/testnet/contract.replaycourt.testnet/1/summary.md.
+  heroReplay: {
+    id: 1,
+    lines: [
+      ["fork", "Ethereum, block 15,725,066"],
+      ["run", "testExploit() passes"],
+      ["attacker", "+321,154.87 xFraxTempleLP"],
+      ["victim", "-100 % of its holdings"],
+    ],
+  },
   tour: [
     { id: 1, title: "A real past exploit, re-enacted", text: "The TempleDAO hack of 2022, replayed on a copy of Ethereum. It really drains the victim." },
     { id: 4, title: "A faked profit", text: "The proof gives itself the money with a test trick and pretends to be the victim for the rest." },

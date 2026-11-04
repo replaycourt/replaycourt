@@ -15,7 +15,7 @@ the version next to the network. Views that only v2 has (`get_hunter_in_program`
 
 | View | Route | Shows |
 |---|---|---|
-| Overview | `#/` | for a first-time visitor: one sentence, the four steps with who does each, the paths "I found a bug" and "I run a bounty" with their commands (folded), and five guided cases of the showcase contract (`tour` in `config.js`, results read live) |
+| Overview | `#/` | for a first-time visitor: one sentence with live totals, a replay of case #1 (`heroReplay` in `config.js`), the four steps with who does each, the paths "I found a bug" and "I run a bounty" with their commands (folded), and five guided cases of the showcase contract (`tour` in `config.js`, results read live) |
 | Details | `#/details` | the contract's totals, every program, a glossary and the technical summary |
 | Program | `#/program/0` | all submissions, then (folded) the program's rules and numbers. Submissions: id, title, hunter (with a "vault" tag for vault-funded reports), status badge (incl. v2 `expired`), outcome, severity, payout, submitted block |
 | Submission | `#/submission/3` | first the status in plain words and why, the report's four stages with their numbers, and the evidence check; folded below: the report as submitted, every verdict field (reason, fingerprint, fork chain and block, `duplicate_of` as a link); the settlement (bond, storage cost, payout, and in v2 "funded by" vault or deposit, dispute bond and where it went); the deadlines (challenge window, v2 resolve deadline, pending timeout) with a live countdown or "passed" and what happens then; the commitment with its v1 or v2 definition; the **evidence check** (below); the engine's `summary.md` and links to the raw files |
