@@ -17,8 +17,8 @@ export default {
   evidenceBase: "../",
   explorer: "https://testnet.nearblocks.io",
   repoUrl: "https://github.com/replaycourt/replaycourt",
-  // The public demo post with the video; null until there is one.
-  demoPostUrl: null,
+  // The public demo post with the video.
+  demoPostUrl: "https://x.com/replaycourt/status/2118105686613635217",
   // Guided cases on the overview page, with one plain sentence each for the case page. They describe
   // submissions of this one contract, so they are shown only for it; results are read live from the chain.
   tourContract: "contract.replaycourt.testnet",

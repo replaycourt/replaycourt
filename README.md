@@ -26,7 +26,7 @@ Built at NEAR HACKATHON (2026). Runs on NEAR **testnet**; no step touches mainne
 - Attack demos for the security track: [`demo/ATTACKS.md`](demo/ATTACKS.md)
 - Ways for judges to check everything: [`demo/README.md`](demo/README.md)
 - How people use it: [I found a bug](docs/HUNTER.md) · [I run a bounty](docs/OWNER.md) · [report template](docs/report-template.md)
-- Demo video: [`web/media/replaycourt-demo.mp4`](web/media/replaycourt-demo.mp4), also on the start page of the explorer; the script and the build pipeline are in [`demo/video/`](demo/video/)
+- Demo video: [`web/media/replaycourt-demo.mp4`](web/media/replaycourt-demo.mp4), also on the start page of the explorer and in the [demo post](https://x.com/replaycourt/status/2118105686613635217); the script and the build pipeline are in [`demo/video/`](demo/video/)
 
 ## The problem
 
