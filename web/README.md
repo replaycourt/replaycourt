@@ -19,7 +19,7 @@ the version next to the network. Views that only v2 has (`get_hunter_in_program`
 | Details | `#/details` | the contract's totals, every program, a glossary and the technical summary |
 | Program | `#/program/0` | all submissions, then (folded) the program's rules and numbers. Submissions: id, title, hunter (with a "vault" tag for vault-funded reports), status badge (incl. v2 `expired`), outcome, severity, payout, submitted block |
 | Submission | `#/submission/3` | first the status in plain words and why, the report's four stages with their numbers, and the evidence check; folded below: the report as submitted, every verdict field (reason, fingerprint, fork chain and block, `duplicate_of` as a link); the settlement (bond, storage cost, payout, and in v2 "funded by" vault or deposit, dispute bond and where it went); the deadlines (challenge window, v2 resolve deadline, pending timeout) with a live countdown or "passed" and what happens then; the commitment with its v1 or v2 definition; the **evidence check** (below); the engine's `summary.md` and links to the raw files |
-| Hunters | `#/hunters` | `get_hunter` (global, display only) of every hunter that has submitted. v2 adds per hunter a table of `get_hunter_in_program` per program with the bond the hunter must post there now (`required_bond`), and a vault card if `get_vault` returns one: balance, policy (max bond per report, max spend per 24 h, allowed programs) and the amount spent in the current window with its reset time |
+| Hunters | `#/hunters` | a card per hunter, ranked by earnings (`get_hunter`, global, display only): record bar and reports. Folded: `get_hunter_in_program` and the current bond per program, and the vault card with balance, policy and spending in the current 24 h window |
 
 Accounts link to `testnet.nearblocks.io`. The page follows the system theme; the header button
 switches between light and dark (stored in `localStorage`). `?theme=dark` or `?theme=light` in the
@@ -33,7 +33,7 @@ Screenshots of the showcase, in [`../docs/screenshots/`](../docs/screenshots/):
 | `program.png` | `#/program/0`: the program and its submissions |
 | `submission.png` | `#/submission/1`: the TempleDAO report with the evidence check |
 | `submission-disputed.png` | `#/submission/6`: the scripted agent's report, disputed, then paid with the dispute bond after `resolve_until` |
-| `hunters.png` | `#/hunters`: reputation, bond per program, the agent's vault card |
+| `hunters.png` | `#/hunters`: the hunters ranked, with their record and reports |
 | `attack-sandbox-escape.png` | `#/submission/8`: attack b, the refusals in the engine's summary |
 | `attack-copied-seal.png` | `#/submission/10`: attack e, a copied seal judged invalid |
 

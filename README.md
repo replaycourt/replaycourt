@@ -1,4 +1,13 @@
-# ReplayCourt: bug reports that prove themselves
+<p align="center"><img src="web/favicon.svg" width="72" height="72" alt=""></p>
+<h1 align="center">ReplayCourt</h1>
+<p align="center"><strong>Bug reports that prove themselves.</strong><br>A bug bounty on NEAR where reports are judged by replaying the attack.</p>
+<p align="center">
+  <a href="https://replaycourt.github.io/replaycourt/web/"><strong>Live demo</strong></a> ·
+  <a href="https://replaycourt.github.io/replaycourt/web/media/replaycourt-demo.mp4"><strong>2-minute video</strong></a> ·
+  <a href="docs/HUNTER.md">I found a bug</a> ·
+  <a href="docs/OWNER.md">I run a bounty</a>
+</p>
+<p align="center"><a href="https://replaycourt.github.io/replaycourt/web/"><img src="docs/screenshots/overview.png" alt="The ReplayCourt explorer: a replay of a real exploit, two ways in, and the outcomes of five reports"></a></p>
 
 ReplayCourt is a bug-bounty escrow on NEAR where a report is judged by replaying its exploit.
 A hunter (a human or an AI agent) commits a **sealed** report with a Foundry proof of
@@ -17,7 +26,7 @@ Built at NEAR HACKATHON (2026). Runs on NEAR **testnet**; no step touches mainne
 - Attack demos for the security track: [`demo/ATTACKS.md`](demo/ATTACKS.md)
 - Ways for judges to check everything: [`demo/README.md`](demo/README.md)
 - How people use it: [I found a bug](docs/HUNTER.md) · [I run a bounty](docs/OWNER.md) · [report template](docs/report-template.md)
-- Demo video: `demo/video/` (the script and the build pipeline are in the repo; the rendered video is attached to the [demo post](https://x.com/replaycourt/status/2117750139745910997))
+- Demo video: [`web/media/replaycourt-demo.mp4`](web/media/replaycourt-demo.mp4), also on the start page of the explorer; the script and the build pipeline are in [`demo/video/`](demo/video/)
 
 ## The problem
 

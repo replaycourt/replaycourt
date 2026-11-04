@@ -329,6 +329,22 @@ async function tourCases() {
   return cfg.tour.flatMap((c, i) => (subs[i] ? [{ ...c, s: subs[i] }] : []));
 }
 
+/** The dark band at the top of every inner page, in the style of the start page. */
+function band({ crumbs: path, title, lede, stats, side }) {
+  return html`
+    <section class="band">
+      ${path ?? ""}
+      <div class="band-main">
+        <div class="band-copy">
+          <h1>${title}</h1>
+          ${lede ? html`<div class="band-lede">${lede}</div>` : ""}
+        </div>
+        ${side ? html`<div class="band-side">${side}</div>` : ""}
+      </div>
+      ${stats ? html`<dl class="hero-stats">${stats.map(([value, label]) => html`<div><dd>${value}</dd><dt>${label}</dt></div>`)}</dl>` : ""}
+    </section>`;
+}
+
 /** The outcome as a court stamp, in plain words; the values come from the chain. */
 function stamp(s) {
   const [kind, text] = s.status === "paid" ? ["ok", `paid ${fmtNear(s.payout)} NEAR`]
@@ -381,10 +397,18 @@ async function overview() {
       </div>
     </section>
     ${rolePaths()}
-    <h2 class="section">How it works</h2>
-    <ol class="flow">
-      ${HOW_IT_WORKS.map(([title, who, text]) => html`<li><span class="flow-icon">${ICON[title]}</span><h3>${title}</h3><span class="who">${who}</span><p>${text}</p></li>`)}
-    </ol>
+    <div class="story">
+      <div>
+        <h2 class="section">How it works</h2>
+        <ol class="flow">
+          ${HOW_IT_WORKS.map(([title, who, text]) => html`<li><span class="flow-icon">${ICON[title]}</span><div><h3>${title}</h3><span class="who">${who}</span><p>${text}</p></div></li>`)}
+        </ol>
+      </div>
+      <div>
+        <h2 class="section">See it in two minutes</h2>
+        <video class="demo" controls preload="none" poster="media/poster.png" src="media/replaycourt-demo.mp4" aria-label="Demo video with narration and captions"></video>
+      </div>
+    </div>
     ${cases.length ? html`
     <h2 class="section">Open a case</h2>
     <div class="cases">
@@ -411,31 +435,33 @@ async function detailsView() {
     }
   }
   return html`
-    ${crumbs(html`<a href="#/">Overview</a>`, "details")}
-    <h1>Details</h1>
-    <div class="tiles">
-      ${tile("Contract", acct(cfg.contractId), html`${cfg.network} · version ${info.version ?? "?"} (protocol v${info.major})`)}
-      ${tile("Programs", fmtInt(programs.length))}
-      ${tile("Submissions", fmtInt(totalSubs))}
-      ${tile("Paid to hunters", near(totalPaid.toString()))}
-    </div>
-    <h2>Programs</h2>
+    ${band({
+      crumbs: crumbs(html`<a href="#/">Overview</a>`, "details"),
+      title: "Details",
+      lede: html`The numbers, the programs and the words behind ${acct(cfg.contractId)} <span class="band-note">${cfg.network} · version ${info.version ?? "?"} (protocol v${info.major})</span>`,
+      stats: [[fmtInt(programs.length), "programs"], [fmtInt(totalSubs), "reports"], [fmtNear(totalPaid.toString()), "NEAR paid out"]],
+    })}
+    <h2 class="section">Programs</h2>
     ${programs.length === 0 ? html`<p class="muted">No programs yet.</p>` : ""}
+    <div class="program-cards">
     ${programs.map((p) => html`
-      <section class="card">
-        <header class="card-head">
-          <h3>${progLink(p.id, p.name)}</h3>
-          ${activeBadge(p)}
-          <span class="spacer"></span>
-          ${progLink(p.id, "open →")}
-        </header>
-        <p class="card-line">${programLine(p)}</p>
-      </section>`)}
-    <h2>Glossary</h2>
-    <dl class="terms">${TERMS.map(([term, text]) => html`<dt>${term}</dt><dd>${text}</dd>`)}</dl>
-    <h2>Technical summary</h2>
-    ${PITCH}
-    ${info.major >= 2 ? PITCH_V2 : ""}`;
+      <a class="program-card" href="#/program/${Number(p.id)}">
+        <div class="program-card-head"><h3>${p.name}</h3>${activeBadge(p)}</div>
+        <dl class="mini-stats">
+          <div><dd>${fmtInt(p.stats?.submissions)}</dd><dt>reports</dt></div>
+          <div><dd>${near(p.stats?.total_paid)}</dd><dt>paid out</dt></div>
+          <div><dd>${near(p.pool)}</dd><dt>left in the pool</dt></div>
+        </dl>
+        <span class="program-open">Open →</span>
+      </a>`)}
+    </div>
+    <h2 class="section">Glossary</h2>
+    <dl class="terms">${TERMS.map(([term, text]) => html`<div class="term"><dt>${term}</dt><dd>${text}</dd></div>`)}</dl>
+    <h2 class="section">Technical summary</h2>
+    <div class="panel tech">
+      ${PITCH}
+      ${info.major >= 2 ? PITCH_V2 : ""}
+    </div>`;
 }
 
 function programLine(p) {
@@ -446,18 +472,15 @@ function submissionsTable(subs) {
   if (subs.length === 0) return html`<p class="muted">No submissions yet.</p>`;
   return html`
     <div class="table-wrap">
-      <table class="list">
-        <thead><tr><th>#</th><th>Title</th><th>Hunter</th><th>Status</th><th>Outcome</th><th>Severity</th><th class="num">Payout</th><th class="num">Submitted block</th></tr></thead>
+      <table class="list reports">
+        <thead><tr><th>#</th><th>Report</th><th>Hunter</th><th>Result</th><th>Severity</th></tr></thead>
         <tbody>
           ${subs.map((s) => html`<tr>
             <td>${subLink(s.id)}</td>
             <td class="title-cell">${subLink(s.id, s.title)}</td>
             <td class="nowrap">${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""}</td>
-            <td>${badge(s.status)}</td>
-            <td class="nowrap">${outcomeCell(s)}</td>
+            <td class="nowrap">${stamp(s)}${s.status === "duplicate" && s.verdict?.duplicate_of !== null && s.verdict?.duplicate_of !== undefined ? html`<div class="small muted result-note">of ${subLink(s.verdict.duplicate_of)}</div>` : s.resolution ? html`<div class="small muted result-note">${outcomeCell(s)}</div>` : ""}</td>
             <td class="nowrap">${severityCell(s)}</td>
-            <td class="num">${payoutCell(s)}</td>
-            <td class="num mono">${fmtInt(s.submitted_block)}</td>
           </tr>`)}
         </tbody>
       </table>
@@ -474,10 +497,13 @@ async function programView(id) {
   document.title = `${p.name} · ReplayCourt`;
   subs.sort((a, b) => a.id - b.id);
   return html`
-    ${crumbs(html`<a href="#/">Overview</a>`, html`program #${id}`)}
-    <div class="title-row"><h1>${p.name}</h1>${activeBadge(p)}</div>
-    <p class="card-line">${programLine(p)}</p>
-    <h2>Submissions <span class="muted">(${subs.length})</span></h2>
+    ${band({
+      crumbs: crumbs(html`<a href="#/">Overview</a>`, html`<a href="#/details">Details</a>`, html`program #${id}`),
+      title: p.name,
+      side: activeBadge(p),
+      stats: [[fmtInt(subs.length), "reports"], [fmtNear(p.stats?.total_paid), "NEAR paid out"], [fmtNear(p.pool), "NEAR left in the pool"], [fmtNear(p.payouts?.critical), "NEAR for a critical bug"]],
+    })}
+    <h2 class="section">Reports</h2>
     ${submissionsTable(subs)}
     <p class="muted small">Commit order = submission id order; a duplicate always points to an earlier id.</p>
     <details class="more">
@@ -533,12 +559,15 @@ async function submissionView(id) {
     ? "passed · finalize() pays the hunter plus the owner's dispute bond"
     : "passed · finalize() refunds the full bond (expired)";
   const content = html`
-    ${crumbs(html`<a href="#/">Overview</a>`, progLink(s.program_id, p ? p.name : undefined), html`submission #${id}`)}
-    <div class="title-row">
-      <h1><span class="muted">#${id}</span> ${s.title}</h1>
-    </div>
-    <p class="meta">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>
-    ${statusMeaning(s) ? html`<div class="result"><div class="result-stamp">${stamp(s)}</div><p class="result-main">${statusMeaning(s)}</p>${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}</div>` : ""}
+    ${band({
+      crumbs: crumbs(html`<a href="#/">Overview</a>`, progLink(s.program_id, p ? p.name : undefined), html`submission #${id}`),
+      title: html`<span class="band-id">#${id}</span> ${s.title}`,
+      lede: html`
+        ${statusMeaning(s) ? html`<p class="result-main">${statusMeaning(s)}</p>` : ""}
+        ${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}
+        <p class="band-note">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>`,
+      side: stamp(s),
+    })}
     ${reportTrail(s, v)}
 
     <section class="evcheck wait" id="evcheck" aria-live="polite">
@@ -896,50 +925,71 @@ async function huntersView() {
     <td class="num">${fmtInt(r.duplicate)}</td>
     <td class="num">${fmtInt(r.needs_human)}</td>
     <td class="num">${near(r.earned)}</td>`;
+  const earned = rows.reduce((sum, { r }) => {
+    try {
+      return sum + BigInt(r.earned ?? 0);
+    } catch {
+      return sum;
+    }
+  }, 0n);
   return html`
-    ${crumbs(html`<a href="#/">Overview</a>`, "hunters")}
-    <h1>Hunters</h1>
-    ${v2
-      ? html`<p class="lead small-lead">A hunter's bond in a program depends only on their record <strong>in that program</strong>: more invalid
-        than valid reports double it, one valid report halves it, three valid and no invalid quarter it. The global numbers are for display only.</p>`
-      : html`<p class="lead small-lead">Public reputation from <code>get_hunter</code> for every account that has
-        submitted to a program on this contract. It changes the bond a hunter must post: more invalid
-        than valid reports double it, one valid report halves it, three valid and no invalid quarter it.</p>`}
+    ${band({
+      crumbs: crumbs(html`<a href="#/">Overview</a>`, "hunters"),
+      title: "Hunters",
+      lede: v2
+        ? html`A hunter's record in a program sets their bond there. <span class="rule">more invalid than valid: <b>×2</b></span> <span class="rule">one valid: <b>×½</b></span> <span class="rule">three valid, no invalid: <b>×¼</b></span>`
+        : "A hunter's record sets their bond.",
+      stats: [[fmtInt(rows.length), "hunters"], [fmtInt(rows.reduce((n, { r }) => n + Number(r.submissions ?? 0), 0)), "reports"], [fmtNear(earned.toString()), "NEAR earned"]],
+    })}
     ${rows.length === 0 ? html`<p class="muted">No hunters yet.</p>` : html`
-    ${v2 ? html`<h2>Global</h2>` : ""}
-    <div class="table-wrap">
-      <table class="list">
-        <thead><tr><th>Hunter</th><th class="num">Submissions</th><th class="num">Valid</th><th class="num">Invalid</th><th class="num">Duplicate</th><th class="num">Needs human</th><th class="num">Earned</th><th>Reports</th></tr></thead>
-        <tbody>${rows.map(({ h, r, subs, vault }) => html`<tr>
-          <td class="nowrap">${acct(h)}${vault ? html` ${vaultTag("this hunter has a vault")}` : ""}</td>
-          ${statCells(r)}
-          <td class="ids">${subs.map((s) => html`<a class="chip st-${own(STATUS, s.status) ? s.status : "unknown"}" href="#/submission/${Number(s.id)}" title="${s.title}">#${Number(s.id)} ${own(STATUS, s.status) ? s.status.replace("_", " ") : "?"}</a>`)}</td>
-        </tr>`)}</tbody>
-      </table>
-    </div>
-    ${v2 ? html`
-    <h2>Per program and vault</h2>
-    ${rows.map(({ h, perProgram, vault }) => html`
-      <section class="card hunter-card">
-        <header class="card-head"><h3>${acct(h)}</h3>${vault ? vaultTag("this hunter has a vault") : ""}</header>
-        <div class="hunter-grid">
-          <div class="table-wrap">
-            <table class="list">
-              <thead><tr><th>Program</th><th class="num">Subm.</th><th class="num">Valid</th><th class="num">Invalid</th><th class="num">Dup.</th><th class="num">Needs human</th><th class="num">Earned</th><th class="num" title="required_bond(program_id, hunter_id)">Bond now</th></tr></thead>
-              <tbody>${perProgram.map(({ pid, st, bond }) => {
-                const p = progById.get(pid);
-                const factor = p && bond !== null ? bondFactor(bond, p.bond) : "";
-                return html`<tr>
-                  <td class="title-cell">${progLink(pid, p ? html`<span class="muted">#${pid}</span> ${p.name}` : undefined)}</td>
-                  ${st ? statCells(st) : html`<td class="muted" colspan="6">get_hunter_in_program did not answer</td>`}
-                  <td class="num">${bond !== null ? html`${near(bond)}${factor ? html` <span class="muted small">${factor}</span>` : ""}` : html`<span class="muted">–</span>`}</td>
-                </tr>`;
-              })}</tbody>
-            </table>
-          </div>
-          ${vault ? vaultCard(vault) : ""}
-        </div>
-      </section>`)}` : ""}`}`;
+    <div class="hunter-cards">
+      ${rows.map(({ h, r, subs, perProgram, vault }, i) => html`
+        <section class="hunter-card">
+          <header>
+            <span class="rank">${i + 1}</span>
+            <div class="hunter-name">${acct(h)}${vault ? html` ${vaultTag("this hunter has a vault")}` : ""}</div>
+            <div class="hunter-earned">${near(r.earned)}<span>earned</span></div>
+          </header>
+          ${recordBar(r)}
+          <div class="chips">${subs.map((s) => html`<a class="chip st-${own(STATUS, s.status) ? s.status : "unknown"}" href="#/submission/${Number(s.id)}" title="${s.title}">#${Number(s.id)} ${own(STATUS, s.status) ? s.status.replace("_", " ") : "?"}</a>`)}</div>
+          ${v2 ? html`
+          <details class="more inner">
+            <summary>Bond${vault ? " and vault" : ""}</summary>
+            <div class="table-wrap">
+              <table class="list">
+                <thead><tr><th>Program</th><th class="num">Valid</th><th class="num">Invalid</th><th class="num">Bond now</th></tr></thead>
+                <tbody>${perProgram.map(({ pid, st, bond }) => {
+                  const p = progById.get(pid);
+                  const factor = p && bond !== null ? bondFactor(bond, p.bond) : "";
+                  return html`<tr>
+                    <td class="title-cell">${progLink(pid, p ? p.name : undefined)}</td>
+                    <td class="num">${st ? fmtInt(st.valid) : "–"}</td>
+                    <td class="num">${st ? fmtInt(st.invalid) : "–"}</td>
+                    <td class="num nowrap">${bond !== null ? html`${near(bond)}${factor ? html` <span class="muted small">${factor}</span>` : ""}` : "–"}</td>
+                  </tr>`;
+                })}</tbody>
+              </table>
+            </div>
+            ${vault ? vaultCard(vault) : ""}
+          </details>` : ""}
+        </section>`)}
+    </div>`}`;
+}
+
+/** Valid, invalid, duplicate and needs-human reports as one proportional bar with its legend. */
+function recordBar(r) {
+  const parts = [["ok", "valid", Number(r.valid ?? 0)], ["bad", "invalid", Number(r.invalid ?? 0)], ["warn", "duplicate", Number(r.duplicate ?? 0)], ["human", "needs human", Number(r.needs_human ?? 0)]];
+  const total = parts.reduce((n, [, , c]) => n + c, 0);
+  let x = 0;
+  const rects = total === 0 ? [] : parts.filter(([, , c]) => c > 0).map(([k, , c]) => {
+    const w = (c * 100) / total;
+    const rect = html`<rect class="r-${k}" x="${x}" y="0" width="${w}" height="6"></rect>`;
+    x += w;
+    return rect;
+  });
+  return html`
+    <svg class="record" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">${rects}</svg>
+    <p class="record-legend">${parts.filter(([, , c]) => c > 0).map(([k, label, c], i) => html`${i ? " · " : ""}<span class="l-${k}">${fmtInt(c)} ${label}</span>`)}${total === 0 ? "no verdicts" : ""}</p>`;
 }
 
 function notFound(msg) {

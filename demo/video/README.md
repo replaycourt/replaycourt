@@ -1,6 +1,6 @@
 # ReplayCourt demo video
 
-`replaycourt-demo.mp4` is the demo video for the NEAR hackathon entry. Specs: 1920x1080, 30 fps, H.264 High with AAC stereo audio, 139.0 s. Burned-in captions are included. `replaycourt-demo.srt` has the same captions as a subtitle file.
+`replaycourt-demo.mp4` is the demo video for the NEAR hackathon entry. The build writes it here, outside git; the published copy is `web/media/replaycourt-demo.mp4`. Specs: 1920x1080, 30 fps, H.264 High with AAC stereo audio, 139.0 s. Burned-in captions are included. `replaycourt-demo.srt` has the same captions as a subtitle file.
 
 The video is generated from [`storyboard.json`](storyboard.json). It is not screen-recorded. Every number, account, hash and transaction id shown comes from a file in this repository, and everything from scene 3 on shows the showcase deployment `contract.replaycourt.testnet`:
 
