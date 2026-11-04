@@ -10,6 +10,7 @@ import {
   commitmentOf,
   evidenceFiles,
   evidenceUrl,
+  statusMeaning,
   fmtLeft,
   heldWaitsFor,
   isFinal,
@@ -181,4 +182,16 @@ test("deadlines and the vault's 24 h window", () => {
   const old = vaultWindow({ ...vault, window_start: ns(now - 25 * 3600_000) }, now);
   assert.deepEqual([old.running, old.spent, old.lastSpent], [false, "0", "182050000000000000000000"]);
   assert.equal(vaultWindow({ window_start: "0", spent_in_window: "0" }, now).running, false);
+});
+
+test("statusMeaning explains every status in plain words, and a rejection by how it came about", () => {
+  for (const status of ["pending", "valid", "paid", "invalid", "duplicate", "needs_human", "disputed", "expired", "withdrawn"]) {
+    assert.ok(statusMeaning({ status }).length > 20, status);
+  }
+  assert.match(statusMeaning({ status: "rejected", dispute_bond: "100" }), /got the deposit back plus/);
+  assert.match(statusMeaning({ status: "rejected", dispute_bond: "0" }), /lost the deposit/);
+  assert.match(statusMeaning({ status: "rejected", dispute_bond: "not a number" }), /lost the deposit/);
+  assert.equal(statusMeaning({ status: "constructor" }), "");
+  assert.equal(statusMeaning({ status: 7 }), "");
+  assert.equal(statusMeaning(null), "");
 });

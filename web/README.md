@@ -15,9 +15,9 @@ the version next to the network. Views that only v2 has (`get_hunter_in_program`
 
 | View | Route | Shows |
 |---|---|---|
-| Overview | `#/` | what ReplayCourt does; every program with pool, reserved, payouts, bond, verifier fee, challenge window, owner, verifier and stats. v2 adds the dispute bond, resolve timeout and `stats.overruled` |
+| Overview | `#/` | for a first-time visitor: what ReplayCourt does in one sentence, how it works in four steps, five guided cases of the showcase contract (`tour` in `config.js`, status read live), a glossary. Below that the technical summary, the contract's totals and every program; the pool, reserved, payouts, bond, verifier fee, windows, owner, verifier and stats are folded inside each program |
 | Program | `#/program/0` | the same facts, then all submissions: id, title, hunter (with a "vault" tag for vault-funded reports), status badge (incl. v2 `expired`), outcome, severity, payout, submitted block |
-| Submission | `#/submission/3` | every verdict field (reason, fingerprint, fork chain and block, `duplicate_of` as a link); the settlement (bond, storage cost, payout, and in v2 "funded by" vault or deposit, dispute bond and where it went); the deadlines (challenge window, v2 resolve deadline, pending timeout) with a live countdown or "passed" and what happens then; the commitment with its v1 or v2 definition; the **evidence check** (below); the engine's `summary.md` and links to the raw files |
+| Submission | `#/submission/3` | first the status in plain words with the verifier's reason; every verdict field (reason, fingerprint, fork chain and block, `duplicate_of` as a link); the settlement (bond, storage cost, payout, and in v2 "funded by" vault or deposit, dispute bond and where it went); the deadlines (challenge window, v2 resolve deadline, pending timeout) with a live countdown or "passed" and what happens then; the commitment with its v1 or v2 definition; the **evidence check** (below); the engine's `summary.md` and links to the raw files |
 | Hunters | `#/hunters` | `get_hunter` (global, display only) of every hunter that has submitted. v2 adds per hunter a table of `get_hunter_in_program` per program with the bond the hunter must post there now (`required_bond`), and a vault card if `get_vault` returns one: balance, policy (max bond per report, max spend per 24 h, allowed programs) and the amount spent in the current window with its reset time |
 
 Accounts link to `testnet.nearblocks.io`. The page follows the system theme; the header button
@@ -28,7 +28,7 @@ Screenshots of the showcase, in [`../docs/screenshots/`](../docs/screenshots/):
 
 | file | shows |
 |---|---|
-| `overview.png` | `#/`: the programs with pool, stats and accounts |
+| `overview.png` | `#/`: the start page with the four steps and the guided cases |
 | `program.png` | `#/program/0`: the program and its submissions |
 | `submission.png` | `#/submission/1`: the TempleDAO report with the evidence check |
 | `submission-disputed.png` | `#/submission/6`: the AI hunter's report, disputed, then paid with the dispute bond after `resolve_until` |
@@ -53,10 +53,10 @@ Then open <http://127.0.0.1:8000/web/>, or another deployment with `?contract=`,
 modules from `file://`, and `crypto.subtle` only exists in secure contexts (https or localhost). Stop
 the server with Ctrl+C.
 
-Tests (Node >= 20, no install). 18 tests: escaping, Markdown, URLs and formatting
+Tests (Node >= 20, no install). 19 tests: escaping, Markdown, URLs and formatting
 (`lib.test.mjs`), and the v2 rules (`v2.test.mjs`): version detection, the envelope binding check,
 the `runs/` path restriction, the private state, raw-file links of both layouts, the v1 and v2
-commitment, deadlines and the vault window:
+commitment, deadlines, the vault window and the plain-language status text:
 
 ```bash
 # from the repository root

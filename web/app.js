@@ -25,6 +25,7 @@ import {
   renderMarkdown,
   safeHref,
   siblingUrl,
+  statusMeaning,
   vaultWindow,
 } from "./lib.js";
 import { listAll, rpcState, view } from "./near.js";
@@ -241,9 +242,38 @@ function programFacts(p, major) {
     </div>`;
 }
 
+const HOW_IT_WORKS = [
+  ["A hunter submits", "Someone who found a bug locks a sealed report and a small deposit in the contract. Nobody else can read the report yet."],
+  ["The attack is replayed", "A verifier program runs the attack on a private copy of the real blockchain and records what really happens. What the report claims does not count."],
+  ["The verdict goes on-chain", "Valid, invalid, duplicate, or needs a human. No AI decides, so a report cannot talk its way through."],
+  ["The contract settles it", "Real bugs are paid from money locked in advance. Fakes lose the deposit, so spam pays for its own review. An owner who stalls pays too."],
+];
+
+const TERMS = [
+  ["Hunter", "A person or AI agent who finds a bug and reports it."],
+  ["Bond", "The small deposit a hunter locks with each report. A fake report loses it."],
+  ["Pool (escrow)", "The reward money, locked in the contract. Money reserved for open reports cannot be withdrawn by the owner."],
+  ["Program", "One bug bounty: its owner, its rewards and its rules."],
+  ["Verifier", "The program that replays reports and posts verdicts. Its key can do nothing else."],
+  ["PoC (proof of concept)", "The code in a report that carries out the attack."],
+  ["Fork", "A private copy of a real blockchain at a past moment. An attack can run there without harming anyone."],
+  ["Trace", "The full record of what the code really did during the replay."],
+  ["Fingerprint", "A code derived from the attack. Reports of the same attack get the same fingerprint."],
+  ["Challenge window", "The wait after a valid verdict, in which the program owner can object."],
+  ["Evidence", "The files of a replay. Their hash is on-chain, so your browser can check that nothing was changed."],
+  ["Testnet", "NEAR's test network. Its tokens have no value."],
+];
+
+/** The guided cases, or nothing on another deployment: their texts describe this one contract. */
+async function tourCases() {
+  if (cfg.contractId !== cfg.tourContract || !Array.isArray(cfg.tour)) return [];
+  const subs = await Promise.all(cfg.tour.map((c) => view("get_submission", { submission_id: c.id }).catch(() => null)));
+  return cfg.tour.flatMap((c, i) => (subs[i] ? [{ ...c, s: subs[i] }] : []));
+}
+
 async function overview() {
   document.title = "ReplayCourt explorer";
-  const [info, programs] = await Promise.all([contractVersion(), listAll("list_programs")]);
+  const [info, programs, cases] = await Promise.all([contractVersion(), listAll("list_programs"), tourCases()]);
   const totalSubs = programs.reduce((a, p) => a + Number(p.stats?.submissions ?? 0), 0);
   let totalPaid = 0n;
   for (const p of programs) {
@@ -255,8 +285,33 @@ async function overview() {
   }
   return html`
     <h1>Bug reports that prove themselves</h1>
-    ${PITCH}
-    ${info.major >= 2 ? PITCH_V2 : ""}
+    <p class="lede">A bug bounty where a report is only paid if its attack really works.</p>
+    <p>This page is a live window on the contract on ${cfg.network === "testnet" ? "NEAR's test network, which uses play money" : `NEAR ${cfg.network}`}. It only reads: there is nothing to install, sign or pay. Open a case below and see what happened.</p>
+    <h2>How it works</h2>
+    <ol class="steps">
+      ${HOW_IT_WORKS.map(([title, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><p>${text}</p></li>`)}
+    </ol>
+    ${cases.length ? html`
+    <h2>See it in ${cases.length} cases from this contract</h2>
+    <div class="cases">
+      ${cases.map((c) => html`
+        <a class="case" href="#/submission/${Number(c.id)}">
+          <span class="case-id">#${Number(c.id)}</span>
+          <span class="case-text"><strong>${c.title}</strong><span class="muted">${c.text}</span></span>
+          <span class="case-result">${badge(c.s.status)}</span>
+          <span class="case-go" aria-hidden="true">→</span>
+        </a>`)}
+    </div>` : ""}
+    <details class="more">
+      <summary>What do these words mean?</summary>
+      <dl class="terms">${TERMS.map(([term, text]) => html`<dt>${term}</dt><dd>${text}</dd>`)}</dl>
+    </details>
+    <details class="more">
+      <summary>The technical version</summary>
+      ${PITCH}
+      ${info.major >= 2 ? PITCH_V2 : ""}
+    </details>
+    <h2>Live from the contract</h2>
     <div class="tiles">
       ${tile("Contract", acct(cfg.contractId), html`${cfg.network} · version ${info.version ?? "?"} (protocol v${info.major})`)}
       ${tile("Programs", fmtInt(programs.length))}
@@ -272,9 +327,13 @@ async function overview() {
           ${activeBadge(p)}
           <span class="muted">program #${Number(p.id)}</span>
           <span class="spacer"></span>
-          ${progLink(p.id, "submissions →")}
+          ${progLink(p.id, "all its reports →")}
         </header>
-        ${programFacts(p, info.major)}
+        <p class="card-line">${fmtInt(p.stats?.submissions)} report${Number(p.stats?.submissions) === 1 ? "" : "s"} · ${near(p.stats?.total_paid)} paid out · ${near(p.pool)} left in the pool</p>
+        <details class="more inner">
+          <summary>All rules and numbers of this program</summary>
+          ${programFacts(p, info.major)}
+        </details>
       </section>`)}`;
 }
 
@@ -319,6 +378,7 @@ async function programView(id) {
         <ul class="plain">${p.scope.map((t) => html`<li><span class="muted">${chainName(t.chain_id)}</span> <code>${t.address}</code></li>`)}</ul>
       </div>` : ""}
     <h2>Submissions <span class="muted">(${subs.length})</span></h2>
+    <p class="muted small">Each row is one report. Open one to see what happened and to check its evidence.</p>
     ${submissionsTable(subs)}
     <p class="muted small">Commit order = submission id order; a duplicate always points to an earlier id.</p>`;
 }
@@ -370,6 +430,7 @@ async function submissionView(id) {
       ${badge(s.status)}
     </div>
     <p class="meta">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>
+    ${statusMeaning(s) ? html`<p class="meaning"><strong>What this means:</strong> ${statusMeaning(s)}${v?.reason ? html`<span class="meaning-reason"><strong>The verifier's reason:</strong> ${renderInline(v.reason)}</span>` : ""}</p>` : ""}
 
     <section class="evcheck wait" id="evcheck" aria-live="polite">
       <div class="mark">…</div>
@@ -438,7 +499,7 @@ function evBox(state, mark, title, body, table) {
   const box = document.getElementById("evcheck");
   if (!box) return;
   box.className = `evcheck ${state}`;
-  box.innerHTML = String(html`<div class="evhead"><div class="mark" aria-hidden="true">${mark}</div><div class="evbody"><h2>${title}</h2>${body}</div></div>${table ?? ""}`);
+  box.innerHTML = String(html`<div class="evhead"><div class="mark" aria-hidden="true">${mark}</div><div class="evbody"><h2>${title}</h2>${body}</div></div>${table && state === "ok" ? html`<details class="more inner"><summary>Show the check, field by field</summary>${table}</details>` : table ?? ""}`);
 }
 
 const getOpts = { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" };
@@ -508,9 +569,10 @@ function renderEvidence(r, s, info, url) {
     case "ok":
       if (r.mode === "v2") {
         evBox("ok", "✓", "Evidence matches on-chain and is bound to this submission ✓", html`
-          <p>The sha256 of <code>evidence.json</code>, computed in this browser, equals the <code>evidence_sha256</code> the verifier
-          posted on-chain, and the envelope (<code>replaycourt.evidence/v1</code>) names exactly this contract, program, submission, hunter and commitment.</p>`,
-        checksTable(r, uri, url));
+          <p>Your browser just recomputed the hash of this report's evidence file. It equals the hash stored on the blockchain, so the file has not been changed, and the file names exactly this report.</p>`,
+        html`<p>The sha256 of <code>evidence.json</code>, computed in this browser, equals the <code>evidence_sha256</code> the verifier
+          posted on-chain, and the envelope (<code>replaycourt.evidence/v1</code>) names exactly this contract, program, submission, hunter and commitment.</p>
+          ${checksTable(r, uri, url)}`);
       } else {
         evBox("ok", "✓", "Evidence hash matches on-chain ✓", html`
           <p>The sha256 of <code>${url.pathname.split("/").pop()}</code>, computed in this browser, equals the <code>evidence_sha256</code> the verifier posted on-chain.

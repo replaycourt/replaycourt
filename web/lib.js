@@ -144,6 +144,35 @@ export function isFinal(status) {
   return typeof status === "string" && FINAL_STATUSES.includes(status);
 }
 
+const MEANING = {
+  pending: "Waiting for a verdict. The report is still sealed, and the contract holds the hunter's deposit.",
+  valid: "The replay confirmed the exploit. The hunter is paid when the challenge window ends, unless the program owner objects first.",
+  paid: "The report was accepted. The hunter was paid from the money locked in the contract and got the deposit back.",
+  invalid: "The report failed the check, for example because the replay showed no real damage. The hunter lost the deposit: it goes to the bounty pool and pays the verifier's fee.",
+  duplicate: "A report of the same attack was committed earlier, and only the first one can be paid. The hunter got the deposit back, minus the verifier's fee.",
+  needs_human: "The replay cannot decide this alone, so the program owner must decide before a deadline. If the owner does nothing, the hunter gets the whole deposit back.",
+  disputed: "The program owner objected and locked a deposit of their own. The owner must decide before a deadline. If the owner does nothing, the hunter is paid and also gets the owner's deposit.",
+  expired: "Nobody decided before the deadline, so the report is closed. The hunter got the whole deposit back.",
+  withdrawn: "No verdict came in time, so the hunter took the report back and got the whole deposit back.",
+};
+
+/** One sentence for a visitor who does not know the protocol: what this submission's status means. */
+export function statusMeaning(s) {
+  const status = s?.status;
+  if (status === "rejected") {
+    let disputed = false;
+    try {
+      disputed = BigInt(s.dispute_bond ?? 0) > 0n;
+    } catch {
+      // malformed value: treat as not disputed
+    }
+    return disputed
+      ? "The program owner overruled the verifier. The hunter gets no payout, but got the deposit back plus the owner's dispute deposit."
+      : "The replay could not decide this alone, and the program owner then rejected the report. The hunter lost the deposit.";
+  }
+  return typeof status === "string" && Object.hasOwn(MEANING, status) ? MEANING[status] : "";
+}
+
 const COMMIT_DOMAIN = "replaycourt/commit/v2";
 
 /** The commitment of a report: v2 sha256("replaycourt/commit/v2" || 0x00 || hunter || 0x00 || report),

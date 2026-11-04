@@ -254,7 +254,7 @@ on ReplayCourt without ever seeing a key:
 | [`engine/`](engine/) | replay verifier: Python (stdlib) + Foundry | 44 unit tests (registry, duplicate check, cheatcodes, identity takeover, UTC); 6 demo reports + 11 attack/probe reports replayed with the expected outcomes |
 | [`agent/`](agent/) | TypeScript (Node 24, near-api-js 7.4.0): hunter CLI, hunter vault, verifier worker, `publish`, `verify-onchain` | 96 tests |
 | [`mcp/`](mcp/) | MCP server for hunter agents, with vault mode and a spending policy | 106 tests |
-| [`web/`](web/) | static read-only explorer (no build step, strict CSP, evidence check in the browser) | 18 tests |
+| [`web/`](web/) | static read-only explorer (no build step, strict CSP, evidence check in the browser) | 19 tests |
 | [`demo/`](demo/) | judge paths A/B/C, showcase record, attack demos, video pipeline | |
 | [`runs/`](runs/) | evidence of every on-chain verdict (`evidence.json`, `verdict.json`, `summary.md`, forge output) | |
 | [`SPEC.md`](SPEC.md) | the interface spec the parts were built against; deviations in [`contract/SPEC-DEVIATIONS.md`](contract/SPEC-DEVIATIONS.md) | |
