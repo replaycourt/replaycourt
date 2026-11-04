@@ -1,7 +1,7 @@
 # ReplayCourt: bug reports that prove themselves
 
-ReplayCourt is a bug-bounty escrow on NEAR where a report gets paid only if its exploit actually
-works. A hunter (a human or an AI agent) commits a **sealed** report with a Foundry proof of
+ReplayCourt is a bug-bounty escrow on NEAR where a report is judged by replaying its exploit.
+A hunter (a human or an AI agent) commits a **sealed** report with a Foundry proof of
 concept to a NEAR contract and posts a small bond. A verifier agent replays the exploit on a
 fork of the real chain at the stated block. It decides from the **execution trace**, never from
 what the PoC prints. The verdict goes on-chain, signed with a key that can do nothing else.
@@ -12,7 +12,7 @@ policy, using a key that cannot withdraw.
 
 Built at NEAR HACKATHON (2026). Runs on NEAR **testnet**; no step touches mainnet.
 
-- Showcase contract: [`contract.replaycourt.testnet`](https://testnet.nearblocks.io/address/contract.replaycourt.testnet), described in [`demo/SHOWCASE.md`](demo/SHOWCASE.md)
+- Showcase contract: [`contract.replaycourt.testnet`](https://testnet.nearblocks.io/address/contract.replaycourt.testnet), described in [`demo/SHOWCASE.md`](demo/SHOWCASE.md). It is a staged demo: one operator runs all its accounts, and the reports re-enact public incidents or are built to fail
 - Live explorer, no install: <https://replaycourt.github.io/replaycourt/web/>
 - Attack demos for the security track: [`demo/ATTACKS.md`](demo/ATTACKS.md)
 - Ways for judges to check everything: [`demo/README.md`](demo/README.md)
@@ -142,7 +142,7 @@ is in [`demo/SHOWCASE.md`](demo/SHOWCASE.md).
 | 3 | Seneca, with a PoC that fails on the fork | invalid | bond slashed |
 | 4 | "profit" that only exists because the PoC pranks as the victim | invalid | bond slashed |
 | 5 | reentrancy against a local contract, no fork | needs human | owner resolved valid/high, paid 0.25 NEAR |
-| 6 | Seneca `Chamber.performOperations()`, Ethereum block 19,325,936, **submitted by an AI agent through MCP from its vault** | valid, critical | owner disputed and did not resolve: `finalize` after the deadline paid 0.4 NEAR plus the 0.1 NEAR dispute bond; the bond went back to the vault |
+| 6 | Seneca `Chamber.performOperations()`, Ethereum block 19,325,936, **submitted through MCP from a vault by a scripted client in the role of an AI agent** | valid, critical | owner disputed and did not resolve: `finalize` after the deadline paid 0.4 NEAR plus the 0.1 NEAR dispute bond; the bond went back to the vault |
 | 7 | attack a: prompt injection in the report | invalid | bond slashed |
 | 8 | attack b: sandbox escape attempt | invalid | bond slashed |
 | 9 | attack c: sealed text does not match the commitment | invalid | bond slashed |
@@ -231,7 +231,8 @@ v1 of the protocol. v2 fixes them, with regression tests:
 ## For AI agents: the MCP server
 
 [`mcp/`](mcp/) is a stdio MCP server that lets any MCP client (Claude, Codex, …) hunt bounties
-on ReplayCourt without ever seeing a key:
+on ReplayCourt without ever seeing a key. The recorded run ([`mcp/DEMO.md`](mcp/DEMO.md)) uses a scripted
+MCP client in the agent's role, not a language model:
 - **Tools:** `list_programs`, `required_bond`, `submit_report`, `my_submissions`, `finalize`,
   `withdraw_pending`, `budget_status`, and more.
 - **Vault mode:** the server signs with the hunter's function-call key and refuses to start with a

@@ -188,9 +188,9 @@ test("statusMeaning explains every status in plain words, and a rejection by how
   for (const status of ["pending", "valid", "paid", "invalid", "duplicate", "needs_human", "disputed", "expired", "withdrawn"]) {
     assert.ok(statusMeaning({ status }).length > 20, status);
   }
-  assert.match(statusMeaning({ status: "rejected", dispute_bond: "100" }), /got the deposit back plus/);
-  assert.match(statusMeaning({ status: "rejected", dispute_bond: "0" }), /lost the deposit/);
-  assert.match(statusMeaning({ status: "rejected", dispute_bond: "not a number" }), /lost the deposit/);
+  assert.match(statusMeaning({ status: "rejected", dispute_reason: "known issue" }), /got the deposit back plus/);
+  assert.match(statusMeaning({ status: "rejected", dispute_reason: null }), /lost the deposit/);
+  assert.match(statusMeaning({ status: "rejected" }), /lost the deposit/);
   assert.equal(statusMeaning({ status: "constructor" }), "");
   assert.equal(statusMeaning({ status: 7 }), "");
   assert.equal(statusMeaning(null), "");

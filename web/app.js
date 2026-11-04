@@ -173,7 +173,7 @@ const PITCH = html`
   prints. It posts the verdict (valid, invalid, duplicate or needs human, with severity, attack
   fingerprint and the sha256 of its evidence) on-chain with a function-call key that can call
   nothing else. Valid reports are paid from the program's escrow after a challenge window, invalid
-  ones lose their bond to the program, and duplicates are settled by on-chain commit order. This
+  ones lose their bond (to the program's pool and the verifier's fee), and duplicates are settled by on-chain commit order. This
   page only reads: every number comes from a contract view call, and each evidence file is hashed
   in your browser and compared with the hash on-chain.</p>`;
 const PITCH_V2 = html`
@@ -243,37 +243,69 @@ function programFacts(p, major) {
 }
 
 const HOW_IT_WORKS = [
-  ["A hunter submits", "Someone who found a bug locks a sealed report and a small deposit in the contract. Nobody else can read the report yet."],
-  ["The attack is replayed", "A verifier program runs the attack on a private copy of the real blockchain and records what really happens. What the report claims does not count."],
-  ["The verdict goes on-chain", "Valid, invalid, duplicate, or needs a human. No AI decides, so a report cannot talk its way through."],
-  ["The contract settles it", "Real bugs are paid from money locked in advance. Fakes lose the deposit, so spam pays for its own review. An owner who stalls pays too."],
+  ["Submit", "Sealed report and deposit go on-chain."],
+  ["Replay", "The attack is replayed on a copy of the chain."],
+  ["Verdict", "Fixed rules judge the replay, no AI. Doubtful cases go to the owner."],
+  ["Settle", "Proven bugs get paid. Failed proofs lose the deposit. An owner who overrules pays a penalty."],
 ];
 
 const TERMS = [
   ["Hunter", "A person or AI agent who finds a bug and reports it."],
-  ["Bond", "The small deposit a hunter locks with each report. A fake report loses it."],
-  ["Pool (escrow)", "The reward money, locked in the contract. Money reserved for open reports cannot be withdrawn by the owner."],
+  ["Bond", "The deposit a hunter locks with each report. A report whose proof fails usually loses it. A storage fee on top is not refunded."],
+  ["Pool (escrow)", "The reward money, held by the contract. Money reserved for open reports cannot be withdrawn by the owner."],
   ["Program", "One bug bounty: its owner, its rewards and its rules."],
-  ["Verifier", "The program that replays reports and posts verdicts. Its key can do nothing else."],
+  ["Verifier", "The program that replays reports and posts verdicts, with a key that can only post verdicts."],
   ["PoC (proof of concept)", "The code in a report that carries out the attack."],
-  ["Fork", "A private copy of a real blockchain at a past moment. An attack can run there without harming anyone."],
-  ["Trace", "The full record of what the code really did during the replay."],
-  ["Fingerprint", "A code derived from the attack. Reports of the same attack get the same fingerprint."],
+  ["Fork", "A private copy of a real blockchain at a past moment. An attack can run there without touching the real chain."],
+  ["Trace", "The record of the calls and events the code really made during the replay."],
+  ["Fingerprint", "A code derived from what a replay did. The same attack usually gives the same code."],
   ["Challenge window", "The wait after a valid verdict, in which the program owner can object."],
-  ["Evidence", "The files of a replay. Their hash is on-chain, so your browser can check that nothing was changed."],
+  ["Evidence", "The files of a replay. The hash of the main file is on-chain, so your browser can check that file."],
   ["Testnet", "NEAR's test network. Its tokens have no value."],
 ];
 
+const onShowcase = () => cfg.contractId === cfg.tourContract && Array.isArray(cfg.tour);
+
 /** The guided cases, or nothing on another deployment: their texts describe this one contract. */
 async function tourCases() {
-  if (cfg.contractId !== cfg.tourContract || !Array.isArray(cfg.tour)) return [];
+  if (!onShowcase()) return [];
   const subs = await Promise.all(cfg.tour.map((c) => view("get_submission", { submission_id: c.id }).catch(() => null)));
   return cfg.tour.flatMap((c, i) => (subs[i] ? [{ ...c, s: subs[i] }] : []));
 }
 
+/** The result of a guided case in plain words; the values come from the chain. */
+function caseResult(s) {
+  if (s.status === "paid") return html`<span class="badge st-paid">paid ${fmtNear(s.payout)} NEAR</span>`;
+  if (s.status === "invalid") return html`<span class="badge st-invalid">deposit lost</span>`;
+  return badge(s.status);
+}
+
 async function overview() {
   document.title = "ReplayCourt explorer";
-  const [info, programs, cases] = await Promise.all([contractVersion(), listAll("list_programs"), tourCases()]);
+  const [, cases] = await Promise.all([contractVersion(), tourCases()]);
+  return html`
+    <h1>Bug reports that prove themselves</h1>
+    <p class="lede">A bug bounty where reports are judged by replaying the attack.</p>
+    <ol class="steps">
+      ${HOW_IT_WORKS.map(([title, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><p>${text}</p></li>`)}
+    </ol>
+    ${cases.length ? html`
+    <h2>Open a case</h2>
+    <div class="cases">
+      ${cases.map((c) => html`
+        <a class="case" href="#/submission/${Number(c.id)}">
+          <span class="case-id">#${Number(c.id)}</span>
+          <span class="case-title">${c.title}</span>
+          <span class="case-result">${caseResult(c.s)}</span>
+          <span class="case-go" aria-hidden="true">→</span>
+        </a>`)}
+    </div>` : ""}
+    <p class="muted small fineprint">Live on NEAR ${cfg.network}${onShowcase() ? " with play money. The cases are staged demos" : ""}. This page only reads. <a href="#/details">Numbers and glossary →</a></p>`;
+}
+
+async function detailsView() {
+  document.title = "Details · ReplayCourt";
+  const [info, programs] = await Promise.all([contractVersion(), listAll("list_programs")]);
   const totalSubs = programs.reduce((a, p) => a + Number(p.stats?.submissions ?? 0), 0);
   let totalPaid = 0n;
   for (const p of programs) {
@@ -284,34 +316,8 @@ async function overview() {
     }
   }
   return html`
-    <h1>Bug reports that prove themselves</h1>
-    <p class="lede">A bug bounty where a report is only paid if its attack really works.</p>
-    <p>This page is a live window on the contract on ${cfg.network === "testnet" ? "NEAR's test network, which uses play money" : `NEAR ${cfg.network}`}. It only reads: there is nothing to install, sign or pay. Open a case below and see what happened.</p>
-    <h2>How it works</h2>
-    <ol class="steps">
-      ${HOW_IT_WORKS.map(([title, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><p>${text}</p></li>`)}
-    </ol>
-    ${cases.length ? html`
-    <h2>See it in ${cases.length} cases from this contract</h2>
-    <div class="cases">
-      ${cases.map((c) => html`
-        <a class="case" href="#/submission/${Number(c.id)}">
-          <span class="case-id">#${Number(c.id)}</span>
-          <span class="case-text"><strong>${c.title}</strong><span class="muted">${c.text}</span></span>
-          <span class="case-result">${badge(c.s.status)}</span>
-          <span class="case-go" aria-hidden="true">→</span>
-        </a>`)}
-    </div>` : ""}
-    <details class="more">
-      <summary>What do these words mean?</summary>
-      <dl class="terms">${TERMS.map(([term, text]) => html`<dt>${term}</dt><dd>${text}</dd>`)}</dl>
-    </details>
-    <details class="more">
-      <summary>The technical version</summary>
-      ${PITCH}
-      ${info.major >= 2 ? PITCH_V2 : ""}
-    </details>
-    <h2>Live from the contract</h2>
+    ${crumbs(html`<a href="#/">Overview</a>`, "details")}
+    <h1>Details</h1>
     <div class="tiles">
       ${tile("Contract", acct(cfg.contractId), html`${cfg.network} · version ${info.version ?? "?"} (protocol v${info.major})`)}
       ${tile("Programs", fmtInt(programs.length))}
@@ -325,16 +331,20 @@ async function overview() {
         <header class="card-head">
           <h3>${progLink(p.id, p.name)}</h3>
           ${activeBadge(p)}
-          <span class="muted">program #${Number(p.id)}</span>
           <span class="spacer"></span>
-          ${progLink(p.id, "all its reports →")}
+          ${progLink(p.id, "open →")}
         </header>
-        <p class="card-line">${fmtInt(p.stats?.submissions)} report${Number(p.stats?.submissions) === 1 ? "" : "s"} · ${near(p.stats?.total_paid)} paid out · ${near(p.pool)} left in the pool</p>
-        <details class="more inner">
-          <summary>All rules and numbers of this program</summary>
-          ${programFacts(p, info.major)}
-        </details>
-      </section>`)}`;
+        <p class="card-line">${programLine(p)}</p>
+      </section>`)}
+    <h2>Glossary</h2>
+    <dl class="terms">${TERMS.map(([term, text]) => html`<dt>${term}</dt><dd>${text}</dd>`)}</dl>
+    <h2>Technical summary</h2>
+    ${PITCH}
+    ${info.major >= 2 ? PITCH_V2 : ""}`;
+}
+
+function programLine(p) {
+  return html`${fmtInt(p.stats?.submissions)} report${Number(p.stats?.submissions) === 1 ? "" : "s"} · ${near(p.stats?.total_paid)} paid out · ${near(p.pool)} left in the pool`;
 }
 
 function submissionsTable(subs) {
@@ -371,16 +381,19 @@ async function programView(id) {
   return html`
     ${crumbs(html`<a href="#/">Overview</a>`, html`program #${id}`)}
     <div class="title-row"><h1>${p.name}</h1>${activeBadge(p)}</div>
-    ${programFacts(p, info.major)}
-    ${Array.isArray(p.scope) && p.scope.length ? html`
+    <p class="card-line">${programLine(p)}</p>
+    <h2>Submissions <span class="muted">(${subs.length})</span></h2>
+    ${submissionsTable(subs)}
+    <p class="muted small">Commit order = submission id order; a duplicate always points to an earlier id.</p>
+    <details class="more">
+      <summary>Rules and numbers of this program</summary>
+      ${programFacts(p, info.major)}
+      ${Array.isArray(p.scope) && p.scope.length ? html`
       <div class="panel scope">
         <h3>Scope (informational)</h3>
         <ul class="plain">${p.scope.map((t) => html`<li><span class="muted">${chainName(t.chain_id)}</span> <code>${t.address}</code></li>`)}</ul>
       </div>` : ""}
-    <h2>Submissions <span class="muted">(${subs.length})</span></h2>
-    <p class="muted small">Each row is one report. Open one to see what happened and to check its evidence.</p>
-    ${submissionsTable(subs)}
-    <p class="muted small">Commit order = submission id order; a duplicate always points to an earlier id.</p>`;
+    </details>`;
 }
 
 /** Where the owner's dispute bond of a submission is (SPEC v2 "resolve outcomes"). */
@@ -418,6 +431,7 @@ async function submissionView(id) {
   const v2 = info.major >= 2;
   document.title = `#${id} ${s.title} · ReplayCourt`;
   const v = s.verdict;
+  const tourText = onShowcase() ? cfg.tour.find((c) => c.id === id)?.text : null;
   const sameFp = v?.fingerprint ? siblings.filter((o) => o.id !== s.id && o.verdict?.fingerprint === v.fingerprint) : [];
   const pendingUntil = s.status === "pending" && p ? addSeconds(s.submitted_at, p.pending_timeout_sec) : null;
   const resolvePassed = s.status === "disputed"
@@ -430,13 +444,15 @@ async function submissionView(id) {
       ${badge(s.status)}
     </div>
     <p class="meta">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>
-    ${statusMeaning(s) ? html`<p class="meaning"><strong>What this means:</strong> ${statusMeaning(s)}${v?.reason ? html`<span class="meaning-reason"><strong>The verifier's reason:</strong> ${renderInline(v.reason)}</span>` : ""}</p>` : ""}
+    ${statusMeaning(s) ? html`<div class="result"><p class="result-main">${statusMeaning(s)}</p>${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}</div>` : ""}
 
     <section class="evcheck wait" id="evcheck" aria-live="polite">
       <div class="mark">…</div>
       <div><h2>Evidence matches on-chain?</h2><p>Checking…</p></div>
     </section>
 
+    <details class="more">
+    <summary>Verdict and settlement in detail</summary>
     <div class="row-split two">
       <section class="panel">
         <h2>Verdict</h2>
@@ -479,11 +495,15 @@ async function submissionView(id) {
         </table>
       </section>
     </div>
+    </details>
 
-    <section class="panel evidence">
-      <div class="panel-head"><h2>Evidence: summary.md</h2><span class="spacer"></span><span id="evlinks" class="small"></span></div>
-      <div id="evsummary" class="md-body"><p class="muted">${v ? "Loading…" : "No evidence yet."}</p></div>
-    </section>`;
+    <details class="more">
+      <summary>The replay's report</summary>
+      <section class="panel evidence">
+        <div class="panel-head"><h2>Evidence: summary.md</h2><span class="spacer"></span><span id="evlinks" class="small"></span></div>
+        <div id="evsummary" class="md-body"><p class="muted">${v ? "Loading…" : "No evidence yet."}</p></div>
+      </section>
+    </details>`;
   return { content, after: (token) => checkEvidence(s, info, token) };
 }
 
@@ -499,7 +519,7 @@ function evBox(state, mark, title, body, table) {
   const box = document.getElementById("evcheck");
   if (!box) return;
   box.className = `evcheck ${state}`;
-  box.innerHTML = String(html`<div class="evhead"><div class="mark" aria-hidden="true">${mark}</div><div class="evbody"><h2>${title}</h2>${body}</div></div>${table && state === "ok" ? html`<details class="more inner"><summary>Show the check, field by field</summary>${table}</details>` : table ?? ""}`);
+  box.innerHTML = String(html`<div class="evhead"><div class="mark" aria-hidden="true">${mark}</div><div class="evbody"><h2>${title}</h2>${body}</div></div>${table && state === "ok" ? html`<details class="more inner"><summary>Show the check</summary>${table}</details>` : table ?? ""}`);
 }
 
 const getOpts = { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" };
@@ -569,7 +589,7 @@ function renderEvidence(r, s, info, url) {
     case "ok":
       if (r.mode === "v2") {
         evBox("ok", "✓", "Evidence matches on-chain and is bound to this submission ✓", html`
-          <p>Your browser just recomputed the hash of this report's evidence file. It equals the hash stored on the blockchain, so the file has not been changed, and the file names exactly this report.</p>`,
+          <p>Checked in your browser against the hash on the blockchain.</p>`,
         html`<p>The sha256 of <code>evidence.json</code>, computed in this browser, equals the <code>evidence_sha256</code> the verifier
           posted on-chain, and the envelope (<code>replaycourt.evidence/v1</code>) names exactly this contract, program, submission, hunter and commitment.</p>
           ${checksTable(r, uri, url)}`);
@@ -776,11 +796,8 @@ async function huntersView() {
     ${crumbs(html`<a href="#/">Overview</a>`, "hunters")}
     <h1>Hunters</h1>
     ${v2
-      ? html`<p class="lead small-lead">Global reputation from <code>get_hunter</code> for every account that has submitted to a
-        program on this contract; it is for display only. The bond a hunter must post in a program depends on the hunter's
-        record <strong>in that program only</strong> (<code>get_hunter_in_program</code>, below), so reputation farmed in a
-        self-run program buys nothing elsewhere: more invalid than valid reports double the bond, one valid report halves it,
-        three valid and no invalid quarter it.</p>`
+      ? html`<p class="lead small-lead">A hunter's bond in a program depends only on their record <strong>in that program</strong>: more invalid
+        than valid reports double it, one valid report halves it, three valid and no invalid quarter it. The global numbers are for display only.</p>`
       : html`<p class="lead small-lead">Public reputation from <code>get_hunter</code> for every account that has
         submitted to a program on this contract. It changes the bond a hunter must post: more invalid
         than valid reports double it, one valid report halves it, three valid and no invalid quarter it.</p>`}
@@ -833,7 +850,7 @@ async function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/");
   const [name, arg] = parts;
   for (const a of document.querySelectorAll("[data-nav]")) {
-    a.classList.toggle("active", a.dataset.nav === (name === "hunters" ? "hunters" : ""));
+    a.classList.toggle("active", a.dataset.nav === (name === "hunters" || name === "details" ? name : ""));
   }
   main.setAttribute("aria-busy", "true");
   main.innerHTML = String(html`<p class="loading">Loading from NEAR ${cfg.network}…</p>`);
@@ -843,6 +860,7 @@ async function route() {
     else if (name === "program" && /^\d{1,15}$/.test(arg ?? "")) result = { content: await programView(Number(arg)) };
     else if (name === "submission" && /^\d{1,15}$/.test(arg ?? "")) result = await submissionView(Number(arg));
     else if (name === "hunters") result = { content: await huntersView() };
+    else if (name === "details") result = { content: await detailsView() };
     else result = { content: notFound("There is no such page.") };
   } catch (e) {
     result = {
@@ -854,7 +872,8 @@ async function route() {
   main.innerHTML = String(result.content);
   main.removeAttribute("aria-busy");
   window.scrollTo(0, 0);
-  footer();
+  if (name) footer();
+  else document.getElementById("footer").textContent = "";
   startTicker();
   if (result.after) result.after(token);
 }

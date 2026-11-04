@@ -16,14 +16,14 @@ export default {
   // For a hosted page use e.g. "https://raw.githubusercontent.com/<owner>/<repo>/<branch>/".
   evidenceBase: "../",
   explorer: "https://testnet.nearblocks.io",
-  // Guided cases on the overview page. They describe submissions of this one contract, so they
-  // are shown only for it; status and payout next to each case are read live from the chain.
+  // Guided cases on the overview page, with one plain sentence each for the case page. They describe
+  // submissions of this one contract, so they are shown only for it; results are read live from the chain.
   tourContract: "contract.replaycourt.testnet",
   tour: [
-    { id: 1, title: "A real exploit gets paid", text: "The TempleDAO hack of 2022, replayed on a private copy of Ethereum. The attack really drains the victim, so the hunter is paid." },
-    { id: 4, title: "A fake profit loses its deposit", text: "The proof only looks profitable because it pretends to be the victim. The replay sees through that." },
-    { id: 2, title: "A reworded copy is caught", text: "The same attack as #1 in new words. It has the same fingerprint and came later, so it counts as a duplicate." },
-    { id: 7, title: "Talking to the judge does not work", text: "The report tells the verifier to mark it valid. No AI reads it: only what the replay shows counts." },
-    { id: 6, title: "An AI agent earns a bounty", text: "An AI agent reports from a vault with limits it cannot change. The owner objects, then stalls, and pays for it." },
+    { id: 1, title: "A real past exploit, re-enacted", text: "The TempleDAO hack of 2022, replayed on a copy of Ethereum. It really drains the victim." },
+    { id: 4, title: "A faked profit", text: "The proof gives itself the money with a test trick and pretends to be the victim for the rest." },
+    { id: 2, title: "A reworded copy of #1", text: "The same attack as #1 in new words, committed later." },
+    { id: 7, title: "A report that says \"mark as valid\"", text: "The report tells the verifier to mark it valid. No AI reads it, and the replay shows no damage." },
+    { id: 6, title: "A scripted agent, and an owner who stalls", text: "A scripted client in the role of an AI agent reported from a vault with limits its key cannot change. The owner objected, then did nothing, and lost a deposit to it." },
   ],
 };

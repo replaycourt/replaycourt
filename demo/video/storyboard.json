@@ -157,8 +157,8 @@
       "minDuration": 0,
       "cues": [
         {
-          "caption": "A real testnet run: the TempleDAO exploit.",
-          "say": "A real testnet run: the Temple DAO exploit."
+          "caption": "A testnet demo: the TempleDAO exploit.",
+          "say": "A testnet demo: the Temple DAO exploit."
         },
         {
           "caption": "On chain: a commitment, the sealed report, a bond."
@@ -567,16 +567,16 @@
     {
       "id": "agent",
       "type": "security",
-      "chapter": "The AI hunter",
+      "chapter": "The agent vault",
       "minDuration": 0,
       "showDataNote": true,
       "cues": [
         {
-          "caption": "An AI hunter spends from an on-chain vault, with a key that cannot withdraw."
+          "caption": "An AI agent spends from an on-chain vault, with a key that cannot withdraw."
         },
         {
-          "caption": "Through MCP it submitted report #6, and earned the bounty.",
-          "say": "Through M C P, it submitted report six, and earned the bounty."
+          "caption": "Here a script plays the agent: through MCP it earned the bounty on report #6.",
+          "say": "Here a script plays the agent: through M C P, it earned the bounty on report six."
         },
         {
           "caption": "Over the daily cap, the policy refuses."
@@ -669,7 +669,7 @@
           "say": "The owner disputed report six, then did not resolve."
         },
         {
-          "caption": "After the deadline, anyone could finalize: payout plus dispute bond to the agent."
+          "caption": "After the deadline, anyone could finalize: payout plus dispute bond."
         },
         {
           "caption": "An owner who stalls pays for it."
@@ -767,7 +767,7 @@
         {
           "at": "c0@0.28",
           "title": "Function-call access keys",
-          "text": "The verifier and the AI hunter sign with keys that can call only their listed methods."
+          "text": "The verifier and the agent sign with keys that can call only their listed methods."
         },
         {
           "at": "c0@0.52",

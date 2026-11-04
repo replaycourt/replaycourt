@@ -1,13 +1,13 @@
 # Showcase deployment on NEAR testnet (2026-11-02)
 
 The public demo of ReplayCourt v2. One bounty program holds the six demo reports from
-`engine/reports/`, a failed first try that must not block the real report, a report from an AI
-hunter (through the MCP server, paid from an on-chain vault), a dispute the owner never resolves,
+`engine/reports/`, a failed first try that must not block the real report, a report from a scripted
+client in the role of an AI hunter (through the MCP server, paid from an on-chain vault), a dispute the owner never resolves,
 and the attack demos as extra submissions. Program 1 exists for attack d. Every verdict was signed
 with a function-call key that can only call `post_verdict`.
 
 Check it yourself: `cd agent && npm ci && npm run cli -- verify-onchain` (see [`README.md`](README.md),
-path A). The attacks are written up in [`ATTACKS.md`](ATTACKS.md), the AI hunter's run in
+path A). The attacks are written up in [`ATTACKS.md`](ATTACKS.md), the scripted hunter's run in
 [`../mcp/DEMO.md`](../mcp/DEMO.md). Logs: [`logs/`](logs/).
 
 | | |
@@ -18,7 +18,7 @@ path A). The attacks are written up in [`ATTACKS.md`](ATTACKS.md), the AI hunter
 | program owner | `owner.replaycourt.testnet` |
 | verifier | `verifier.replaycourt.testnet`, signing with the function-call key `ed25519:2soJjd3yo41ae17wgrNpZVeykFHuwiDWBGUPRJrD5L3D` (receiver = contract, methods = `post_verdict`, allowance 1 NEAR) |
 | hunters | `hunter1.`, `hunter2.`, `hunter3.replaycourt.testnet` |
-| AI hunter | `agent.replaycourt.testnet`, signing with the function-call key `ed25519:37ugn3ZBbkH7oU6wp1JKYDi6Y7dS9fBjGWDvZNsnAmPD` (methods `submit_report_from_vault`, `finalize`, `withdraw_pending`, allowance 0.5 NEAR) |
+| agent role (scripted MCP client) | `agent.replaycourt.testnet`, signing with the function-call key `ed25519:37ugn3ZBbkH7oU6wp1JKYDi6Y7dS9fBjGWDvZNsnAmPD` (methods `submit_report_from_vault`, `finalize`, `withdraw_pending`, allowance 0.5 NEAR) |
 | other accounts | `verifier2.` (program 1), `thief.` (attack e) |
 | program 0 | "Ethereum DeFi replay bounty": pool 2.99438 NEAR (3 NEAR minus program storage), bond 0.05, verifier fee 0.01, dispute bond 0.1, payouts critical 0.4 / high 0.25 / medium 0.15 / low 0.05 NEAR, challenge window 120 s, resolve timeout 180 s, pending timeout 24 h |
 | program 1 | "Attack demo d: program judged by another verifier", verifier `verifier2`, pool 1 NEAR (withdrawn after the attack), all windows 60 s |
@@ -63,7 +63,7 @@ deposit in attack e shows.
 - **Disclosure after settlement.** The worker ran with `--disclose after-settlement`, so all
   evidence stayed in `runs-private/` until everything was final. Only then did `publish` move it to
   `runs/` ([log](logs/showcase-publish-verify.txt)).
-- **An AI agent earned a bounty inside an on-chain policy.** See below and
+- **A scripted agent earned a bounty inside an on-chain policy.** See below and
   [`../mcp/DEMO.md`](../mcp/DEMO.md).
 - **An owner who disputes and then does nothing pays for it.** See below.
 

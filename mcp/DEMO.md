@@ -2,8 +2,8 @@
 
 An MCP client ([`demo/client-demo.ts`](demo/client-demo.ts), the official MCP TypeScript SDK client
 over stdio) drives the server exactly as an AI agent's host would: it sees tool names, schemas and
-results only. It has no key, no policy file and no chain access of its own. In this run the agent
-earned a real bounty on the showcase contract, from its vault, and was refused everything outside
+results only. It has no key, no policy file and no chain access of its own. It is a script, not a
+language model. In this run it played the agent and earned a real testnet bounty on the showcase contract, from its vault, and was refused everything outside
 its policy. Full output: [`../demo/logs/mcp-client-demo.txt`](../demo/logs/mcp-client-demo.txt).
 
 | | |

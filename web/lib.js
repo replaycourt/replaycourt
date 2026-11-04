@@ -145,30 +145,26 @@ export function isFinal(status) {
 }
 
 const MEANING = {
-  pending: "Waiting for a verdict. The report is still sealed, and the contract holds the hunter's deposit.",
-  valid: "The replay confirmed the exploit. The hunter is paid when the challenge window ends, unless the program owner objects first.",
-  paid: "The report was accepted. The hunter was paid from the money locked in the contract and got the deposit back.",
-  invalid: "The report failed the check, for example because the replay showed no real damage. The hunter lost the deposit: it goes to the bounty pool and pays the verifier's fee.",
-  duplicate: "A report of the same attack was committed earlier, and only the first one can be paid. The hunter got the deposit back, minus the verifier's fee.",
-  needs_human: "The replay cannot decide this alone, so the program owner must decide before a deadline. If the owner does nothing, the hunter gets the whole deposit back.",
-  disputed: "The program owner objected and locked a deposit of their own. The owner must decide before a deadline. If the owner does nothing, the hunter is paid and also gets the owner's deposit.",
-  expired: "Nobody decided before the deadline, so the report is closed. The hunter got the whole deposit back.",
-  withdrawn: "No verdict came in time, so the hunter took the report back and got the whole deposit back.",
+  pending: "Waiting for a verdict. The contract holds the hunter's deposit.",
+  valid: "The replay confirmed the exploit. After the challenge window anyone can trigger the payment. If the owner objects first, the owner must decide.",
+  paid: "Accepted. The hunter was paid and got the deposit back.",
+  invalid: "Rejected. The hunter lost the deposit.",
+  duplicate: "Judged a duplicate of an earlier report. The hunter got the deposit back, minus a fee.",
+  needs_human: "The replay cannot decide this alone, so the program owner must decide before a deadline.",
+  disputed: "The program owner objected and must decide before a deadline. If not, the hunter is paid and gets the owner's deposit too.",
+  expired: "Nobody decided in time. The hunter got the deposit back.",
+  withdrawn: "No verdict came in time. The hunter ended the report and got the deposit back.",
 };
 
 /** One sentence for a visitor who does not know the protocol: what this submission's status means. */
 export function statusMeaning(s) {
   const status = s?.status;
   if (status === "rejected") {
-    let disputed = false;
-    try {
-      disputed = BigInt(s.dispute_bond ?? 0) > 0n;
-    } catch {
-      // malformed value: treat as not disputed
-    }
+    // dispute_reason, not the bond: a program may have a dispute bond of zero
+    const disputed = typeof s.dispute_reason === "string";
     return disputed
-      ? "The program owner overruled the verifier. The hunter gets no payout, but got the deposit back plus the owner's dispute deposit."
-      : "The replay could not decide this alone, and the program owner then rejected the report. The hunter lost the deposit.";
+      ? "The program owner overruled the verifier. The hunter got the deposit back plus the owner's deposit, but no payout."
+      : "The replay could not decide, and the program owner rejected the report. The hunter lost the deposit.";
   }
   return typeof status === "string" && Object.hasOwn(MEANING, status) ? MEANING[status] : "";
 }
