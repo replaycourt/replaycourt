@@ -48,21 +48,21 @@
       "headline": "Bug bounty programs are drowning in AI-written reports.",
       "facts": [
         {
-          "at": "c1",
+          "at": "c0+1.2",
           "org": "Ethereum Foundation",
           "big": "up to a week",
           "quote": "Due to the increase in AI submissions, please allow up to a week for us to respond to your submission.",
           "source": "ethereum.org/en/bug-bounty"
         },
         {
-          "at": "c1@0.4",
+          "at": "c0+2",
           "org": "Cosmos",
           "big": "+900 %",
           "quote": "a 900% increase in submission volume from last year, on the order of 20-50 per day",
           "source": "Cointelegraph, 22 Apr 2026"
         },
         {
-          "at": "c1@0.72",
+          "at": "c0+2.8",
           "org": "Decred",
           "big": "paused",
           "quote": "a severe drain on resources that is not sustainable",
@@ -616,7 +616,7 @@
           "source": "mcp/DEMO.md · demo/logs/mcp-client-demo.txt"
         },
         {
-          "at": "c2",
+          "at": "c1@0.35",
           "title": "Refused by the vault policy",
           "intro": "the agent asks for more than the policy allows",
           "call": "submit_report(0, 02_seneca_chamber_with_appendix.md)",
@@ -631,7 +631,7 @@
           "note": "signed directly, without the server (attack f), the contract panics: vault max_spend_per_day exceeded · tx 26RCYGtqKWUTqVK12Fth4oraHf94LP2XnzEMDBTMweub"
         },
         {
-          "at": "c3",
+          "at": "c2",
           "title": "Stolen agent key",
           "intro": "attack f: signs directly, without the server",
           "attempts": [
@@ -781,7 +781,7 @@
         }
       ],
       "cta": {
-        "at": "c1",
+        "at": "c0@0.45",
         "repo": "github.com/replaycourt/replaycourt",
         "sub": "Rust contract · replay engine · verifier worker · MCP server · every testnet tx hash"
       },

@@ -350,17 +350,19 @@ details.more[open] summary { margin-bottom: 8px; }
 .result-main { font-size: 1.25rem; font-weight: 600; margin: 0 0 4px; }
 .result-why { color: var(--muted); margin: 0; }
 .trail { position: relative; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: -18px 0 14px; padding: 0; }
-.trail li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 10px 26px rgba(10, 16, 32, 0.16); }
+.trail li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 10px 26px rgba(10, 16, 32, 0.16); border-top: 4px solid var(--role); }
+.trail .by-hunter { --role: #f5a524; } .trail .by-verifier { --role: #3b82f6; } .trail .by-contract { --role: #18a058; }
 
 /* inner pages: the same band as the start page */
-.band { color: #fff; margin: -10px calc(50% - 50vw) 0; padding: 20px calc(50vw - 50%) 36px;
+.band { color: #fff; margin: -10px calc(50% - 50vw) 0; padding: 36px calc(50vw - 50%) 56px;
   background: radial-gradient(800px 300px at 90% 0%, #2a57d6 0%, transparent 70%), radial-gradient(600px 300px at 0% 100%, #5b2bb8 0%, transparent 70%), #0a1020; }
 .band .crumbs { color: #9fb0d0; margin: 0 0 16px; }
 .band a { color: #a9c6ff; }
 .band code { background: #17233f; border-color: #2a3a63; color: #e6ecfa; }
 .band-main { display: flex; align-items: flex-start; gap: 28px; }
 .band-copy { flex: 1; min-width: 0; }
-.band h1 { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 10px; overflow-wrap: anywhere; }
+.band h1 { font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 10px; overflow-wrap: anywhere; }
+.band h1:has(.band-id) { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
 .band-id { color: #8fa3cc; font-weight: 700; }
 .band-lede { color: #dbe4f7; font-size: 1.05rem; }
 .band-lede p { margin: 0 0 6px; }
@@ -392,15 +394,17 @@ details.more[open] summary { margin-bottom: 8px; }
 .tech .lead { margin: 0 0 0.8rem; }
 .tech .lead:last-child { margin-bottom: 0; }
 
-table.reports .stamp { font-size: 0.72rem; padding: 3px 8px; border-width: 2px; }
+table.reports .stamp { font-size: 0.86rem; padding: 4px 10px; }
+table.reports tr.row-paid td { background: color-mix(in srgb, var(--ok-bg) 35%, transparent); }
 table.reports td { vertical-align: middle; }
 .result-note { margin-top: 5px; }
 
-.hunter-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; margin: 24px 0 2rem; align-items: start; }
+.hunter-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; margin: 24px 0 2rem; align-items: start; }
 section.hunter-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); }
 .hunter-card header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .rank { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-weight: 800; color: var(--accent); background: var(--accent-soft); }
-.hunter-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-weight: 600; }
+.hunter-name { flex: 1; min-width: 0; font-weight: 600; }
+.hunter-name .acct { font-size: 0.78rem; }
 .hunter-earned { flex: none; text-align: right; font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
 .hunter-earned span:last-child { display: block; color: var(--muted); font-size: 0.76rem; font-weight: 500; }
 .record { display: block; width: 100%; height: 8px; border-radius: 4px; background: var(--panel-2); overflow: hidden; }
@@ -441,6 +445,7 @@ section.hunter-card { background: var(--panel); border: 1px solid var(--border);
 
 @media (max-width: 560px) {
   .cases { grid-template-columns: minmax(0, 1fr); }
+  .case { min-height: 0; flex-direction: row; align-items: center; }
   .top .proto, .top .net { display: none; }
   .top-inner { gap: 6px; }
   .nav { margin-left: 0; gap: 0; }

@@ -302,7 +302,7 @@ function reportTrail(s, v) {
     ["Verdict", "verifier", v ? html`${outcomeCell(s)}${v.severity ? html` · ${sevTag(v.severity)}` : ""}` : "waiting"],
     ["Settled", "contract", settled],
   ];
-  return html`<ol class="trail">${items.map(([what, who, value]) => html`<li><span class="who">${who}</span><strong>${what}</strong><span>${value}</span></li>`)}</ol>`;
+  return html`<ol class="trail">${items.map(([what, who, value]) => html`<li class="by-${who}"><span class="who">${who}</span><strong>${what}</strong><span>${value}</span></li>`)}</ol>`;
 }
 
 const TERMS = [
@@ -475,7 +475,7 @@ function submissionsTable(subs) {
       <table class="list reports">
         <thead><tr><th>#</th><th>Report</th><th>Hunter</th><th>Result</th><th>Severity</th></tr></thead>
         <tbody>
-          ${subs.map((s) => html`<tr>
+          ${subs.map((s) => html`<tr class="${s.status === "paid" ? "row-paid" : ""}">
             <td>${subLink(s.id)}</td>
             <td class="title-cell">${subLink(s.id, s.title)}</td>
             <td class="nowrap">${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""}</td>
@@ -580,7 +580,7 @@ async function submissionView(id) {
       <div id="reportbody" class="md-body"><p class="muted">${v ? "Loading…" : "The report stays sealed until the submission is settled."}</p></div>
     </details>
 
-    <details class="more">
+    <details class="more" open>
     <summary>Verdict and settlement in detail</summary>
     <div class="row-split two">
       <section class="panel">

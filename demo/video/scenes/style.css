@@ -64,13 +64,13 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 .term-bar i:nth-child(2) { background: #febc2e; }
 .term-bar i:nth-child(3) { background: #28c840; }
 .term-bar span { margin-left: 12px; font-family: var(--mono); font-size: 16px; color: var(--dim); }
-.term-body { padding: 16px 20px 18px; font-family: var(--mono); font-size: 20px; line-height: 1.5; color: #cfd8e6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term-body { padding: 16px 20px 18px; font-family: var(--mono); font-size: 22px; line-height: 1.5; color: #cfd8e6; white-space: pre-wrap; overflow-wrap: anywhere; }
 .term-body .prompt { color: var(--green); }
 .term-body .cmd { color: #fff; }
 .term-body .caret { display: inline-block; width: 11px; height: 22px; background: #cfd8e6; vertical-align: -3px; margin-left: 2px; }
 .term-body .line { display: block; }
 .term-body .hl { color: #fff; }
-.term-body .tx { color: var(--blue); }
+.term-body .tx { color: var(--blue); font-size: 18px; }
 .term-body .ok { color: var(--green); }
 
 /* ---------- scene 1: problem ---------- */
@@ -95,11 +95,11 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 .idea .idea-title { display: flex; align-items: center; gap: 22px; font-size: 92px; font-weight: 800; letter-spacing: -2px; margin-top: 10px; }
 .idea .idea-title .logo { width: 92px; height: 92px; }
 .idea .idea-sub { font-size: 46px; font-weight: 600; color: var(--muted); margin-top: 6px; }
-.flow { position: absolute; top: 350px; left: 0; right: 0; display: flex; align-items: center; gap: 0; }
-.node { width: 330px; height: 250px; padding: 26px 26px; display: flex; flex-direction: column; gap: 10px; }
+.flow { position: absolute; top: 370px; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 0; }
+.node { width: 330px; height: 300px; padding: 26px 26px; display: flex; flex-direction: column; gap: 10px; }
 .node .ico { width: 58px; height: 58px; color: var(--blue); }
 .node .ico svg { width: 100%; height: 100%; }
-.node .t { font-size: 34px; font-weight: 750; }
+.node .t { font-size: 38px; font-weight: 750; line-height: 1.15; }
 .node .s { font-size: 22px; color: var(--muted); line-height: 1.35; }
 .arrow { width: 70px; text-align: center; font-size: 46px; color: var(--blue); }
 .outcomes { display: flex; flex-direction: column; gap: 16px; width: 380px; }
@@ -125,7 +125,7 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 .beat { position: absolute; left: 380px; right: 0; top: 0; bottom: 30px; display: none; }
 .report { padding: 18px 24px 16px; }
 .report .file { font-family: var(--mono); font-size: 18px; color: var(--dim); margin-bottom: 8px; }
-.report .fm { font-family: var(--mono); font-size: 20px; line-height: 1.5; }
+.report .fm { font-family: var(--mono); font-size: 22px; line-height: 1.5; }
 .report .fm .k { color: var(--violet); }
 .report .note { font-size: 18px; color: var(--muted); margin-top: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 18px; }
@@ -153,7 +153,7 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 .fields { padding: 16px 24px; margin-top: 18px; }
 .fields .row { display: flex; gap: 18px; font-size: 21px; line-height: 1.65; }
 .fields .row .k { width: 190px; flex: none; }
-.fields .row .v { font-family: var(--mono); font-size: 20px; overflow-wrap: anywhere; }
+.fields .row .v { font-family: var(--mono); font-size: 22px; overflow-wrap: anywhere; }
 .perm { margin-top: 18px; padding: 16px 24px 18px; border-color: rgba(76, 141, 255, 0.5); }
 .perm .lbl { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
 .perm code { display: block; font-family: var(--mono); font-size: 20px; line-height: 1.5; color: #cfe0ff; overflow-wrap: anywhere; }
@@ -198,7 +198,7 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 .scard.duplicate .kind { color: var(--amber); background: rgba(245, 177, 61, 0.12); }
 
 /* ---------- scene 5: security ---------- */
-.security .cols { position: absolute; inset: 0 0 34px 0; display: grid; gap: 26px; }
+.security .cols { position: absolute; inset: 0 0 34px 0; display: grid; gap: 26px; align-items: start; }
 .security .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
 .security .cols-2 { grid-template-columns: 1fr 1fr; }
 .security .cols-2 .att .try { font-size: 26px; }
@@ -225,14 +225,14 @@ body { font-family: var(--sans); color: var(--text); -webkit-font-smoothing: ant
 
 /* ---------- scene 6: near ---------- */
 .near .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-.tile { padding: 22px 26px; height: 300px; border-top: 4px solid var(--blue); }
+.tile { padding: 24px 28px; height: 330px; border-top: 4px solid var(--blue); }
 .tile .n { font-family: var(--mono); font-size: 20px; color: var(--blue); }
 .tile h3 { font-size: 31px; font-weight: 800; margin: 8px 0 12px; line-height: 1.15; }
-.tile p { font-size: 22px; line-height: 1.4; color: var(--muted); }
-.cta { position: absolute; left: 0; right: 0; top: 335px; text-align: center; }
+.tile p { font-size: 25px; line-height: 1.4; color: var(--muted); }
+.cta { position: absolute; left: 0; right: 0; top: 375px; text-align: center; }
 .cta .repo { display: inline-block; font-family: var(--mono); font-size: 56px; font-weight: 700; color: #fff; padding: 18px 40px; border-radius: 18px; border: 2px solid rgba(76, 141, 255, 0.6); background: rgba(76, 141, 255, 0.10); }
 .cta .sub { font-size: 24px; color: var(--muted); margin-top: 16px; }
-.question { position: absolute; left: 60px; right: 60px; top: 560px; text-align: center; font-size: 44px; font-weight: 750; line-height: 1.25; color: var(--amber); }
+.question { position: absolute; left: 60px; right: 60px; top: 610px; text-align: center; font-size: 44px; font-weight: 750; line-height: 1.25; color: var(--amber); }
 .squote { margin-top: 6px; margin-bottom: 14px; padding: 12px 18px; border-left: 3px solid rgba(255, 93, 93, 0.6); background: rgba(255, 93, 93, 0.05); border-radius: 0 10px 10px 0; font-size: 21px; line-height: 1.42; color: #e7c9c9; overflow-wrap: anywhere; }
 .squote .lbl { font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin-bottom: 4px; }
 #datanote { transition: none; }
