@@ -105,6 +105,18 @@ def decide(ctx: Dict) -> Dict:
             reasons.append(t("r.balances_from_cheats"))
         return out(INVALID)
 
+    # What a program accepts: enforced for fork runs. A local run proves nothing about a deployment
+    # and goes to a human below anyway.
+    if not ctx.get("local"):
+        min_block, used = ctx.get("min_block"), ctx["fork"].get("declared_block")
+        if min_block is not None and (used is None or used < min_block):
+            reasons.append(t("r.below_min_block", used if used is not None else "?", min_block))
+            return out(INVALID)
+        scope = ctx.get("scope")
+        if scope is not None and not an.loss_through(scope):
+            reasons.append(t("r.out_of_scope", ", ".join(scope) or t("r.scope_none_on_chain")))
+            return out(INVALID)
+
     human = []
     if ctx.get("local"):
         human.append(t("h.local"))

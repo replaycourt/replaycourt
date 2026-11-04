@@ -312,11 +312,11 @@ const commands: Record<string, Command> = {
   },
 
   worker: {
-    usage: "worker [--once] [--interval <seconds>] [--disclose after-settlement|immediately] [--engine-timeout <30m>] [--infra-retries <2>]",
+    usage: "worker [--once] [--interval <seconds>] [--disclose after-settlement|immediately] [--engine-timeout <30m>] [--infra-retries <2>] [--min-fork-block <block>]",
     summary: "judge pending submissions of the served programs with the engine; post verdicts with the function-call key",
     options: {
       once: { type: "boolean" }, interval: { type: "string" }, "engine-timeout": { type: "string" }, "infra-retries": { type: "string" },
-      disclose: { type: "string" },
+      disclose: { type: "string" }, "min-fork-block": { type: "string" },
     },
     async run(v) {
       const { cfg, provider } = ctx();
@@ -373,6 +373,7 @@ const commands: Record<string, Command> = {
         log,
       };
       const wctx: WorkerContext = {
+        minForkBlock: str(v["min-fork-block"]) === undefined ? null : needInt(str(v["min-fork-block"])!, "--min-fork-block"),
         network: cfg.network, contractId, verifierId, x25519PrivateKey: x.private_key, repoRoot: REPO_ROOT,
         runsRoot: runsDir(cfg, contractId), privateRoot: privateRunsDir(cfg, contractId), disclose, programs,
       };

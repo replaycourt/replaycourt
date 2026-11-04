@@ -19,7 +19,7 @@ rm -f "$REGISTRY"
 
 command -v python3 >/dev/null || { echo "python3 not found" >&2; exit 2; }
 
-# report path | expected outcome (as in verdict.json) | expected duplicate-of (or -)
+# report path | expected outcome (as in verdict.json) | expected duplicate-of (or -) | engine options
 CASES=(
   "engine/reports/01_templedao_stax.md|valid|-"
   "engine/reports/02_seneca_chamber.md|valid|-"
@@ -41,6 +41,12 @@ if [ "${1:-}" = "--all" ]; then
     "demo/attacks/engine-probes/broadcast-as-whale.md|invalid|-"
     "demo/attacks/engine-probes/prank-raw-selector.md|invalid|-"
     "demo/attacks/engine-probes/hidden-prank-pause-tracing.md|invalid|-"
+    # What a program accepts: the same real exploits, in and out of a program's scope.
+    "engine/reports/01_templedao_stax.md|valid|-|--scope 1:0xd2869042E12a3506100af1D192b5b04D65137941"
+    "engine/reports/02_seneca_chamber.md|valid|-|--scope 1:0x65c210c59B43EB68112b7a4f75C8393C36491F06"
+    "engine/reports/01_templedao_stax.md|invalid|-|--scope 1:0x65c210c59B43EB68112b7a4f75C8393C36491F06"
+    "engine/reports/01_templedao_stax.md|invalid|-|--scope 8453:0xd2869042E12a3506100af1D192b5b04D65137941"
+    "engine/reports/01_templedao_stax.md|invalid|-|--min-block 20000000"
   )
 fi
 
@@ -48,15 +54,19 @@ cd "$ROOT"
 fail=0
 printf '%-55s %-5s %-12s %-12s %s\n' "report" "exit" "outcome" "expected" "result"
 for c in "${CASES[@]}"; do
-  IFS='|' read -r report expected dup <<<"$c"
+  IFS='|' read -r report expected dup options <<<"$c"
   name=$(basename "$report" .md)
+  # shellcheck disable=SC2206
+  opts=($options)
+  [ -n "$options" ] && name="$name $(printf '%s' "$options" | cut -c3-24)"
   # 01-06 share one duplicate registry, in commit order. The attack and probe reports are
   # checked against an empty registry and not registered, so they are judged on their own
   # (the foreign-fork probe reuses report 01's PoC and would otherwise be its duplicate).
   extra=(--registry "$REGISTRY")
-  case "$report" in engine/reports/*) ;; *) extra=(--registry "$OUT/empty-registry.jsonl" --no-register) ;; esac
+  case "$report" in engine/reports/*) [ -z "$options" ] || extra=(--registry "$OUT/empty-registry.jsonl" --no-register) ;;
+    *) extra=(--registry "$OUT/empty-registry.jsonl" --no-register) ;; esac
   for attempt in 1 2 3; do
-    python3 -I engine/replay.py check "$report" --quiet "${extra[@]}" \
+    python3 -I engine/replay.py check "$report" --quiet "${extra[@]}" ${opts[@]+"${opts[@]}"} \
       --dest "$OUT/$name" >"$OUT/$name.stdout" 2>"$OUT/$name.stderr"
     rc=$?
     [ "$rc" -ne 69 ] && break

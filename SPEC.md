@@ -85,7 +85,7 @@ ReplayCourt makes the report prove itself:
 ```
 create_program(
   name: String,                 // 1..=80 bytes
-  scope: Vec<ScopeTarget>,      // 0..=32, informational
+  scope: Vec<ScopeTarget>,      // 0..=32; the contract only stores it, the verifier enforces it
   verifier_id: AccountId,       // the only account that may post verdicts for this program
   verifier_pubkey: String,      // base64 of the raw 32-byte X25519 key; hunters seal to it
   payouts: Payouts,             // at least one > 0

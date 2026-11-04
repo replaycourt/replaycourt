@@ -16,6 +16,7 @@ Built at NEAR HACKATHON (2026). Runs on NEAR **testnet**; no step touches mainne
 - Live explorer, no install: <https://replaycourt.github.io/replaycourt/web/>
 - Attack demos for the security track: [`demo/ATTACKS.md`](demo/ATTACKS.md)
 - Ways for judges to check everything: [`demo/README.md`](demo/README.md)
+- How people use it: [I found a bug](docs/HUNTER.md) · [I run a bounty](docs/OWNER.md) · [report template](docs/report-template.md)
 - Demo video: `demo/video/` (the script and the build pipeline are in the repo; the rendered video is attached to the [demo post](https://x.com/replaycourt/status/2117750139745910997))
 
 ## The problem
@@ -252,8 +253,8 @@ MCP client in the agent's role, not a language model:
 | Path | What | Tests |
 |---|---|---|
 | [`contract/`](contract/) | Rust, near-sdk 5.30: escrow, bonds, verdicts, settlement, reputation, hunter vault, events | 195 unit tests; sandbox integration test in CI |
-| [`engine/`](engine/) | replay verifier: Python (stdlib) + Foundry | 44 unit tests (registry, duplicate check, cheatcodes, identity takeover, UTC); 6 demo reports + 11 attack/probe reports replayed with the expected outcomes |
-| [`agent/`](agent/) | TypeScript (Node 24, near-api-js 7.4.0): hunter CLI, hunter vault, verifier worker, `publish`, `verify-onchain` | 96 tests |
+| [`engine/`](engine/) | replay verifier: Python (stdlib) + Foundry | 49 unit tests (registry, duplicate check, cheatcodes, identity takeover, UTC); 6 demo reports + 11 attack/probe reports + 5 scope runs replayed with the expected outcomes |
+| [`agent/`](agent/) | TypeScript (Node 24, near-api-js 7.4.0): hunter CLI, hunter vault, verifier worker, `publish`, `verify-onchain` | 97 tests |
 | [`mcp/`](mcp/) | MCP server for hunter agents, with vault mode and a spending policy | 106 tests |
 | [`web/`](web/) | static read-only explorer (no build step, strict CSP, evidence check in the browser) | 19 tests |
 | [`demo/`](demo/) | judge paths A/B/C, showcase record, attack demos, video pipeline | |
@@ -286,6 +287,17 @@ CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs:
   (front-end, keys, economic attacks over many blocks) go to `needs_human`. A "valid" verdict
   means "this PoC moves value from a third party on the real chain state". It does not replace
   a full review.
+- **Scope:** the contract stores a program's scope but cannot read a replay, so the verifier enforces
+  it. A report is invalid unless value leaves through a contract in scope. A program without a scope
+  accepts any contract. An operator sets `--min-fork-block` to refuse old public exploits of a contract
+  in scope. The showcase does not: its reports re-enact old hacks.
+- **Who runs and pays the verifier:** unsolved. Reports are encrypted to the verifier's key. If the owner
+  runs it, the owner judges their own program and receives slashed bonds. If someone else does, the
+  owner has no channel yet to read the bug, and the fee per verdict is too small to pay for it.
+- **Operating it:** command line only. There are no notifications, multisig or owner screens, and
+  public report titles can reveal a live bug.
+- **Evidence:** the showcase is a staged demo. Nobody has measured false positives and false negatives on
+  real reports, and a real bug with a broken PoC loses its bond.
 - **Engine isolation:** the engine isolates the PoC at process level and leaves it network
   access for the fork. A production verifier would run in a container or TEE.
 - **Failed payouts:** payouts are plain transfers without a callback. A transfer to an account

@@ -129,6 +129,17 @@ def resolve_chain(name, chains):
 
 
 # --------------------------------------------------------------------------- check
+def parse_scope(text: str) -> list:
+    """`1:0xabc,8453:0xdef` -> [(1, "0xabc"), (8453, "0xdef")]. Raises ValueError on anything else."""
+    out = []
+    for item in filter(None, (x.strip() for x in text.split(","))):
+        chain, _, addr = item.partition(":")
+        if not chain.isdigit() or not re.fullmatch(r"0x[0-9a-fA-F]{40}", addr):
+            raise ValueError("--scope entry %r is not <chain_id>:<0x address>" % item)
+        out.append((int(chain), addr.lower()))
+    return out
+
+
 def cmd_check(args) -> int:
     t0 = time.time()
     say = Progress(args.quiet or args.json)
@@ -412,6 +423,14 @@ def _check(args, rep, chains, v, ws, env, say, out_dir) -> int:
                 code_cache[addr] = None
         return code_cache[addr]
 
+    # --scope 1:0xabc,8453:0xdef: only the addresses on the chain of this run count.
+    scope = None
+    if args.scope is not None:
+        scope = [a for c, a in parse_scope(args.scope) if c == ccfg["chain_id"]]
+        v["evidence"]["scope"] = scope
+    if args.min_block is not None:
+        v["evidence"]["min_block"] = args.min_block
+
     say(t("cli.analysing_trace"))
     an = TraceAnalysis(res, sigmap, rep.attackers, rep.victims, has_code=has_code,
                        native_symbol=ccfg.get("native_symbol", "ETH"), ignore_created_tokens=not local)
@@ -448,7 +467,7 @@ def _check(args, rep, chains, v, ws, env, say, out_dir) -> int:
     dec = vmod.decide({
         "build": build, "selected": selected, "analysis": an, "cheat": cheat, "local": local,
         "fork": v["fork"], "code_checks": code_checks, "declared_victims": rep.victims, "valuation": valuation,
-        "foreign_forks": foreign_shown,
+        "foreign_forks": foreign_shown, "scope": scope, "min_block": args.min_block,
     })
     _apply(v, dec)
 
@@ -685,6 +704,8 @@ def main(argv=None) -> int:
     c.add_argument("--out", default=DEFAULTS["out"], help="parent directory; outputs go to OUT/<report-id>/")
     c.add_argument("--dest", help="write the outputs directly into this directory (instead of OUT/<report-id>/)")
     c.add_argument("--forge", default=_default_forge(), help="path of the forge binary")
+    c.add_argument("--scope", help="program scope as <chain_id>:<address>,...: value must leave through one of these")
+    c.add_argument("--min-block", type=int, help="reject reports that fork from an older block")
     c.add_argument("--json", action="store_true", help="print the verdict JSON on stdout")
     c.add_argument("--quiet", action="store_true")
     c.add_argument("--no-register", action="store_true", help="do not add the result to the duplicate registry")

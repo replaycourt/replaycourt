@@ -16,6 +16,9 @@ export default {
   // For a hosted page use e.g. "https://raw.githubusercontent.com/<owner>/<repo>/<branch>/".
   evidenceBase: "../",
   explorer: "https://testnet.nearblocks.io",
+  repoUrl: "https://github.com/replaycourt/replaycourt",
+  // The public demo post with the video; null until there is one.
+  demoPostUrl: null,
   // Guided cases on the overview page, with one plain sentence each for the case page. They describe
   // submissions of this one contract, so they are shown only for it; results are read live from the chain.
   tourContract: "contract.replaycourt.testnet",

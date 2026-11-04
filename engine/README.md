@@ -18,7 +18,8 @@ in `verdict.json`. The decision rules are the prototype's, with these additions:
   check"), and every timestamp is UTC;
 - in 0.5.0, cheatcodes fail closed (only an allow-list is neutral, anything else counts as state
   manipulation) and an identity takeover is also detected from the trace itself: a call whose
-  caller is not the frame that made it. `vm.broadcast` counts like `vm.prank`.
+  caller is not the frame that made it. `vm.broadcast` counts like `vm.prank`;
+- in 0.6.0, `--scope` and `--min-block` enforce what a program accepts (see "Decision rules").
 
 The demo outcomes did not change.
 
@@ -56,8 +57,9 @@ Python isolated, so no module planted in the current directory can hijack the ru
 
 `../demo/engine-replay.sh` reproduces this table (and checks the attack reports). Engines 0.3.0,
 0.4.0 and 0.5.0 gave the same outcomes on 2026-11-02 for the 14 reports they share (01-06, attacks
-a/b and six probes). Engine 0.5.0 adds three identity-takeover probes, 17 reports in all. The
-0.5.0 run is in
+a/b and six probes). Engine 0.5.0 adds three identity-takeover probes, 17 reports in all. Engine
+0.6.0 gives the same outcomes and adds five scope runs of reports 01 and 02, 22 runs in all. The
+0.6.0 run is in
 [`../demo/attacks/logs/engine-replay-all.txt`](../demo/attacks/logs/engine-replay-all.txt).
 
 First run on 2026-11-02 on the author's Mac (macOS x86_64, Python 3.8.7, forge 1.8.7), registry
@@ -113,10 +115,13 @@ The burden of proof is on the report. **valid** only if
 
 - the PoC **passes** on the fork, AND
 - the trace shows a real **outflow of value from third parties to the attacker**, AND
-- **no identity was taken over** with `vm.prank` and **no state was faked** with cheatcodes.
+- **no identity was taken over** with `vm.prank` and **no state was faked** with cheatcodes, AND
+- with `--scope`, the value **leaves through a contract in the program's scope**: an in-scope contract
+  loses it, or sits on the call path that moves it. The path is read upwards from the movement and stops
+  at the first attacker frame, so a flash loan's callback is not covered by the lender being in scope.
 
 **invalid**: PoC does not build / does not pass; no measurable value movement; or the "damage"
-only exists because the PoC pranks as the victim.
+only exists because the PoC pranks as the victim; outside `--scope`; or older than `--min-block`.
 **needs_human**: everything doubtful - local mode, starting capital or state via cheatcodes,
 acting as a foreign (privileged) address, block mismatch, target without code at the fork,
 gain without an identifiable victim, possible duplicate, a fork from an RPC the engine did not
@@ -271,7 +276,7 @@ holes (probes in `../demo/attacks/engine-probes/`):
 ## Tests
 
 ```bash
-python3 -I -m unittest discover -s engine/tests -v    # from the repository root; 44 tests, about 1 s
+python3 -I -m unittest discover -s engine/tests -v    # from the repository root; 49 tests, about 1 s
 ```
 
 They need no network and no forge, and CI runs them:

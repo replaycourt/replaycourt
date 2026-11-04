@@ -14,6 +14,7 @@ import {
   parseWrapper,
   processPending,
   processSubmission,
+  scopeArg,
   withInfraRetries,
   workRoot,
 } from "../src/worker.ts";
@@ -425,4 +426,16 @@ test("without a wrapper the worker's own time limit ends the run (exit 124)", { 
   const res = await run({ reportPath: "r", registryPath: "g", reportId: "sub-1", destDir: dir });
   assert.equal(res.exitCode, 124);
   assert.ok(Date.now() - started < 10_000);
+});
+
+test("the program's scope and the first accepted block reach the engine", () => {
+  const scope = scopeArg({ id: 0, name: "p", verifier_id: "v", scope: [{ chain_id: 1, address: "0xaa" }, { chain_id: 8453, address: "0xbb" }] });
+  assert.equal(scope, "1:0xaa,8453:0xbb");
+  assert.equal(scopeArg({ id: 0, name: "p", verifier_id: "v", scope: [] }), null);
+  assert.equal(scopeArg({ id: 0, name: "p", verifier_id: "v" }), null);
+  const base = { reportPath: "r.md", registryPath: "reg", reportId: "sub-1", destDir: "d" };
+  const cmd = engineCommand("python3", "/repo", { ...base, scope, minBlock: 0 });
+  assert.deepEqual(cmd.slice(cmd.indexOf("--scope")), ["--scope", scope, "--min-block", "0"]);
+  const plain = engineCommand("python3", "/repo", base);
+  assert.ok(!plain.includes("--scope") && !plain.includes("--min-block"));
 });

@@ -30,7 +30,7 @@ Requirements: Node >= 24 (tested 24.22.1). The worker additionally needs Python 
 ```bash
 cd agent
 npm ci                  # near-api-js 7.4.0 (+ typescript, @types/node for the type check)
-npm test                # node:test, 96 tests, no network
+npm test                # node:test, 97 tests, no network
 npm run typecheck       # tsc --noEmit
 node src/cli.ts --help  # list of commands; node src/cli.ts <command> --help for each
 ```
@@ -171,7 +171,7 @@ All commands run from `agent/`.
 | `node src/cli.ts create-program --name "Demo" --challenge 60` | `create_program` as `owner` with the key from `keygen`. Defaults: pool 3 NEAR, bond 0.1, fee 0.01, payouts 0.5/0.3/0.2/0.1 NEAR, `--dispute-bond` = the bond, `--pending-timeout` and `--resolve-timeout` 86,400 s. It refuses what the contract would refuse (dispute bond below the bond, timeouts out of range). Prints the program id |
 | `node src/cli.ts setup-verifier-key` | adds an ed25519 **function-call key** (receiver = contract, methods = `post_verdict`, allowance 1 NEAR) to the verifier account, signed once with its full-access key; stores the new private key in `.secrets/verifier-fc-key.json` |
 | `node src/cli.ts submit --program 0 --report ../engine/reports/01_templedao_stax.md --as hunter1` | reads `required_bond`, seals, computes the **v2 commitment** for the submitting account and calls `submit_report` with bond + storage. Prints the submission id and tx hash. The contract keeps `deposit - storage` as bond, so the storage estimate is tight (measured formula + 300 bytes; override with `--storage <NEAR>`) |
-| `node src/cli.ts worker --once` | judges every pending submission of the served programs once and posts the verdicts (without `--once`: polls every `--interval` s); `--disclose after-settlement` (default) or `immediately` |
+| `node src/cli.ts worker --once` | judges every pending submission of the served programs once and posts the verdicts (without `--once`: polls every `--interval` s); `--disclose after-settlement` (default) or `immediately`. It passes each program's on-chain scope to the engine; `--min-fork-block <block>` refuses reports forking from an older block |
 | `node src/cli.ts publish [--dry-run]` | moves the evidence of settled submissions from `runs-private/` to `runs/` (see "Disclosure") |
 | `node src/cli.ts finalize <id> [--hunter-key]` | pays a `valid` submission after its challenge window, or a `disputed` one after `resolve_until` (anyone may call; `--hunter-key` signs with the hunter's function-call key) |
 | `node src/cli.ts withdraw-pending <id> --as hunter1 [--hunter-key]` | the hunter takes the full bond back from a report that is still pending after the program's pending timeout |

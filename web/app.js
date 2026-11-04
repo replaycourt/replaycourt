@@ -243,11 +243,58 @@ function programFacts(p, major) {
 }
 
 const HOW_IT_WORKS = [
-  ["Submit", "Sealed report and deposit go on-chain."],
-  ["Replay", "The attack is replayed on a copy of the chain."],
-  ["Verdict", "Fixed rules judge the replay, no AI. Doubtful cases go to the owner."],
-  ["Settle", "Proven bugs get paid. Failed proofs lose the deposit. An owner who overrules pays a penalty."],
+  ["Submit", "hunter", "Sealed report and deposit go on-chain."],
+  ["Replay", "verifier", "The attack is replayed on a copy of the chain."],
+  ["Verdict", "verifier", "Fixed rules judge the replay, no AI. Doubtful cases go to the owner."],
+  ["Settle", "contract", "Proven bugs get paid. Failed proofs lose the deposit. An owner who overrules pays a penalty."],
 ];
+
+const repoFile = (path) => `${cfg.repoUrl}/blob/main/${path}`;
+const ext = (url, label) => html`<a href="${safeHref(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+
+/** The two ways in for a person. The page itself only reads, so each path ends in commands. */
+function rolePaths() {
+  return html`
+    <div class="roles">
+      <details class="more role">
+        <summary>I found a bug</summary>
+        <ol class="role-steps">
+          <li>Write a report: a Markdown file with a Foundry test that runs the attack. ${ext(repoFile("docs/report-template.md"), "Template")} · ${ext(repoFile("engine/reports/01_templedao_stax.md"), "real example")}</li>
+          <li>Check it on your machine, free: <code class="cmd">python3 -I engine/replay.py check report.md --no-register --dest check</code></li>
+          <li>Submit, which locks the deposit: <code class="cmd">node src/cli.ts submit --program 0 --report report.md --as you.testnet</code></li>
+          <li>Follow it here. After the challenge window: <code class="cmd">node src/cli.ts finalize &lt;id&gt;</code></li>
+        </ol>
+        <p class="small">${ext(repoFile("docs/HUNTER.md"), "Full guide for hunters →")}</p>
+      </details>
+      <details class="more role">
+        <summary>I run a bounty</summary>
+        <ol class="role-steps">
+          <li>Create a program with a reward pool and the contracts in scope: <code class="cmd">node src/cli.ts create-program --name "My bounty" --pool 10 --scope 1:0xYOUR_CONTRACT</code></li>
+          <li>Run the verifier, or have someone run it: <code class="cmd">node src/cli.ts worker</code></li>
+          <li>Reports appear here. Object to a verdict or decide a doubtful case: <code class="cmd">node src/cli.ts dispute &lt;id&gt;</code> · <code class="cmd">node src/cli.ts resolve &lt;id&gt;</code></li>
+        </ol>
+        <p class="small">${ext(repoFile("docs/OWNER.md"), "Full guide for owners →")}</p>
+      </details>
+    </div>`;
+}
+
+/** One report at a glance: who did what, with the numbers from the chain. */
+function reportTrail(s, v) {
+  const chain = v ? (Number(v.chain_id) !== 0 ? html`${chainName(v.chain_id)}, block <span class="mono">${fmtInt(v.fork_block)}</span>` : "no fork was replayed") : "waiting";
+  const settled = s.status === "paid" ? html`paid ${near(s.payout)}`
+    : s.status === "invalid" ? "deposit lost"
+    : s.status === "duplicate" ? "deposit back, minus a fee"
+    : s.status === "rejected" ? "no payout"
+    : s.status === "expired" || s.status === "withdrawn" ? "deposit back"
+    : "open";
+  const items = [
+    ["Submitted", "hunter", html`deposit ${near(s.bond)}`],
+    ["Replayed", "verifier", chain],
+    ["Verdict", "verifier", v ? html`${outcomeCell(s)}${v.severity ? html` · ${sevTag(v.severity)}` : ""}` : "waiting"],
+    ["Settled", "contract", settled],
+  ];
+  return html`<ol class="trail">${items.map(([what, who, value]) => html`<li><span class="who">${who}</span><strong>${what}</strong><span>${value}</span></li>`)}</ol>`;
+}
 
 const TERMS = [
   ["Hunter", "A person or AI agent who finds a bug and reports it."],
@@ -287,8 +334,9 @@ async function overview() {
     <h1>Bug reports that prove themselves</h1>
     <p class="lede">A bug bounty where reports are judged by replaying the attack.</p>
     <ol class="steps">
-      ${HOW_IT_WORKS.map(([title, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><p>${text}</p></li>`)}
+      ${HOW_IT_WORKS.map(([title, who, text], i) => html`<li class="step"><span class="step-n">${i + 1}</span><h3>${title}</h3><span class="who">${who}</span><p>${text}</p></li>`)}
     </ol>
+    ${rolePaths()}
     ${cases.length ? html`
     <h2>Open a case</h2>
     <div class="cases">
@@ -300,7 +348,7 @@ async function overview() {
           <span class="case-go" aria-hidden="true">→</span>
         </a>`)}
     </div>` : ""}
-    <p class="muted small fineprint">Live on NEAR ${cfg.network}${onShowcase() ? " with play money. The cases are staged demos" : ""}. This page only reads. <a href="#/details">Numbers and glossary →</a></p>`;
+    <p class="muted small fineprint">Live on NEAR ${cfg.network}${onShowcase() ? " with play money. The cases are staged demos" : ""}. This page only reads. <a href="#/details">Numbers and glossary →</a> · ${ext(cfg.repoUrl, "Code")}${cfg.demoPostUrl ? html` · ${ext(cfg.demoPostUrl, "Demo video")}` : ""}</p>`;
 }
 
 async function detailsView() {
@@ -445,11 +493,17 @@ async function submissionView(id) {
     </div>
     <p class="meta">by ${acct(s.hunter_id)}${s.funded_by_vault === true ? html` ${vaultTag("bond and storage drawn from the hunter's vault")}` : ""} · submitted ${fmtTime(s.submitted_at)} in block <span class="mono">${fmtInt(s.submitted_block)}</span></p>
     ${statusMeaning(s) ? html`<div class="result"><p class="result-main">${statusMeaning(s)}</p>${tourText ? html`<p class="result-why">${tourText}</p>` : v?.reason ? html`<p class="result-why">${renderInline(v.reason)}</p>` : ""}</div>` : ""}
+    ${reportTrail(s, v)}
 
     <section class="evcheck wait" id="evcheck" aria-live="polite">
       <div class="mark">…</div>
       <div><h2>Evidence matches on-chain?</h2><p>Checking…</p></div>
     </section>
+
+    <details class="more">
+      <summary>The report the hunter submitted</summary>
+      <div id="reportbody" class="md-body"><p class="muted">${v ? "Loading…" : "The report stays sealed until the submission is settled."}</p></div>
+    </details>
 
     <details class="more">
     <summary>Verdict and settlement in detail</summary>
@@ -653,10 +707,12 @@ async function checkEvidence(s, info, token) {
   if (r.state === "undisclosed") {
     setHtml("evsummary", html`<p class="muted">The engine's summary, the decrypted report and the PoC are published with the evidence once the submission is settled.</p>`);
     setHtml("commitcheck", html`<span class="muted">The report stays sealed until the submission is settled.</span>`);
+    setHtml("reportbody", html`<p class="muted">The report stays sealed until the submission is settled.</p>`);
     return;
   }
   if (!r.doc) {
     setHtml("evsummary", html`<p class="muted">No readable evidence file.</p>`);
+    setHtml("reportbody", html`<p class="muted">The report is not published.</p>`);
     return;
   }
   const files = evidenceFiles(url, r.doc).filter(([, u]) => safeHref(u));
@@ -665,7 +721,7 @@ async function checkEvidence(s, info, token) {
   const ran = files.some(([n]) => n === "summary.md");
   await Promise.all([
     ran ? showSummary(url, current) : showWorkerVerdict(engine),
-    ran ? checkCommitment(s, info, url, current) : Promise.resolve(),
+    ran ? checkCommitment(s, info, url, current) : Promise.resolve(setHtml("reportbody", html`<p class="muted">This report was judged before the engine ran, so its text is not published.</p>`)),
   ]);
 }
 
@@ -694,8 +750,10 @@ async function checkCommitment(s, info, url, current) {
   if (!current()) return;
   if (!r.bytes) {
     setHtml("commitcheck", html`<span class="muted">report.md is not published, so the commitment cannot be recomputed here.</span>`);
+    setHtml("reportbody", html`<p class="muted">The report is not published.</p>`);
     return;
   }
+  setHtml("reportbody", renderMarkdown(new TextDecoder().decode(r.bytes).replace(/^---\n([\s\S]*?)\n---\n/, "```\n$1\n```\n")));
   const got = await commitmentOf(r.bytes, s.hunter_id, info.major);
   if (!current()) return;
   const ok = got === String(s.commitment ?? "").toLowerCase();

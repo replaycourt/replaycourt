@@ -40,6 +40,7 @@ export interface ProgramView {
   name: string;
   verifier_id: string;
   active?: boolean;
+  scope?: { chain_id: number; address: string }[];
 }
 
 export interface EngineRunArgs {
@@ -49,6 +50,10 @@ export interface EngineRunArgs {
   statusPath?: string | null;
   reportId: string;
   destDir: string;
+  /** Engine --scope: <chain_id>:<address>,... from the program. Absent: the program names no scope. */
+  scope?: string | null;
+  /** Engine --min-block: the operator's first accepted fork block. */
+  minBlock?: number | null;
 }
 
 export interface EngineRunResult {
@@ -88,6 +93,8 @@ export interface WorkerContext {
   disclose: Disclosure;
   /** Allow-list of program ids; null = every program whose verifier_id is this verifier. */
   programs: number[] | null;
+  /** Reports forking from an older block are invalid; a program's first accepted block. */
+  minForkBlock?: number | null;
 }
 
 export type WorkerResult =
@@ -146,6 +153,7 @@ export async function processSubmission(
   deps: WorkerDeps,
   sub: SubmissionView,
   statusPath: string | null = null,
+  scope: string | null = null,
 ): Promise<WorkerResult> {
   const id = Number(sub.id);
   const dir = path.join(workRoot(ctx), String(id));
@@ -189,7 +197,7 @@ export async function processSubmission(
     const registryPath = path.join(workRoot(ctx), "registry", `program-${sub.program_id}.jsonl`);
     fs.mkdirSync(path.dirname(registryPath), { recursive: true });
     deps.log(`#${id}: commitment ok, running the engine (program ${sub.program_id}) …`);
-    const run = await deps.runEngine({ reportPath, registryPath, statusPath, reportId: `sub-${id}`, destDir: dir });
+    const run = await deps.runEngine({ reportPath, registryPath, statusPath, reportId: `sub-${id}`, destDir: dir, scope, minBlock: ctx.minForkBlock ?? null });
     engineExit = run.exitCode;
     const action = actionForExit(run.exitCode);
     if (action.kind === "retry") {
@@ -263,6 +271,12 @@ export async function servedPrograms(ctx: WorkerContext, deps: WorkerDeps): Prom
   return (await deps.listPrograms()).filter((p) => p.verifier_id === ctx.verifierId).sort((a, b) => Number(a.id) - Number(b.id));
 }
 
+/** A program's on-chain scope as the engine's --scope value; null when it names none. */
+export function scopeArg(program: ProgramView): string | null {
+  const targets = program.scope ?? [];
+  return targets.length ? targets.map((t) => `${Number(t.chain_id)}:${t.address}`).join(",") : null;
+}
+
 /** On-chain statuses of a program's submissions as the engine's --onchain-status file. */
 async function loadStatuses(ctx: WorkerContext, deps: WorkerDeps, programId: number): Promise<Record<string, string> | null> {
   try {
@@ -293,6 +307,8 @@ export async function processPending(ctx: WorkerContext, deps: WorkerDeps): Prom
       .filter((s) => Number(s.program_id) === pid)
       .sort((a, b) => Number(a.id) - Number(b.id));
     if (pending.length === 0) continue;
+    const scope = scopeArg(program);
+    if (!scope) deps.log(`program ${pid} names no scope: reports against any contract can be judged valid`);
     const statuses = await loadStatuses(ctx, deps, pid);
     let blocked = false;
     for (const sub of pending) {
@@ -302,7 +318,7 @@ export async function processPending(ctx: WorkerContext, deps: WorkerDeps): Prom
       }
       let r: WorkerResult;
       try {
-        r = await processSubmission(ctx, deps, sub, writeStatuses(ctx, pid, statuses));
+        r = await processSubmission(ctx, deps, sub, writeStatuses(ctx, pid, statuses), scope);
       } catch (err) {
         const why = `error: ${(err as Error).message}`;
         deps.log(`#${sub.id}: ${why}; will retry`);
@@ -364,7 +380,9 @@ export function parseDuration(s: string): number {
 export function engineCommand(python: string, repoRoot: string, a: EngineRunArgs): string[] {
   return [python, "-I", path.join(repoRoot, "engine", "replay.py"), "check", a.reportPath,
     "--quiet", "--registry", a.registryPath, "--report-id", a.reportId, "--dest", a.destDir,
-    ...(a.statusPath ? ["--onchain-status", a.statusPath] : [])];
+    ...(a.statusPath ? ["--onchain-status", a.statusPath] : []),
+    ...(a.scope ? ["--scope", a.scope] : []),
+    ...(a.minBlock !== null && a.minBlock !== undefined ? ["--min-block", String(a.minBlock)] : [])];
 }
 
 const running = new Set<ChildProcess>();

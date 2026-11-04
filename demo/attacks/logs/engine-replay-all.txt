@@ -1,8 +1,7 @@
-# demo/engine-replay.sh --all, engine 0.5.0, forge 1.8.7, 2026-11-02
 report                                                  exit  outcome      expected     result
 01_templedao_stax                                       0     valid        valid        ok
 02_seneca_chamber                                       0     valid        valid        ok
-03_stax_duplicate                                       3     duplicate of 01-templedao-stax duplicate of 01-t
+03_stax_duplicate                                       3     duplicate of 01-templedao-stax duplicate of 01-templedao-stax ok
 04_seneca_bogus                                         1     invalid      invalid      ok
 05_fake_profit                                          1     invalid      invalid      ok
 06_local_reentrancy                                     2     needs_human  needs_human  ok
@@ -17,6 +16,11 @@ revert-429                                              1     invalid      inval
 broadcast-as-whale                                      1     invalid      invalid      ok
 prank-raw-selector                                      1     invalid      invalid      ok
 hidden-prank-pause-tracing                              1     invalid      invalid      ok
+01_templedao_stax scope 1:0xd2869042E12a                0     valid        valid        ok
+02_seneca_chamber scope 1:0x65c210c59B43                0     valid        valid        ok
+01_templedao_stax scope 1:0x65c210c59B43                1     invalid      invalid      ok
+01_templedao_stax scope 8453:0xd2869042E                1     invalid      invalid      ok
+01_templedao_stax min-block 20000000                    1     invalid      invalid      ok
 
 verdicts and logs: <temporary directory>/<report>/ (verdict.json, summary.md, forge-test.json)
 ALL OUTCOMES AS EXPECTED

@@ -96,6 +96,10 @@ MESSAGES = {
     "r.test_passes_local": "PoC test `%s` passes (local mode, no fork).",
     "r.prank_as_victim": "The \"damage\" only happens because the PoC acts as the victim via a cheatcode such as vm.prank or vm.broadcast (%s). "
         "A real attacker cannot do that.",
+    "r.out_of_scope": "The value does not leave through a contract in the program's scope (%s).",
+    "r.scope_none_on_chain": "none on this chain",
+    "r.below_min_block": "The fork block %s is older than this program's first accepted block %s: a bug "
+        "that old is not new to this program.",
     "r.no_value_moved": "No measurable value movement: neither a gain for the attacker nor a loss for third "
         "parties. The test passes but proves no damage.",
     "r.balances_from_cheats": "The balances shown come from cheatcodes (deal/store), not from the attack.",

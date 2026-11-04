@@ -378,9 +378,15 @@ class TraceAnalysis:
     def _collect_flows(self):
         """All effective value movements of the execution phase: (asset, from, to, amount)."""
         self.flows = []
+        self.flow_nodes = []  # parallel to flows: the trace node a flow's call path starts at
         self.nft_transfers = 0
         nodes = self.arenas.get("Execution", [])
+        self._exec_nodes = {n["idx"]: n for n in nodes}
         eff = _effective(nodes)
+
+        def flow(start, *entry):
+            self.flows.append(entry)
+            self.flow_nodes.append(start)
         # Contracts deployed during this run (any phase) and the test contract itself.
         made_here = {cr["created"] for cr in self.creations}
         if self.test_contract:
@@ -394,13 +400,13 @@ class TraceAnalysis:
             addr = (t.get("address") or "").lower()
             val = _int(t.get("value"))
             if val and kind in ("CALL", "CREATE", "CREATE2") and addr != CHEAT:
-                self.flows.append((NATIVE, caller, addr, val))
+                flow(n.get("parent"), NATIVE, caller, addr, val)
             sd_val = _int(t.get("selfdestruct_transferred_value"))
             if sd_val:
                 src = (t.get("selfdestruct_address") or addr).lower()
                 dst = (t.get("selfdestruct_refund_target") or "").lower()
                 if dst:
-                    self.flows.append((NATIVE, src, dst, sd_val))
+                    flow(n["idx"], NATIVE, src, dst, sd_val)
             for lg in n.get("logs") or []:
                 raw = lg.get("raw_log") or {}
                 topics = [x.lower() for x in raw.get("topics") or []]
@@ -415,13 +421,13 @@ class TraceAnalysis:
                 amount = int(data[2:66], 16) if len(data) >= 66 else 0
                 if topics[0] == TOPIC_TRANSFER:
                     if len(topics) == 3:
-                        self.flows.append((token, _addr_from_word(topics[1]), _addr_from_word(topics[2]), amount))
+                        flow(n["idx"], token, _addr_from_word(topics[1]), _addr_from_word(topics[2]), amount)
                     elif len(topics) == 4:
                         self.nft_transfers += 1
                 elif topics[0] == TOPIC_DEPOSIT and len(topics) == 2:
-                    self.flows.append((token, ZERO, _addr_from_word(topics[1]), amount))
+                    flow(n["idx"], token, ZERO, _addr_from_word(topics[1]), amount)
                 elif topics[0] == TOPIC_WITHDRAWAL and len(topics) == 2:
-                    self.flows.append((token, _addr_from_word(topics[1]), ZERO, amount))
+                    flow(n["idx"], token, _addr_from_word(topics[1]), ZERO, amount)
 
     def _net_of(self, who: str, A: Set[str]) -> Dict[str, int]:
         net = defaultdict(int)
@@ -466,6 +472,33 @@ class TraceAnalysis:
         self.mints_to_attacker = {asset: srcs[ZERO] for asset, srcs in inflow.items() if srcs.get(ZERO)}
 
     # ------------------------------------------------------------------ results
+    def loss_through(self, scope: List[str]) -> bool:
+        """Did value leave a third party through one of these contracts? True if an in-scope
+        contract itself lost it, or sits on the call path that moved it. The path is read from the
+        movement upwards and stops at the first attacker frame, so an in-scope contract that merely
+        called back into the attacker (a flash loan, say) does not cover what happens in the callback."""
+        scope_set = {a.lower() for a in scope}
+        losers = {x["address"] for x in self.losers}
+        for (_, src, dst, amt), start in zip(self.flows, self.flow_nodes):
+            if src == dst or not amt or src in self.attackers:
+                continue
+            if src not in losers and dst not in self.attackers:
+                continue
+            if src in scope_set:
+                return True
+            cur = start
+            while cur is not None:
+                node = self._exec_nodes.get(cur)
+                if node is None:
+                    break
+                addr = (node["trace"].get("address") or "").lower()
+                if addr in self.attackers:
+                    break
+                if addr in scope_set:
+                    return True
+                cur = node.get("parent")
+        return False
+
     def assets(self) -> Set[str]:
         s = set(self.attacker_net)
         s.update(x["asset"] for x in self.losers)

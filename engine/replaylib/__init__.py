@@ -3,4 +3,4 @@
 Port of the author's pre-hackathon prototype. The decision logic is unchanged.
 """
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"

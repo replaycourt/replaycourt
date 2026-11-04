@@ -92,7 +92,7 @@ demo/engine-replay.sh          # reports 01-06 in commit order, fresh duplicate 
 demo/engine-replay.sh --all    # plus the attack reports a/b and the engine probes
 ```
 
-Expected (the 01-06 rows; `--all` adds 11 more):
+Expected (the 01-06 rows; `--all` adds 16 more):
 
 ```
 report                                                  exit  outcome      expected     result
