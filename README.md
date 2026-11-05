@@ -289,6 +289,8 @@ CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs:
   - Foundry (forge) as an external tool;
   - [`forge-std`](https://github.com/foundry-rs/forge-std) (MIT/Apache-2.0) and the `interface.sol` of [DeFiHackLabs](https://github.com/SunWeb3Sec/DeFiHackLabs) (Apache-2.0), vendored and pinned in [`engine/vendor/`](engine/vendor/) (see [`engine/THIRD_PARTY.md`](engine/THIRD_PARTY.md));
   - the TempleDAO and Seneca PoCs in the demo reports, based on DeFiHackLabs.
+- **Other entry:** the same author also entered the independent project Lantern Row,
+  https://github.com/replaycourt/lantern-row, in this hackathon (`games`, `nfts`).
 
 ## Limits and next steps
 
